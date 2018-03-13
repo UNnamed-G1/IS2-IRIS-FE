@@ -426,6 +426,16 @@ ul.dropdown-menu a:hover, ul.dropdown-menu a:active, ul.dropdown-menu a:focus {
   margin: 12px 10px 10px 250px;
   padding: 0 0 0 20px;
 }
+#unalTop .navigation .site-title {
+  background: no-repeat 0 0 ;
+  clear: both;
+  float: left;
+  font-size: 2.72em;
+  height: 17px;
+  line-height: 18px;
+  margin: 12px 10px 10px 250px;
+  padding: 0 0 0 20px;
+}
 #unalTop .navigation .site-url a {
   color: white;
 }
