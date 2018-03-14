@@ -107,7 +107,7 @@ ol {
 
 
 li a {
-  font-size: 1rem;
+  font-size: 1.7rem;
 }
 
 
@@ -276,7 +276,7 @@ ul.dropdown-menu a:hover, ul.dropdown-menu a:active, ul.dropdown-menu a:focus {
 }
 
 #unalTop .firstMenu {
-  background: #666666;
+  background: #00000;
   height: 30px;
 }
 #unalTop .firstMenu .navbar-toggle {
