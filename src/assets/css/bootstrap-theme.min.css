@@ -12,6 +12,7 @@
 .btn-default.active{background-color:#e0e0e0;border-color:#dbdbdb}
 .btn-primary,
 .btn-primary:hover,
+.btn-primary:disabled,
 .btn-primary:active,
 .btn-primary:visited,
 .btn-primary:focus {

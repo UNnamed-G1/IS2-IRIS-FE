@@ -1,3 +1,27 @@
-<p>
-  login works!
-</p>
+<app-services></app-services>
+<app-header></app-header>
+<div class="logintron">
+    <div class="container">
+        <form class="form-signin">
+            <h2 class="form-signin-heading">Inicio de sesión</h2><br>
+            <label for="inputEmail" class="sr-only">Usuario</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Usuario" required autofocus>
+            <label for="inputPassword" class="sr-only">Contraseña</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required><br>
+            
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+            
+            <button class="btn btn-lg btn-primary btn-block" type="submit" disabled="disabled">Sign in</button><br><br>
+            
+            <a class="btn btn-block btn-social btn-google">
+                <span class="fa fa-google"></span> Ingresa con Google
+            </a><br><br>
+            <a href="#">Continuar como invitado</a><br>
+            <a href="#">Registrarse</a><br>
+        </form>
+    </div>
+</div>
