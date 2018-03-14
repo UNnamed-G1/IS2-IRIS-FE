@@ -4,14 +4,18 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { LandingpageComponent } from './landingpage/landingpage.component';
+import { AppHeaderComponent } from './app-header/app-header.component';
+import { AppFooterComponent } from './app-footer/app-footer.component';
+import { AppServicesComponent } from './app-services/app-services.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    LandingpageComponent
+    AppHeaderComponent,
+    AppFooterComponent,
+    AppServicesComponent
   ],
   imports: [
     BrowserModule

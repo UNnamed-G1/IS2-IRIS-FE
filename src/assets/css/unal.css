@@ -75,6 +75,42 @@ blockquote, div.indent {
   margin: 1em 1.2em;
 }
 
+.logintron{
+  padding:30px;
+  margin-bottom:30px;
+  color:inherit;
+  background-color:#eee;
+  position: relative;
+}
+
+.logintron h1,.logintron .h1{
+  color:inherit
+}
+
+.logintron p{
+  margin-bottom:15px;
+  font-size:21px;
+  font-weight:200
+}.container 
+
+.logintron{
+  border-radius:6px
+}
+
+.logintron .container{
+  max-width:25%;
+}@media screen and (min-width:768px){
+  .logintron{
+    padding-top:48px;
+    padding-bottom:48px
+  }.container .logintron{
+    padding-left:60px;
+    padding-right:60px
+  }.logintron h1,.jumbotron .h1{
+    font-size:63px
+  }
+}
+
 
 .align-center {
   text-align: center;
