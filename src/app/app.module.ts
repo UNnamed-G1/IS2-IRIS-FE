@@ -19,7 +19,7 @@ import { AboutComponent } from './about/about.component';
 export const appRoutes: Routes = [
   {
     path: '',
-    component: AppComponent
+    component: HomeComponent
   },
   {
     path: 'home',
