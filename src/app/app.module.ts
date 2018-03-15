@@ -10,6 +10,10 @@ import { AppHeaderComponent } from './app-header/app-header.component';
 import { AppFooterComponent } from './app-footer/app-footer.component';
 import { AppServicesComponent } from './app-services/app-services.component';
 import { HomeComponent } from './home/home.component';
+import { NewsComponent } from './news/news.component';
+import { EventsComponent } from './events/events.component';
+import { ResearchGroupsComponent } from './research-groups/research-groups.component';
+import { AboutComponent } from './about/about.component';
 
 
 export const appRoutes: Routes = [
@@ -20,6 +24,22 @@ export const appRoutes: Routes = [
   {
     path: 'home',
     component: HomeComponent
+  },
+  {
+    path: 'events',
+    component: EventsComponent
+  },
+  {
+    path: 'news',
+    component: NewsComponent
+  },
+  {
+    path: 'about',
+    component: AboutComponent
+  },
+  {
+    path: 'research_groups',
+    component: ResearchGroupsComponent
   },
   {
     path: 'login',
@@ -34,7 +54,11 @@ export const appRoutes: Routes = [
       AppHeaderComponent,
       AppFooterComponent,
       AppServicesComponent,
-      HomeComponent
+      HomeComponent,
+      NewsComponent,
+      EventsComponent,
+      ResearchGroupsComponent,
+      AboutComponent
 
     ],
   imports: [
