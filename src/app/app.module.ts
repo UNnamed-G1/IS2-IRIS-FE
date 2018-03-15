@@ -15,6 +15,7 @@ import { EventsComponent } from './events/events.component';
 import { ResearchGroupsComponent } from './research-groups/research-groups.component';
 import { AboutComponent } from './about/about.component';
 
+
 export const appRoutes: Routes = [
   {
     path: '',
