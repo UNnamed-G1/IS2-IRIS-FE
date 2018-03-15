@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
@@ -15,6 +16,10 @@ export const appRoutes: Routes = [
   {
     path: '',
     component: AppComponent
+  },
+  {
+    path: 'home',
+    component: HomeComponent
   },
   {
     path: 'login',
