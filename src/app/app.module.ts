@@ -14,6 +14,8 @@ import { NewsComponent } from './news/news.component';
 import { EventsComponent } from './events/events.component';
 import { ResearchGroupsComponent } from './research-groups/research-groups.component';
 import { AboutComponent } from './about/about.component';
+import { ProfileComponent } from './profile/profile.component';
+import { TimeLineComponent } from './time-line/time-line.component';
 
 
 export const appRoutes: Routes = [
@@ -58,7 +60,9 @@ export const appRoutes: Routes = [
       NewsComponent,
       EventsComponent,
       ResearchGroupsComponent,
-      AboutComponent
+      AboutComponent,
+      ProfileComponent,
+      TimeLineComponent
 
     ],
   imports: [
