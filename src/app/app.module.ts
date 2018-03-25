@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 
+// Redux imports
+import { NgRedux, NgReduxModule } from '@angular-redux/store';
+import { IAppState, rootReducer, INITIAL_SESSION } from './redux/store';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -59,14 +62,18 @@ export const appRoutes: Routes = [
       EventsComponent,
       ResearchGroupsComponent,
       AboutComponent
-
     ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot( appRoutes )
+    RouterModule.forRoot( appRoutes ),
+    NgReduxModule
   ],
   providers: [{provide: APP_BASE_HREF, useValue : '/' }],
   bootstrap: [AppComponent]
 })
 
-export class AppModule { }
+export class AppModule {
+  constructor (ngRedux: NgRedux<IAppState>) {
+    ngRedux.configureStore(rootReducer, INITIAL_SESSION);
+  }
+}

@@ -17,6 +17,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-redux/store": "^7.1.1",
     "@angular/animations": "^5.2.9",
     "@angular/common": "^5.2.9",
     "@angular/core": "^5.2.9",
@@ -29,6 +30,7 @@
     "core-js": "^2.4.1",
     "express": "^4.16.3",
     "ngx-bootstrap": "^2.0.3",
+    "redux": "^3.7.2",
     "rxjs": "^5.5.7",
     "typescript": "~2.5.3",
     "zone.js": "^0.8.19"
