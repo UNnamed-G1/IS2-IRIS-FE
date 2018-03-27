@@ -1,5 +1,5 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { AppComponent } from './app.component';
@@ -21,7 +21,7 @@ import { UsersComponent } from './users/users.component';
 import { UserService } from './user.service';
 import { FormsModule } from '@angular/forms';
 import { AddUserComponent } from './add-user/add-user.component';
-
+import {  SocialLoginModule,  AuthServiceConfig,  GoogleLoginProvider} from "angular5-social-login";
 
 export const appRoutes: Routes = [
   {
@@ -57,7 +57,7 @@ export const appRoutes: Routes = [
     component: AboutComponent
   },
   {
-    path: 'research_groups',
+    path: 'research-groups',
     component: ResearchGroupsComponent
   },
   {
@@ -84,32 +84,56 @@ export const appRoutes: Routes = [
     redirectTo: 'NotFound' }*/
 ];
 
+// Social Login config
+export function getAuthServiceConfigs() {
+ let config = new AuthServiceConfig(
+     [
+       {
+         id: GoogleLoginProvider.PROVIDER_ID,
+         provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
+       }
+     ]
+ );
+ return config;
+}
+
 @NgModule({
-  declarations: [
-      AppComponent,
-      LoginComponent,
-      AppHeaderComponent,
-      AppFooterComponent,
-      AppServicesComponent,
-      HomeComponent,
-      NewsComponent,
-      EventsComponent,
-      ResearchGroupsComponent,
-      AboutComponent,
-      ProfileComponent,
-      TimeLineComponent,
-      SearchComponent,
-      NotFoundComponent,
-      UsersComponent,
-      AddUserComponent
-      ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot( appRoutes ),
+    RouterModule.forRoot(appRoutes),
+    SocialLoginModule,
     FormsModule,
     HttpClientModule
   ],
-  providers: [{provide: APP_BASE_HREF, useValue : '/' },UserService ],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    AppHeaderComponent,
+    AppFooterComponent,
+    AppServicesComponent,
+    HomeComponent,
+    NewsComponent,
+    EventsComponent,
+    ResearchGroupsComponent,
+    AboutComponent,
+    ProfileComponent,
+    TimeLineComponent,
+    SearchComponent,
+    NotFoundComponent,
+    UsersComponent,
+    AddUserComponent
+  ],
+  providers: [
+    {
+      provide: APP_BASE_HREF,
+      useValue: '/'
+    },
+    {
+      provide: AuthServiceConfig,
+      useFactory: getAuthServiceConfigs
+    },
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 

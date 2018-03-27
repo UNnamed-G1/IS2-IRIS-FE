@@ -1,0 +1,44 @@
+app-root {
+  background-color: #dddddd;
+  font-family: "Ancizar sans", Tahoma, Geneva, sans-serif;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 100vh;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  overflow-y: auto;
+  line-height: 1.42857143;
+}
+
+app-login {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 0 auto;
+  -moz-box-flex: 1;
+  -moz-flex: 1 0 auto;
+  -ms-flex: 1 0 auto;
+  flex: 1 0 auto;
+  min-height: 30em;
+}
+
+app-footer {
+  height: auto;
+  background: #666666;
+  font-size: 0.9em;
+  color: #dddddd;
+  padding: 15px 0 25px;
+  display: inline-block;
+}
+
+.container {
+  padding: 30px;
+  margin-bottom: 30px;
+  background-color: #eee;
+  border-radius: 6px;
+}
