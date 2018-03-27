@@ -2,56 +2,88 @@
   font-family: 'Ancizar sans';
   font-weight: bold;
   font-style: italic;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold_italic-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold_italic-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold_italic-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold_italic-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold_italic-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarsans_bold_italic-webfont.eot"),
+  url("../fonts/ancizarsans_bold_italic-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarsans_bold_italic-webfont.woff") format('woff'),
+  url("../fonts/ancizarsans_bold_italic-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarsans_bold_italic-webfont.svg") format('svg');
 }
 
 @font-face {
   font-family: 'Ancizar sans';
   font-weight: bold;
   font-style: normal;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_bold-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarsans_bold-webfont.eot"),
+  url("../fonts/ancizarsans_bold-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarsans_bold-webfont.woff") format('woff'),
+  url("../fonts/ancizarsans_bold-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarsans_bold-webfont.svg") format('svg');
 }
 
 @font-face {
   font-family: 'Ancizar sans';
   font-weight: normal;
   font-style: italic;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_italic-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_italic-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_italic-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_italic-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_italic-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarsans_italic-webfont.eot"),
+  url("../fonts/ancizarsans_italic-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarsans_italic-webfont.woff") format('woff'),
+  url("../fonts/ancizarsans_italic-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarsans_italic-webfont.svg") format('svg');
 }
 
 @font-face {
   font-family: 'Ancizar sans';
   font-weight: normal;
   font-style: normal;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_regular-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_regular-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_regular-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_regular-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarsans_regular-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarsans_regular-webfont.eot"),
+  url("../fonts/ancizarsans_regular-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarsans_regular-webfont.woff") format('woff'),
+  url("../fonts/ancizarsans_regular-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarsans_regular-webfont.svg") format('svg');
 }
 
 @font-face {
   font-family: 'Ancizar serif';
   font-weight: bold;
   font-style: italic;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold_italic-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold_italic-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold_italic-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold_italic-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold_italic-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarserif_bold_italic-webfont.eot"),
+  url("../fonts/ancizarserif_bold_italic-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarserif_bold_italic-webfont.woff") format('woff'),
+  url("../fonts/ancizarserif_bold_italic-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarserif_bold_italic-webfont.svg") format('svg');
 }
 
 @font-face {
   font-family: 'Ancizar serif';
   font-weight: bold;
   font-style: normal;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_bold-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarserif_bold-webfont.eot"),
+  url("../fonts/ancizarserif_bold-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarserif_bold-webfont.woff") format('woff'),
+  url("../fonts/ancizarserif_bold-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarserif_bold-webfont.svg") format('svg');
 }
 
 @font-face {
   font-family: 'Ancizar serif';
   font-weight: normal;
   font-style: italic;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_italic-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_italic-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_italic-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_italic-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_italic-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarserif_italic-webfont.eot"),
+  url("../fonts/ancizarserif_italic-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarserif_italic-webfont.woff") format('woff'),
+  url("../fonts/ancizarserif_italic-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarserif_italic-webfont.svg") format('svg');
 }
 
 @font-face {
   font-family: 'Ancizar serif';
   font-weight: normal;
   font-style: normal;
-  src: url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_regular-webfont.eot"), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_regular-webfont.eot?#iefix") format('embedded-opentype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_regular-webfont.woff") format('woff'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_regular-webfont.ttf") format('truetype'), url("http://unal.edu.co/fileadmin/templates/fonts/ancizarserif_regular-webfont.svg#ancizar_sansbold_italic") format('svg');
+  src: url("../fonts/ancizarserif_regular-webfont.eot"),
+  url("../fonts/ancizarserif_regular-webfont-iefix.eot") format('embedded-opentype'),
+  url("../fonts/ancizarserif_regular-webfont.woff") format('woff'),
+  url("../fonts/ancizarserif_regular-webfont.ttf") format('truetype'),
+  url("../fonts/ancizarserif_regular-webfont.svg") format('svg');
 }
 
 body {
