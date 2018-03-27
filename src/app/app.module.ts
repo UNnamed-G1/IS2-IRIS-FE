@@ -1,8 +1,7 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
-
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -15,6 +14,11 @@ import { EventsComponent } from './events/events.component';
 import { ResearchGroupsComponent } from './research-groups/research-groups.component';
 import { AboutComponent } from './about/about.component';
 
+import {
+  SocialLoginModule,
+  AuthServiceConfig,
+  GoogleLoginProvider
+} from "angular5-social-login";
 
 export const appRoutes: Routes = [
   {
@@ -38,7 +42,7 @@ export const appRoutes: Routes = [
     component: AboutComponent
   },
   {
-    path: 'research_groups',
+    path: 'research-groups',
     component: ResearchGroupsComponent
   },
   {
@@ -47,25 +51,47 @@ export const appRoutes: Routes = [
   }
 ];
 
-@NgModule({
-  declarations: [
-      AppComponent,
-      LoginComponent,
-      AppHeaderComponent,
-      AppFooterComponent,
-      AppServicesComponent,
-      HomeComponent,
-      NewsComponent,
-      EventsComponent,
-      ResearchGroupsComponent,
-      AboutComponent
+// Social Login config
+export function getAuthServiceConfigs() {
+ let config = new AuthServiceConfig(
+     [
+       {
+         id: GoogleLoginProvider.PROVIDER_ID,
+         provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
+       }
+     ];
+ );
+ return config;
+}
 
-    ],
+@NgModule({
   imports: [
     BrowserModule,
-    RouterModule.forRoot( appRoutes )
+    RouterModule.forRoot(appRoutes),
+    SocialLoginModule
   ],
-  providers: [{provide: APP_BASE_HREF, useValue : '/' }],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    AppHeaderComponent,
+    AppFooterComponent,
+    AppServicesComponent,
+    HomeComponent,
+    NewsComponent,
+    EventsComponent,
+    ResearchGroupsComponent,
+    AboutComponent
+  ],
+  providers: [
+    {
+      provide: APP_BASE_HREF,
+      useValue: '/'
+    },
+    {
+      provide: AuthServiceConfig,
+      useFactory: getAuthServiceConfigs
+    }
+  ],
   bootstrap: [AppComponent]
 })
 

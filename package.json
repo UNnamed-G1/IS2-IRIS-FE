@@ -25,13 +25,13 @@
     "@angular/platform-browser": "^5.2.9",
     "@angular/platform-browser-dynamic": "^5.2.9",
     "@angular/router": "^5.2.9",
+    "angular5-social-login": "^1.0.9",
     "bootstrap": "^4.0.0",
     "core-js": "^2.4.1",
     "express": "^4.16.3",
     "ngx-bootstrap": "^2.0.3",
     "rxjs": "^5.5.7",
-    "typescript": "~2.5.3",
-    "zone.js": "^0.8.19"
+    "zone.js": "^0.8.20"
   },
   "devDependencies": {
     "@angular/cli": "^1.7.3",
@@ -54,7 +54,6 @@
     "popper.js": "^1.14.1",
     "protractor": "~5.1.2",
     "ts-node": "~4.1.0",
-    "tslint": "~5.9.1",
-    "typescript": "~2.5.3"
+    "tslint": "~5.9.1"
   }
 }
