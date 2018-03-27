@@ -1,0 +1,58 @@
+<form (ngSubmit)="onSubmit()">
+
+       <div class="form-group">
+           <label class="col-xs-4 control-label" for="">Name: </label>
+           <div class="col-xs-8">
+               <input type="text" style="width: 300px" class="form-control" required
+                   [(ngModel)]="user.name" name="Name">
+           </div>
+           <label class="col-xs-4 control-label" for="">Last Name: </label>
+           <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="user.lastname" name="lastname">
+          </div>
+          <label class="col-xs-4 control-label" for="">User Name: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="user.username" name="username">
+          </div>
+          <label class="col-xs-4 control-label" for="">Email: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="user.email" name="email">
+          </div>
+          <label class="col-xs-4 control-label" for="">Professional Profile: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="user.professional_profile" name="professional_profile">
+          </div>
+          <label class="col-xs-4 control-label" for="">Phone: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="user.phone" name="phone">
+          </div>
+          <label class="col-xs-4 control-label" for="">Office: </label>
+          <div class="col-xs-8">
+               <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="user.office" name="office">
+          </div>
+          <label class="col-xs-4 control-label" for="">cvlac_link: </label>
+          <div class="col-xs-8">
+                <input type="text" style="width: 300px" class="form-control" required
+                  [(ngModel)]="user.cvlac_link" name="cvlac_link">
+          </div>
+          <label class="col-xs-4 control-label" for="">Full Name: </label>
+          <div class="col-xs-8">
+                <input type="text" style="width: 300px" class="form-control" required
+                  [(ngModel)]="user.full_name" name="full_name">
+          </div>
+          <label class="col-xs-4 control-label" for="">User Type: </label>
+          <div class="col-xs-8">
+                <input type="number" style="width: 300px" class="form-control" required
+                  [(ngModel)]="user.user_type" name="user_type">
+          </div>
+           <div>
+             <input type="submit" value="Create" />
+           </div>
+       </div>
+   </form>
