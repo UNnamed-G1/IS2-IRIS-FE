@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
-
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
@@ -13,12 +12,16 @@ import { NewsComponent } from './news/news.component';
 import { EventsComponent } from './events/events.component';
 import { ResearchGroupsComponent } from './research-groups/research-groups.component';
 import { AboutComponent } from './about/about.component';
-
-import {
-  SocialLoginModule,
-  AuthServiceConfig,
-  GoogleLoginProvider
-} from "angular5-social-login";
+import { ProfileComponent } from './profile/profile.component';
+import { TimeLineComponent } from './time-line/time-line.component';
+import { SearchComponent } from './search/search.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { HttpClientModule} from '@angular/common/http';
+import { UsersComponent } from './users/users.component';
+import { UserService } from './user.service';
+import { FormsModule } from '@angular/forms';
+import { AddUserComponent } from './add-user/add-user.component';
+import {  SocialLoginModule,  AuthServiceConfig,  GoogleLoginProvider} from "angular5-social-login";
 
 export const appRoutes: Routes = [
   {
@@ -28,6 +31,18 @@ export const appRoutes: Routes = [
   {
     path: 'home',
     component: HomeComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent
+  },
+  {
+    path: 'search',
+    component: SearchComponent
+  },
+  {
+    path: 'time-line',
+    component: TimeLineComponent
   },
   {
     path: 'events',
@@ -48,7 +63,25 @@ export const appRoutes: Routes = [
   {
     path: 'login',
     component: LoginComponent
-  }
+  },
+  {
+    path: 'users',
+    component: UsersComponent
+  },
+  {
+    path: 'users/add',
+    component: AddUserComponent
+  },
+  {
+    path: 'users/add/:id',
+    component: AddUserComponent
+  }/*,
+  {
+    path: '404',
+    component: NotFoundComponent
+  },
+  { path: '**',
+    redirectTo: 'NotFound' }*/
 ];
 
 // Social Login config
@@ -68,7 +101,9 @@ export function getAuthServiceConfigs() {
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
-    SocialLoginModule
+    SocialLoginModule,
+    FormsModule,
+    HttpClientModule
   ],
   declarations: [
     AppComponent,
@@ -80,7 +115,13 @@ export function getAuthServiceConfigs() {
     NewsComponent,
     EventsComponent,
     ResearchGroupsComponent,
-    AboutComponent
+    AboutComponent,
+    ProfileComponent,
+    TimeLineComponent,
+    SearchComponent,
+    NotFoundComponent,
+    UsersComponent,
+    AddUserComponent
   ],
   providers: [
     {
@@ -90,7 +131,8 @@ export function getAuthServiceConfigs() {
     {
       provide: AuthServiceConfig,
       useFactory: getAuthServiceConfigs
-    }
+    },
+    UserService
   ],
   bootstrap: [AppComponent]
 })
