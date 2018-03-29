@@ -1,74 +1,74 @@
 <main class="detalle">
 	<div class="breadcrumb-class">Está en:<a href="index.html" target="_self" title="Inicio">Inicio</a>/<span>Iniciar sesión</span></div>
-  <div class="jumbotron">
-    <div class="row align-col">
-      <div class="col-lg-12">
-        <img src="../../assets/images/IRIS-logo.png" />
-      </div>
-    </div>
-    <div class="row align-col">
-      <div class="col-md-6 col-item left-item">
-        <form class="signin">
-          <h2 class="form-signin-heading">Inicia sesión</h2><br>
-          <input type="user" id="inputUser" class="form-control" placeholder="Usuario" required autofocus>
-          <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required><br>
-          <!-- Unsused labels
+	<div class="jumbotron">
+		<div class="row align-col">
+			<div class="col-lg-12">
+				<img src="../../assets/images/IRIS-logo.png" />
+			</div>
+		</div>
+		<div class="row align-col">
+			<div class="col-md-6 col-item left-item">
+				<form class="signin">
+					<h2 class="form-signin-heading">Inicia sesión</h2><br>
+					<input type="user" id="inputUser" class="form-control" placeholder="Usuario" required autofocus>
+					<input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required><br>
+					<!-- Unsused labels
       <label for="inputEmail" class="sr-only">Usuario</label>
       <label for="inputPassword" class="sr-only">Contraseña</label>
       -->
-          <div id="rem-cbox" class="checkbox">
-            <input type="checkbox" value="remember-me"> Recuérdame
-          </div>
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button><br><br>
-        </form>
-      </div>
-      <div class="col-md-6 col-item">
-        <h2 class="form-signin-heading">Otras opciones</h2><br>
-        <div class="btn-google" (click)="socialSignIn('google')">
-          <span class="icon"></span>
-          <span class="buttonText">Accede con Google</span>
-        </div>
-        <a href="/" class="btn btn-primary btn-lg btn-block" role="button">Continúa como invitado</a>
-        <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#modal-sign-up">Regístrate</button>
-      </div>
-    </div>
-  </div>
+					<div id="rem-cbox" class="checkbox">
+						<input type="checkbox" value="remember-me"> Recuérdame
+					</div>
+					<button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button><br><br>
+				</form>
+			</div>
+			<div class="col-md-6 col-item">
+				<h2 class="form-signin-heading">Otras opciones</h2><br>
+				<div class="btn-google" (click)="googleSignIn()">
+					<span class="icon"></span>
+					<span class="buttonText">Accede con Google</span>
+				</div>
+				<a href="/" class="btn btn-primary btn-lg btn-block" role="button">Continúa como invitado</a>
+				<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#modal-sign-up">Regístrate</button>
+			</div>
+		</div>
+	</div>
 </main>
 
 <!-- Modal de registro-->
 <div id="modal-sign-up" class="modal fade hidden-print" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <!--img src="../../assets/images/IRIS-logo.png" /><br-->
-        <h2 class="form-signin-heading">Registro de usuario</h2>
-      </div>
-      <div class="modal-body">
-        <form class="form-signin">
-          <input id="inputName" class="form-control" placeholder="Nombre" required><br>
-          <input id="inputLastName" class="form-control" placeholder="Apellido" required><br>
-          <input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required autofocus><br>
-          <input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required><br>
-          <input type="password" id="inputPasswordValidate" class="form-control" placeholder="Confirmar contraseña" required><br>
-          <!-- Unsused labels
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<!--img src="../../assets/images/IRIS-logo.png" /><br-->
+				<h2 class="form-signup-heading">Registro de usuario</h2>
+			</div>
+			<div class="modal-body">
+				<form class="form-signup" (ngSubmit)="register()">
+					<input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="userReg.name" name="name"><br>
+					<input id="inputLastName" class="form-control" placeholder="Apellido" required [(ngModel)]="userReg.lastname" name="lastname"><br>
+					<input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="userReg.email" name="email"><br>
+					<input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userReg.password" name="password"><br>
+					<input type="password" id="inputPasswordValidate" class="form-control" placeholder="Confirmar contraseña" required><br>
+					<!-- Unsused labels
           <label for="inputName" class="sr-only">Nombre</label>
           <label for="inputLastName" class="sr-only">Apellido</label>
           <label for="inputSignUpEmail" class="sr-only">Correo</label>
           <label for="inputSignUpPassword" class="sr-only">Contraseña</label>
           <label for="inputPasswordValidate" class="sr-only">Confirmar contaseña</label>
           -->
-        </form>
-      </div>
-      <div class="modal-footer">
-        <div class="row" style="text-align: center">
-          <div class="col-md-6">
-            <button class="btn btn-primary" type="submit">Registrarse</button><br><br>
-          </div>
-          <div class="col-md-6">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+					<div class="col-md-6">
+						<button class="btn btn-primary" type="submit">Registrarse</button><br><br>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="row" style="text-align: center">
+					<div class="col-md-6">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

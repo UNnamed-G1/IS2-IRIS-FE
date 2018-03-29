@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
+
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
@@ -16,12 +20,12 @@ import { ProfileComponent } from './profile/profile.component';
 import { TimeLineComponent } from './time-line/time-line.component';
 import { SearchComponent } from './search/search.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { HttpClientModule} from '@angular/common/http';
 import { UsersComponent } from './users/users.component';
-import { UserService } from './user.service';
-import { FormsModule } from '@angular/forms';
 import { AddUserComponent } from './add-user/add-user.component';
-import {  SocialLoginModule,  AuthServiceConfig,  GoogleLoginProvider} from "angular5-social-login";
+
+import { CommonService } from './services/common.service';
+import { LoginService } from './services/login.service';
+import { UserService } from './user.service';
 
 export const appRoutes: Routes = [
   {
@@ -86,15 +90,15 @@ export const appRoutes: Routes = [
 
 // Social Login config
 export function getAuthServiceConfigs() {
- let config = new AuthServiceConfig(
-     [
-       {
-         id: GoogleLoginProvider.PROVIDER_ID,
-         provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
-       }
-     ]
- );
- return config;
+  let config = new AuthServiceConfig(
+    [
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
+      }
+    ]
+  );
+  return config;
 }
 
 @NgModule({
@@ -132,6 +136,8 @@ export function getAuthServiceConfigs() {
       provide: AuthServiceConfig,
       useFactory: getAuthServiceConfigs
     },
+    CommonService,
+    LoginService,
     UserService
   ],
   bootstrap: [AppComponent]

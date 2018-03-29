@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms'
+
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
+import { LoginService } from '../services/login.service'
+
+import { User } from '../user';
 
 @Component({
   selector: 'app-login',
@@ -9,19 +14,34 @@ import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
 
 export class LoginComponent implements OnInit {
 
-  constructor(private socialAuthService: AuthService) { }
+  userReg = new User();
+
+  constructor(private socialAuthService: AuthService,
+    private loginService: LoginService) { }
 
   ngOnInit() {
   }
 
-  public socialSignIn(socialPlatform: string) {
+  register() {
+    console.log(this.userReg)
+    if (!this.userReg) { return; }
+    this.loginService.registerUser(this.userReg)
+            .subscribe(
+              //Fix register on back
+              //Redux
+            response => console.log(),
+            error => console.log(<any>error)
+          );
+  }
+
+  googleSignIn() {
     this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (userData) => {
-        var name = userData.name;
-        var email = userData.email;
-        var image = userData.image;
-        var idToken = userData.idToken;
+        this.loginService.getUserToken({ "auth": { "access_token": userData.idToken }}).subscribe(response => {
+          //Redux
+          console.log(response);
+        });
       }
-    );
+    )
   }
 }

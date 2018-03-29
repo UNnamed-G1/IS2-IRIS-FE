@@ -3,6 +3,7 @@ export class User{
       public name:string;
       public lastname:string;
       public username:string;
+      public password:string;
       public email:string;
       public professional_profile:string;
       public phone:string;
