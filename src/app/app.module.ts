@@ -1,5 +1,8 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 
@@ -17,7 +20,16 @@ import { NewsComponent } from './news/news.component';
 import { EventsComponent } from './events/events.component';
 import { ResearchGroupsComponent } from './research-groups/research-groups.component';
 import { AboutComponent } from './about/about.component';
+import { ProfileComponent } from './profile/profile.component';
+import { TimeLineComponent } from './time-line/time-line.component';
+import { SearchComponent } from './search/search.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { UsersComponent } from './users/users.component';
+import { AddUserComponent } from './add-user/add-user.component';
 
+import { CommonService } from './services/common.service';
+import { LoginService } from './services/login.service';
+import { UserService } from './user.service';
 
 export const appRoutes: Routes = [
   {
@@ -27,6 +39,18 @@ export const appRoutes: Routes = [
   {
     path: 'home',
     component: HomeComponent
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent
+  },
+  {
+    path: 'search',
+    component: SearchComponent
+  },
+  {
+    path: 'time-line',
+    component: TimeLineComponent
   },
   {
     path: 'events',
@@ -41,34 +65,86 @@ export const appRoutes: Routes = [
     component: AboutComponent
   },
   {
-    path: 'research_groups',
+    path: 'research-groups',
     component: ResearchGroupsComponent
   },
   {
     path: 'login',
     component: LoginComponent
-  }
+  },
+  {
+    path: 'users',
+    component: UsersComponent
+  },
+  {
+    path: 'users/add',
+    component: AddUserComponent
+  },
+  {
+    path: 'users/add/:id',
+    component: AddUserComponent
+  }/*,
+  {
+    path: '404',
+    component: NotFoundComponent
+  },
+  { path: '**',
+    redirectTo: 'NotFound' }*/
 ];
 
+// Social Login config
+export function getAuthServiceConfigs() {
+  let config = new AuthServiceConfig(
+    [
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
+      }
+    ]
+  );
+  return config;
+}
+
 @NgModule({
-  declarations: [
-      AppComponent,
-      LoginComponent,
-      AppHeaderComponent,
-      AppFooterComponent,
-      AppServicesComponent,
-      HomeComponent,
-      NewsComponent,
-      EventsComponent,
-      ResearchGroupsComponent,
-      AboutComponent
-    ],
   imports: [
     BrowserModule,
-    RouterModule.forRoot( appRoutes ),
+    RouterModule.forRoot(appRoutes),
+    SocialLoginModule,
+    FormsModule,
+    HttpClientModule,
     NgReduxModule
   ],
-  providers: [{provide: APP_BASE_HREF, useValue : '/' }],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    AppHeaderComponent,
+    AppFooterComponent,
+    AppServicesComponent,
+    HomeComponent,
+    NewsComponent,
+    EventsComponent,
+    ResearchGroupsComponent,
+    AboutComponent,
+    ProfileComponent,
+    TimeLineComponent,
+    SearchComponent,
+    NotFoundComponent,
+    UsersComponent,
+    AddUserComponent
+  ],
+  providers: [
+    {
+      provide: APP_BASE_HREF,
+      useValue: '/'
+    },
+    {
+      provide: AuthServiceConfig,
+      useFactory: getAuthServiceConfigs
+    },
+    CommonService,
+    LoginService,
+    UserService
+  ],
   bootstrap: [AppComponent]
 })
 
