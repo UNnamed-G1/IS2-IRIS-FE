@@ -1,22 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable } from "rxjs";
+import { select } from '@angular-redux/store';
+import { LoginState } from './redux/store';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor() {
+  @select() session;
+  @select() isLogged;
 
-  }
+  constructor() { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // if  Redux session token != undefined
-    req = req.clone({
-      setHeaders: {
-        // Change to session token (Redux)
-        Authorization: `TOKEN`
-      }
-    });
-
+    let isLogged, token;
+    this.isLogged.subscribe(il => isLogged = il);
+    if (isLogged) {
+      this.session.subscribe(s => token = s.token);
+      req = req.clone({
+        setHeaders: {
+          Authorization: token
+        }
+      });
+    }
     return next.handle(req);
   }
 }

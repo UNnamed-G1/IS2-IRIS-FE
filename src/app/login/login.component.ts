@@ -59,15 +59,19 @@ export class LoginComponent implements OnInit {
       (userData) => {
         console.log(userData)
         this.loginService.getUserToken({ "auth": { "access_token": userData.idToken } }).subscribe(response => {
-          //this.loginService.getOwnData(userData.email).subscribe(s => console.log(s));
           let s: ISession = {
             "token": response['jwt'],
-            // Change for data from service
             "name": userData.name,
             "photo": userData.image,
             "type": 0
           }
           this.ngRedux.dispatch({ type: ADD_SESSION, session: s });
+          this.loginService.getOwnData(userData.email).subscribe((response: {users: Array<any>}) => {
+            let data = response['users'].find(u => u['email'] == userData.email);
+            s['name'] = data.full_name;
+            s['photo'] = data.photo;
+            s['type'] = data.user_type;
+          });
         });
       }
     );

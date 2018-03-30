@@ -42,7 +42,7 @@
 					<li class="item_NavBar #">
 						<a *ngIf="!(isLogged | async)" routerLink="/login">Iniciar sesión</a>
 						<a *ngIf="(isLogged | async)"  routerLink="/profile">
-							<img src="{{(session | async).photo}}"/>
+							<img src="{{(session | async).photo ? (session | async).photo : 'assets/images/user.png'}}"/>
 							{{(session | async).name}}
 						</a>
 					</li>

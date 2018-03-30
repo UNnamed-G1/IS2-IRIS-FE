@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { NgRedux, select } from '@angular-redux/store';
+import { LoginState } from '../redux/store';
 import { REMOVE_SESSION } from '../redux/actions';
 
 @Component({
