@@ -41,39 +41,37 @@ export class LoginComponent implements OnInit {
     if (!this.userSignUp) { return; }
     this.loginService.registerUser({ "user": this.userSignUp })
       .subscribe(
-        //Redux if will automatically sign in
-        response => console.log(response),
-        error => console.log(<any>error)
+        response => console.log("¡Listo!"),
+        error => console.error(error.message)
       );
   }
 
   signIn() {
-    this.loginService.getUserToken(this.userSignIn).subscribe(response => {
-      //Redux
-      console.log(response)
-    });
+    this.fillSession(this.userSignIn);
   }
 
   googleSignIn() {
-    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
-      (userData) => {
-        console.log(userData)
-        this.loginService.getUserToken({ "auth": { "access_token": userData.idToken } }).subscribe(response => {
-          let s: ISession = {
-            "token": response['jwt'],
-            "name": userData.name,
-            "photo": userData.image,
-            "type": 0
-          }
-          this.ngRedux.dispatch({ type: ADD_SESSION, session: s });
-          this.loginService.getOwnData(userData.email).subscribe((response: {users: Array<any>}) => {
-            let data = response['users'].find(u => u['email'] == userData.email);
-            s['name'] = data.full_name;
-            s['photo'] = data.photo;
-            s['type'] = data.user_type;
-          });
-        });
-      }
-    );
+    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(userData => {
+      this.fillSession({ access_token: userData.idToken });
+    });
   }
+
+  private fillSession(userAuth) {
+    this.loginService.getUserToken(userAuth).subscribe(response => {
+      let session: ISession;
+      session = Object.assign({}, session, { token: response['jwt'] });
+      this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
+      this.loginService.getCurrentUser().subscribe(response => {
+        let data = response['user'];
+        if (data.photo)
+          data.photo = data.photo.link;
+        Object.assign(session, {
+          name: data.full_name,
+          type: data.user_type,
+          photo: data.photo
+        });
+      });
+    });
+  }
+
 }

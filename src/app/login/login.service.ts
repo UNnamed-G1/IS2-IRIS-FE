@@ -6,14 +6,18 @@ export class LoginService {
 
   constructor(private s: CommonService) { }
 
-  public getOwnData(email) {
-    return this.s.get("users?q={\"email\":" + email + "}")
+  public getCurrentUser() {
+    return this.s.get("users/current")
   }
 
   public getUserToken(body: any) {
-    if ("auth" in body)
-      return this.s.post("google_user_token", body);
-    let b = { "auth": { "email": body.username + "@unal.edu.co", "password": body.password } };
+    let googleSession: boolean = ("access_token" in body);
+    let b = {auth: Object.assign({}, body)};
+    if (googleSession) {
+      return this.s.post("google_user_token", b);
+    }
+    b["auth"]["email"] = body["username"] + "@unal.edu.co";
+    delete b["auth"]["username"];
     return this.s.post("user_token", b);
   }
 
