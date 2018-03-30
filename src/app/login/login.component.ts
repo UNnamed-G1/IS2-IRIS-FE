@@ -21,7 +21,8 @@ export class LoginComponent implements OnInit {
   @select() session;
   @select() isLogged;
 
-  user: User = new User();
+  userSignUp = {};
+  userSignIn = {};
 
   constructor(private socialAuthService: AuthService,
     private loginService: LoginService,
@@ -37,14 +38,20 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    if (!this.user) { return; }
-    this.loginService.registerUser(this.user)
-      .subscribe(
-        //Fix register on back
-        //Redux
-        response => console.log(response),
-        error => console.log(<any>error)
-      );
+    if (!this.userSignUp) { return; }
+    this.loginService.registerUser({"user": this.userSignUp})
+            .subscribe(
+              //Redux
+            response => console.log(response),
+            error => console.log(<any>error)
+          );
+  }
+
+  signIn() {
+    this.loginService.getUserToken(this.userSignIn).subscribe(response => {
+      //Redux
+      console.log(response)
+    });
   }
 
   googleSignIn() {
@@ -62,6 +69,6 @@ export class LoginComponent implements OnInit {
           this.ngRedux.dispatch({ type: ADD_SESSION, session: s });
         });
       }
-    )
+    );
   }
 }
