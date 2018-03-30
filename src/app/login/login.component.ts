@@ -5,9 +5,9 @@ import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
 import { LoginService } from './login.service'
 
 import { NgRedux, select } from '@angular-redux/store';
-import { LoginState, INITIAL_STATE } from '../redux/store';
+import { LoginState } from '../redux/store';
 import { ISession } from '../redux/session';
-import { ADD_SESSION, REMOVE_SESSION } from '../redux/actions';
+import { ADD_SESSION } from '../redux/actions';
 
 import { User } from '../user';
 
@@ -39,12 +39,12 @@ export class LoginComponent implements OnInit {
 
   register() {
     if (!this.userSignUp) { return; }
-    this.loginService.registerUser({"user": this.userSignUp})
-            .subscribe(
-              //Redux
-            response => console.log(response),
-            error => console.log(<any>error)
-          );
+    this.loginService.registerUser({ "user": this.userSignUp })
+      .subscribe(
+        //Redux if will automatically sign in
+        response => console.log(response),
+        error => console.log(<any>error)
+      );
   }
 
   signIn() {
@@ -57,8 +57,9 @@ export class LoginComponent implements OnInit {
   googleSignIn() {
     this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (userData) => {
+        console.log(userData)
         this.loginService.getUserToken({ "auth": { "access_token": userData.idToken } }).subscribe(response => {
-          //this.loginService.getOwnData()
+          //this.loginService.getOwnData(userData.email).subscribe(s => console.log(s));
           let s: ISession = {
             "token": response['jwt'],
             // Change for data from service

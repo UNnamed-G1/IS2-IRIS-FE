@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { NgRedux, select } from '@angular-redux/store';
-import { LoginState } from '../redux/store';
-import { ADD_SESSION, REMOVE_SESSION } from '../redux/actions';
+import { REMOVE_SESSION } from '../redux/actions';
 
 @Component({
   selector: 'app-header',
@@ -17,5 +16,9 @@ export class AppHeaderComponent implements OnInit {
   constructor(private ngRedux: NgRedux<LoginState>) { }
 
   ngOnInit() {
+  }
+
+  logOut() {
+    this.ngRedux.dispatch({ type: REMOVE_SESSION });
   }
 }

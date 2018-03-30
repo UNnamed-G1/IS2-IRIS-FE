@@ -39,11 +39,16 @@
 		<div class="navbar-default">
 			<nav id="profiles">
 				<ul class="nav navbar-nav dropdown-menu">
-					<li class="item_NavBar #>">
+					<li class="item_NavBar #">
 						<a *ngIf="!(isLogged | async)" routerLink="/login">Iniciar sesión</a>
 						<a *ngIf="(isLogged | async)"  routerLink="/profile">
 							<img src="{{(session | async).photo}}"/>
 							{{(session | async).name}}
+						</a>
+					</li>
+					<li class="item_NavBar #" *ngIf="(isLogged | async)">
+						<a (click)="logOut()">
+							Cerrar sesión
 						</a>
 					</li>
 				</ul>
