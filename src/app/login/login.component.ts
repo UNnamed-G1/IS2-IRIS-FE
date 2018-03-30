@@ -14,7 +14,8 @@ import { User } from '../user';
 
 export class LoginComponent implements OnInit {
 
-  userReg = new User();
+  userSignUp = {};
+  userSignIn = {};
 
   constructor(private socialAuthService: AuthService,
     private loginService: LoginService) { }
@@ -23,15 +24,20 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    console.log(this.userReg)
-    if (!this.userReg) { return; }
-    this.loginService.registerUser(this.userReg)
+    if (!this.userSignUp) { return; }
+    this.loginService.registerUser({"user": this.userSignUp})
             .subscribe(
-              //Fix register on back
               //Redux
-            response => console.log(),
+            response => console.log(response),
             error => console.log(<any>error)
           );
+  }
+
+  signIn() {
+    this.loginService.getUserToken(this.userSignIn).subscribe(response => {
+      //Redux
+      console.log(response)
+    });
   }
 
   googleSignIn() {
@@ -42,6 +48,6 @@ export class LoginComponent implements OnInit {
           console.log(response);
         });
       }
-    )
+    );
   }
 }

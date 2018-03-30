@@ -8,10 +8,10 @@
 		</div>
 		<div class="row align-col">
 			<div class="col-md-6 col-item left-item">
-				<form class="signin">
+				<form class="signin" (ngSubmit)="signIn()">
 					<h2 class="form-signin-heading">Inicia sesión</h2><br>
-					<input type="user" id="inputUser" class="form-control" placeholder="Usuario" required autofocus>
-					<input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required><br>
+					<input type="user" id="inputUser" class="form-control" placeholder="Usuario" required autofocus [(ngModel)]="userSignIn.username" name="username">
+					<input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userSignIn.password" name="password"><br>
 					<!-- Unsused labels
       <label for="inputEmail" class="sr-only">Usuario</label>
       <label for="inputPassword" class="sr-only">Contraseña</label>
@@ -46,11 +46,11 @@
 			</div>
 			<div class="modal-body">
 				<form class="form-signup" (ngSubmit)="register()">
-					<input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="userReg.name" name="name"><br>
-					<input id="inputLastName" class="form-control" placeholder="Apellido" required [(ngModel)]="userReg.lastname" name="lastname"><br>
-					<input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="userReg.email" name="email"><br>
-					<input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userReg.password" name="password"><br>
-					<input type="password" id="inputPasswordValidate" class="form-control" placeholder="Confirmar contraseña" required><br>
+					<input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="userSignUp.name" name="name"><br>
+					<input id="inputLastName" class="form-control" placeholder="Apellido" required [(ngModel)]="userSignUp.lastname" name="lastname"><br>
+					<input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="userSignUp.email" name="email"><br>
+					<input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userSignUp.password" name="password"><br>
+					<input type="password" id="inputPasswordConfirm" class="form-control" placeholder="Confirmar contraseña" required [(ngModel)]="userSignUp.password_confirmation" name="password_confirmation"><br>
 					<!-- Unsused labels
           <label for="inputName" class="sr-only">Nombre</label>
           <label for="inputLastName" class="sr-only">Apellido</label>
