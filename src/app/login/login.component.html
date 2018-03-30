@@ -39,17 +39,18 @@
 <div id="modal-sign-up" class="modal fade hidden-print" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<!--img src="../../assets/images/IRIS-logo.png" /><br-->
-				<h2 class="form-signup-heading">Registro de usuario</h2>
-			</div>
-			<div class="modal-body">
-				<form class="form-signup" (ngSubmit)="register()">
-					<input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="userReg.name" name="name"><br>
-					<input id="inputLastName" class="form-control" placeholder="Apellido" required [(ngModel)]="userReg.lastname" name="lastname"><br>
-					<input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="userReg.email" name="email"><br>
-					<input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userReg.password" name="password"><br>
+			<form class="form-signup" (ngSubmit)="register()">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<!--img src="../../assets/images/IRIS-logo.png" /><br-->
+					<h2 class="form-signup-heading">Registro de usuario</h2>
+				</div>
+				<div class="modal-body">
+					<input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="user.name" name="name"><br>
+					<input id="inputLastName" class="form-control" placeholder="Apellido" required [(ngModel)]="user.lastname" name="lastname"><br>
+					<input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="user.email" name="email"><br>
+					<input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="user.password_digest" name="password"><br>
+					<!-- Validate Password
 					<input type="password" id="inputPasswordValidate" class="form-control" placeholder="Confirmar contraseña" required><br>
 					<!-- Unsused labels
           <label for="inputName" class="sr-only">Nombre</label>
@@ -58,17 +59,17 @@
           <label for="inputSignUpPassword" class="sr-only">Contraseña</label>
           <label for="inputPasswordValidate" class="sr-only">Confirmar contaseña</label>
           -->
-					<div class="col-md-6">
-						<button class="btn btn-primary" type="submit">Registrarse</button><br><br>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<div class="row" style="text-align: center">
-					<div class="col-md-6">
-						<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+				</div>
+				<div class="modal-footer">
+					<div class="row" style="text-align: center">
+						<div class="col-xs-6">
+							<button class="btn btn-primary" type="submit">Registrarse</button><br><br>
+						</div>
+						<div class="col-xs-6">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+						</div>
 					</div>
 				</div>
-			</div>
+			</form>
 		</div>
 	</div>

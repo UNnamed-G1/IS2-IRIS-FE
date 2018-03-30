@@ -1,27 +1,27 @@
 import { ISession } from './session'
 import { ADD_SESSION, REMOVE_SESSION } from './actions';
 
-export interface IAppState {
+export interface LoginState {
   session: ISession;
+  isLogged: boolean;
 }
 
-export const INITIAL_SESSION: IAppState = {
+export const INITIAL_STATE: LoginState = {
   session: {
-      id: undefined,
-      name: undefined,
-      type: undefined
-  }
+    token: undefined,
+    name: undefined,
+    photo: undefined,
+    type: undefined
+  },
+  isLogged: false
 }
 
-export function rootReducer(state: IAppState, action): IAppState {
+export function rootReducer(state: LoginState, action): LoginState {
   switch (action.type) {
     case ADD_SESSION:
-      action.session.id = Math.floor(Math.random());
-      return Object.assign({}, state, {
-        session: action.session
-      });
+      return Object.assign({}, state, { session: action.session, isLogged: true });
     case REMOVE_SESSION:
-      return Object.assign({}, state, INITIAL_SESSION);
+      return Object.assign({}, state, INITIAL_STATE);
   }
   return state;
 }

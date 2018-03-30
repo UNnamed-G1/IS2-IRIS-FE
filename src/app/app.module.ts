@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
@@ -8,7 +8,9 @@ import { APP_BASE_HREF } from '@angular/common';
 
 // Redux imports
 import { NgRedux, NgReduxModule } from '@angular-redux/store';
-import { IAppState, rootReducer, INITIAL_SESSION } from './redux/store';
+import { LoginState, rootReducer, INITIAL_STATE } from './redux/store';
+// Requests interceptor
+import { AuthInterceptor } from './auth-interceptor'
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -27,8 +29,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { UsersComponent } from './users/users.component';
 import { AddUserComponent } from './add-user/add-user.component';
 
-import { CommonService } from './services/common.service';
-import { LoginService } from './services/login.service';
+import { CommonService } from './common.service';
+import { LoginService } from './login/login.service';
 import { UserService } from './user.service';
 
 export const appRoutes: Routes = [
@@ -92,18 +94,6 @@ export const appRoutes: Routes = [
     redirectTo: 'NotFound' }*/
 ];
 
-// Social Login config
-export function getAuthServiceConfigs() {
-  let config = new AuthServiceConfig(
-    [
-      {
-        id: GoogleLoginProvider.PROVIDER_ID,
-        provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
-      }
-    ]
-  );
-  return config;
-}
 
 @NgModule({
   imports: [
@@ -141,6 +131,11 @@ export function getAuthServiceConfigs() {
       provide: AuthServiceConfig,
       useFactory: getAuthServiceConfigs
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     CommonService,
     LoginService,
     UserService
@@ -149,7 +144,20 @@ export function getAuthServiceConfigs() {
 })
 
 export class AppModule {
-  constructor (ngRedux: NgRedux<IAppState>) {
-    ngRedux.configureStore(rootReducer, INITIAL_SESSION);
+  constructor(ngRedux: NgRedux<LoginState>) {
+    ngRedux.configureStore(rootReducer, INITIAL_STATE);
   }
+}
+
+// Social Login config
+export function getAuthServiceConfigs() {
+  let config = new AuthServiceConfig(
+    [
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
+      }
+    ]
+  );
+  return config;
 }

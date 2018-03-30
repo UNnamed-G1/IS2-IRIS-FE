@@ -1,5 +1,6 @@
 export interface ISession {
-    id: number;
-    name: string;
-    type: string;
+  token: string;
+  name: string;
+  photo: string;
+  type: number;
 }

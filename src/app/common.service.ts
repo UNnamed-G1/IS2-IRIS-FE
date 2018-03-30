@@ -13,7 +13,6 @@ export class CommonService {
   }
 
   public post(path: string, body: any) {
-    console.log(body, this.url + path)
     return this.http.post(this.url + path, body);
   }
 
