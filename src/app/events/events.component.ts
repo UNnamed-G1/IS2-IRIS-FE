@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Event } from './events';
+import { EventService } from './events.service';
 
 @Component({
   selector: 'app-events',
@@ -6,10 +9,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
+    columns = ['research_group_id','topic','description','date'];
+  	rows : Array<Event>;
 
-  constructor() { }
+  	constructor(private researchGrousService: EventService ,private  router : Router) {}
 
-  ngOnInit() {
-  }
-
+  	ngOnInit() {
+    	this.researchGrousService.get("events").subscribe((res : Event[]) => {
+      		console.log(res['events'])
+      		this.rows = res['events'];
+    	});
+  	};
 }

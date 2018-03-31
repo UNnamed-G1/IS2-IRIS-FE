@@ -10,7 +10,9 @@ import { AppServicesComponent } from './app-services/app-services.component';
 import { HomeComponent } from './home/home.component';
 import { NewsComponent } from './news/news.component';
 import { EventsComponent } from './events/events.component';
+import { EventService } from './events/events.service';
 import { ResearchGroupsComponent } from './research-groups/research-groups.component';
+import { ResearchGroupService } from './research-groups/research-groups.service';
 import { AboutComponent } from './about/about.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TimeLineComponent } from './time-line/time-line.component';
@@ -21,7 +23,7 @@ import { UsersComponent } from './users/users.component';
 import { UserService } from './user.service';
 import { FormsModule } from '@angular/forms';
 import { AddUserComponent } from './add-user/add-user.component';
-import {  SocialLoginModule,  AuthServiceConfig,  GoogleLoginProvider} from "angular5-social-login";
+import { SocialLoginModule,  AuthServiceConfig,  GoogleLoginProvider} from "angular5-social-login";
 
 export const appRoutes: Routes = [
   {
@@ -124,6 +126,8 @@ export function getAuthServiceConfigs() {
     AddUserComponent
   ],
   providers: [
+  ResearchGroupService,
+  EventService,
     {
       provide: APP_BASE_HREF,
       useValue: '/'

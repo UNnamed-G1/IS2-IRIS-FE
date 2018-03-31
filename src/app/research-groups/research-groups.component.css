@@ -1,0 +1,131 @@
+#research_groups_view .panel-footer {
+  height: 3rem;
+  overflow: hidden;
+  padding-top: 5%;
+  margin: 0;
+  background-color: rgb(70,150,255);
+  border-style: none;
+}
+
+#research_groups_view .panel {
+  border-radius: 0rem;
+}
+
+#research_groups_view .panel-heading {
+  height: 3rem;
+  overflow: hidden;
+  padding-top: 5%;
+  margin: 0;
+  background-color: rgb(70,150,255);
+  border-style: none;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+#research_groups_view .panel-body {
+  height: 22rem;
+  padding: 0;
+  margin: 0;
+  border-style: none;
+  color: white;
+
+}
+
+
+#research_groups_view .panel-body .white-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-height: 16px; /* fallback */
+  max-height: 40rem; /* fallback */
+  -webkit-line-clamp: 10; /* number of lines to show */
+  -webkit-box-orient: vertical;
+  text-align: justify;
+  text-last-align: center;
+  color: white;
+
+}
+
+#research_groups_view .btn-default#create-event {
+  height: 15rem;
+  width: 15rem;
+  line-height: 13.6rem;
+  font-size: 10rem;
+  border-radius: 50%;
+  margin-top: 7rem;
+
+}
+
+#research_groups_view .screen {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  padding-left: 0rem;
+  padding-right: 0rem;
+}
+
+#research_groups_view .col-sm-12,
+#research_groups_view .box {
+  margin-top: 0;
+  height: 22rem;
+}
+
+#research_groups_view .box {
+  text-align: center;
+  background-color: rgba(123, 123, 123, 0.5);
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  top: 100%;
+  bottom: 0;
+  visibility: hidden;
+  -moz-transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;
+  -webkit-transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;
+  transition: top 0.3s, right 0.3s, bottom 0.3s, left 0.3s;
+}
+
+#research_groups_view .screen:hover .box {
+  top: 0;
+  height: 22rem;
+  visibility: visible;
+}
+
+#research_groups_view .box .white-text {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  right: 0;
+  text-align: justify;
+  text-align-last: center;
+  color: white;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+#research_groups_view .box #show {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  color: white;
+  font-size: 3rem;
+}
+
+#research_groups_view .box #show:hover {
+  text-decoration: none;
+  color: $secondary-color;
+}
+
+.fa.pull-right {
+  margin-left: .3em;
+  border-radius: 50%;
+  height: 4.5rem;
+  width: 4.5rem;
+  font-size: 2.6rem;
+  padding: 0.5;
+  background-color: $primary-color;
+  color: white;
+}
+
+i.fa.fa-eye.align-index {
+  padding: 0.21em;
+}
