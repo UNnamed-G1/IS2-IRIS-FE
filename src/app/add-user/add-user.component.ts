@@ -15,7 +15,7 @@ import { UserService } from '../user.service';
 })
 
 export class AddUserComponent implements OnInit, OnDestroy {
-  @select() unBuenNombre;
+  @select() auxiliarID;
   user: User;
 
   constructor(private userService: UserService,
@@ -25,7 +25,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.permMan.validateSession(["admin"])) {
-      this.unBuenNombre.subscribe(id => {
+      this.auxiliarID.subscribe(id => {
         this.user = new User();
         if (id) {
           this.userService.get("users/" + id).subscribe((user: { user: User }) => {

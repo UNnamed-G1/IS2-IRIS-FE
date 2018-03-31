@@ -25,7 +25,7 @@ export class PermissionManager {
     return this.validate(this.loggedUser(), route);
   }
 
-  public authorizedUser(userTypes: string[]): boolean {
+  private authorizedUser(userTypes: string[]): boolean {
     let authorized: boolean = false
     this.session.subscribe(session => {
       authorized = userTypes.includes(session.type);
@@ -33,7 +33,7 @@ export class PermissionManager {
     return authorized;
   }
 
-  public loggedUser(): boolean {
+  private loggedUser(): boolean {
     let isLogged: boolean = false
     this.isLogged.subscribe(logged => {
       isLogged = logged;

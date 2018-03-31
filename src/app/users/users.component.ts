@@ -47,7 +47,7 @@ export class UsersComponent implements OnInit {
   }
 
   public update(id: string) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, unBuenNombre: id });
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/users/add');
   }
 }

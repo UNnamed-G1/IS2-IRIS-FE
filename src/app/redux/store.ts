@@ -3,7 +3,7 @@ import { ADD_SESSION, ADD_AUXILIAR, REMOVE_SESSION, REMOVE_AUXILIAR } from './ac
 
 export interface AppState {
   session: ISession;
-  unBuenNombre: number;
+  auxiliarID: number;
   isLogged: boolean;
 }
 
@@ -14,7 +14,7 @@ export const INITIAL_STATE: AppState = {
     photo: undefined,
     type: undefined
   },
-  unBuenNombre: undefined,
+  auxiliarID: undefined,
   isLogged: false
 }
 
@@ -23,11 +23,11 @@ export function rootReducer(state: AppState, action): AppState {
     case ADD_SESSION:
       return Object.assign({}, state, { session: action.session, isLogged: true });
     case ADD_AUXILIAR:
-      return Object.assign({}, state, { unBuenNombre: action.unBuenNombre });
+      return Object.assign({}, state, { auxiliarID: action.auxiliarID });
     case REMOVE_SESSION:
       return Object.assign({}, state, INITIAL_STATE);
     case REMOVE_AUXILIAR:
-      return Object.assign({}, state, { unBuenNombre: undefined });
+      return Object.assign({}, state, { auxiliarID: undefined });
   }
   return state;
 }
