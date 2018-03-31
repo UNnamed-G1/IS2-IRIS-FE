@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable } from "rxjs";
 import { select } from '@angular-redux/store';
-import { LoginState } from './redux/store';
+import { AppState } from './redux/store';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

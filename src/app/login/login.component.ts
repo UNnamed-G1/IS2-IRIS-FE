@@ -4,12 +4,14 @@ import { Router } from '@angular/router';
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
 import { LoginService } from './login.service'
 
-import { NgRedux, select } from '@angular-redux/store';
-import { LoginState } from '../redux/store';
+import { NgRedux } from '@angular-redux/store';
+import { AppState } from '../redux/store';
 import { ISession } from '../redux/session';
 import { ADD_SESSION } from '../redux/actions';
 
 import { User } from '../user';
+
+import { PermissionManager } from '../permission-manager'
 
 @Component({
   selector: 'app-login',
@@ -18,23 +20,19 @@ import { User } from '../user';
 })
 
 export class LoginComponent implements OnInit {
-  @select() session;
-  @select() isLogged;
-
-  userSignUp = {};
-  userSignIn = {};
+  userSignUp: {name: string, lastname: string, email: string, password: string, password_confirmation: string};
+  userSignIn: {username: string, password: string};
 
   constructor(private socialAuthService: AuthService,
     private loginService: LoginService,
-    private ngRedux: NgRedux<LoginState>,
-    private router: Router) { }
+    private ngRedux: NgRedux<AppState>,
+    private router: Router,
+    private permMan: PermissionManager) { }
 
   ngOnInit() {
-    this.isLogged.subscribe(s => {
-      if (s) {
-        this.router.navigate(['']);
-      }
-    });
+    this.permMan.validateNotLogged();
+    this.userSignUp = Object.assign({}, this.userSignUp)
+    this.userSignIn = Object.assign({}, this.userSignIn)
   }
 
   register() {
@@ -71,6 +69,7 @@ export class LoginComponent implements OnInit {
           photo: data.photo
         });
       });
+      this.permMan.validateNotLogged();
     });
   }
 

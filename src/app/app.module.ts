@@ -1,3 +1,4 @@
+// Modules
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -5,13 +6,15 @@ import { FormsModule } from '@angular/forms';
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
+import { NgRedux, NgReduxModule } from '@angular-redux/store';
 
 // Redux imports
-import { NgRedux, NgReduxModule } from '@angular-redux/store';
-import { LoginState, rootReducer, INITIAL_STATE } from './redux/store';
+import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
 // Requests interceptor
 import { AuthInterceptor } from './auth-interceptor'
-
+// Permission manager
+import { PermissionManager } from './permission-manager'
+// Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
@@ -29,6 +32,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { UsersComponent } from './users/users.component';
 import { AddUserComponent } from './add-user/add-user.component';
 
+// Services
 import { CommonService } from './common.service';
 import { LoginService } from './login/login.service';
 import { UserService } from './user.service';
@@ -81,10 +85,6 @@ export const appRoutes: Routes = [
   {
     path: 'users/add',
     component: AddUserComponent
-  },
-  {
-    path: 'users/add/:id',
-    component: AddUserComponent
   }/*,
   {
     path: '404',
@@ -136,6 +136,7 @@ export const appRoutes: Routes = [
       useClass: AuthInterceptor,
       multi: true
     },
+    PermissionManager,
     CommonService,
     LoginService,
     UserService
@@ -144,7 +145,7 @@ export const appRoutes: Routes = [
 })
 
 export class AppModule {
-  constructor(ngRedux: NgRedux<LoginState>) {
+  constructor(ngRedux: NgRedux<AppState>) {
     ngRedux.configureStore(rootReducer, INITIAL_STATE);
   }
 }

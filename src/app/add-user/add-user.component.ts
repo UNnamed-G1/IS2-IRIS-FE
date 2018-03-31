@@ -1,48 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+import { NgRedux, select } from '@angular-redux/store';
+import { AppState } from '../redux/store';
+import { REMOVE_AUXILIAR } from '../redux/actions';
+
+import { PermissionManager } from '../permission-manager';
 import { User } from '../user';
 import { UserService } from '../user.service';
-import { ActivatedRoute } from '@angular/router';
-
 
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.css']
 })
-export class AddUserComponent implements OnInit {
-  constructor(private userService: UserService ,private acRoute : ActivatedRoute){
-  }
-public user : User  = new User();
-ngOnInit() {
 
-  this.acRoute.params.subscribe((data : any)=>{
-  console.log(data.id);
-  if(data && data.id){
-      this.userService.get("users/"+data.id).subscribe((data : User)=>{
-      this.user = data;
+export class AddUserComponent implements OnInit, OnDestroy {
+  @select() unBuenNombre;
+  user: User;
+
+  constructor(private userService: UserService,
+    private permMan: PermissionManager,
+    private ngRedux: NgRedux<AppState>) {
+  }
+
+  ngOnInit() {
+    if (this.permMan.validateSession(["admin"])) {
+      this.unBuenNombre.subscribe(id => {
+        this.user = new User();
+        if (id) {
+          this.userService.get("users/" + id).subscribe((user: { user: User }) => {
+            this.user = user.user;
+          });
+        }
       });
-  }
-  else
-  {
-      this.user = new User();
-  }
-  })
-}
-  public onSubmit(){
-    console.log("Adding a User: " + this.user.name);
-    if(this.user.id){
-    this.userService.update("users/"+this.user.id,this.user).subscribe((r)=>{
-        console.log(r);
-        alert("User updated !");
-    })
     }
-    else
-    this.userService.post("users",this.user).subscribe((r)=>{
-    console.log(r);
-    this.user = new User();
-    alert("User added !");
+  }
 
-    });
-}
+  ngOnDestroy() {
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR })
+  }
+
+  public onSubmit() {
+    if (this.user.id) {
+      this.userService.update("users/" + this.user.id, this.user).subscribe(r => {
+        console.log(r);
+      })
+    } else {
+      this.userService.post("users", this.user).subscribe(r => {
+        console.log(r);
+      });
+    }
+  }
 
 }
