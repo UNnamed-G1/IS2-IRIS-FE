@@ -1,0 +1,54 @@
+<div class="jumbotron">
+	<div class="container">
+
+<form (ngSubmit)="onSubmit()">
+
+       <div class="form-group">
+           <label class="col-xs-4 control-label" for="">Name: </label>
+           <div class="col-xs-8">
+               <input type="text" style="width: 300px" class="form-control" required
+                   [(ngModel)]="research_group.name" name="Name">
+           </div>
+           <label class="col-xs-4 control-label" for="">Description: </label>
+           <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="research_group.description" name="description">
+          </div>
+          <label class="col-xs-4 control-label" for="">Strategic Focus: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="research_group.strategic_focus" name="strategic_focus">
+          </div>
+          <label class="col-xs-4 control-label" for="">Reasearch Priorities: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="research_group.reasearch_priorities" name="reasearch_priorities">
+          </div>
+          <label class="col-xs-4 control-label" for="">Foundation Date: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="research_group.foundation_date" name="foundation_date">
+          </div>
+          <label class="col-xs-4 control-label" for="">Classification: </label>
+          <div class="col-xs-8">
+              <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="research_group.classification" name="classification">
+          </div>
+          <label class="col-xs-4 control-label" for="">Date Classification: </label>
+          <div class="col-xs-8">
+               <input type="text" style="width: 300px" class="form-control" required
+                [(ngModel)]="research_group.date_classification" name="date_classification">
+          </div>
+          <label class="col-xs-4 control-label" for="">url: </label>
+          <div class="col-xs-8">
+                <input type="text" style="width: 300px" class="form-control" required
+                  [(ngModel)]="research_group.url" name="url">
+          </div>
+          <div>
+             <!-- <input type="submit" value="Create" /> <!--  -->
+             <button type="submit" class="btn btn-default">Submit</button>
+          </div>
+       </div>
+   </form>
+ </div>
+ </div>

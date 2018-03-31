@@ -22,6 +22,7 @@ import { UserService } from './user.service';
 import { FormsModule } from '@angular/forms';
 import { AddUserComponent } from './add-user/add-user.component';
 import {  SocialLoginModule,  AuthServiceConfig,  GoogleLoginProvider} from "angular5-social-login";
+import { AddResearchGroupComponent } from './add-research-group/add-research-group.component';
 
 export const appRoutes: Routes = [
   {
@@ -121,7 +122,8 @@ export function getAuthServiceConfigs() {
     SearchComponent,
     NotFoundComponent,
     UsersComponent,
-    AddUserComponent
+    AddUserComponent,
+    AddResearchGroupComponent
   ],
   providers: [
     {
