@@ -412,7 +412,7 @@ ul.dropdown-menu a:hover, ul.dropdown-menu a:active, ul.dropdown-menu a:focus {
   color: black;
 }
 
-#unalTop .firstMenu .navbar-default nav li.item_SignIn:hover, #unalTop .firstMenu .navbar-default nav li.item_SignIn.active, #unalTop .firstMenu .navbar-default nav li.item_SignIn.active:hover {
+#unalTop .firstMenu .navbar-default nav li.item_NavBar:hover, #unalTop .firstMenu .navbar-default nav li.item_NavBar.active, #unalTop .firstMenu .navbar-default nav li.item_NavBar.active:hover {
   background: #42a6ff;
   border-right: 1px solid #003c72 !important;
 }

@@ -10,7 +10,19 @@ export class ResearchGroupService {
 
 	constructor(private http: HttpClient){}
 
-	get(path){
+	public get(path){
 	  return this.http.get(this.API_URL + path);
 	}
+
+  public post(path: string, body: any) {
+    return this.http.post(this.API_URL + path, body);
+  }
+
+  public delete(path: string) {
+    return this.http.delete(this.API_URL + path);
+  }
+
+  public update(path: string, body: any) {
+    return this.http.put(this.API_URL + path, body);
+  }
 }

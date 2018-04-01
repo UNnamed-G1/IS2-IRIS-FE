@@ -9,7 +9,7 @@ import { ResearchGroupService } from './research-groups.service';
   styleUrls: ['./research-groups.component.css']
 })
 export class ResearchGroupsComponent implements OnInit {
-	  columns = ['id','name','description','updated_at'];
+	  columns = ['id', 'name', 'description', 'strategic_focus', 'reasearch_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
   	rows : Array<ResearchGroup>;
     news : Array<ResearchGroup>;
 
@@ -25,4 +25,14 @@ export class ResearchGroupsComponent implements OnInit {
           this.news = res['research_groups'];
       });
   	};
+
+    public delete(id: string) {
+      console.log("delete : " + id);
+      var path = 'users/' + id;
+    }
+
+    public update(id: string) {
+      console.log("update : " + id);
+      this.router.navigateByUrl('/users/add/' + id);
+    }
 }
