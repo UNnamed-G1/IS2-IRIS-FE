@@ -11,6 +11,7 @@ import { ResearchGroupService } from './research-groups.service';
 export class ResearchGroupsComponent implements OnInit {
 	  columns = ['id','name','description','updated_at'];
   	rows : Array<ResearchGroup>;
+    news : Array<ResearchGroup>;
 
   	constructor(private researchGrousService: ResearchGroupService ,private  router : Router) {}
 
@@ -19,5 +20,9 @@ export class ResearchGroupsComponent implements OnInit {
       		console.log(res['research_groups'])
       		this.rows = res['research_groups'];
     	});
+      this.researchGrousService.get("research_groups_news").subscribe((res : ResearchGroup[]) => {
+          console.log(res['research_groups'])
+          this.news = res['research_groups'];
+      });
   	};
 }

@@ -11,6 +11,7 @@ import { EventService } from './events.service';
 export class EventsComponent implements OnInit {
     columns = ['research_group_id','topic','description','date'];
   	rows : Array<Event>;
+    news : Array<Event>;
 
   	constructor(private researchGrousService: EventService ,private  router : Router) {}
 
@@ -19,5 +20,9 @@ export class EventsComponent implements OnInit {
       		console.log(res['events'])
       		this.rows = res['events'];
     	});
+      this.researchGrousService.get("events_news").subscribe((res : Event[]) => {
+          console.log(res['events'])
+          this.news = res['events'];
+      });
   	};
 }

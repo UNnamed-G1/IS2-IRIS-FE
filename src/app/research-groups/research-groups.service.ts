@@ -11,6 +11,6 @@ export class ResearchGroupService {
 	constructor(private http: HttpClient){}
 
 	get(path){
-		return this.http.get(this.API_URL + path);
+	  return this.http.get(this.API_URL + path);
 	}
 }
