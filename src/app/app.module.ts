@@ -7,6 +7,7 @@ import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angul
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule } from '@angular-redux/store';
+import * as persistState from 'redux-localstorage';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -156,19 +157,17 @@ export const appRoutes: Routes = [
 
 export class AppModule {
   constructor(ngRedux: NgRedux<AppState>) {
-    ngRedux.configureStore(rootReducer, INITIAL_STATE);
+    ngRedux.configureStore(rootReducer, INITIAL_STATE, undefined, persistState());
   }
 }
 
 // Social Login config
 export function getAuthServiceConfigs() {
   let config = new AuthServiceConfig(
-    [
-      {
+    [{
         id: GoogleLoginProvider.PROVIDER_ID,
         provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
-      }
-    ]
+    }]
   );
   return config;
 }

@@ -66,6 +66,7 @@ export class LoginComponent implements OnInit {
           type: data.user_type,
           photo: data.photo
         });
+        this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
       });
       this.permMan.validateNotLogged();
     });
