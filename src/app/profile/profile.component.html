@@ -1,3 +1,118 @@
-<p>
-  profile works!
-</p>
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Perfil</span></div>
+  <div *ngIf="user" class="container-fluid main-container">
+    <div class="container-fluid">
+      <div class="row" [hidden]="showInput">
+        <h2>Perfil</h2><br>
+        <div class="col-sm-2 col-md-2">
+          <img src="{{user.photo.link}}" alt="No photo" class="img-rounded img-responsive profile-image" />
+        </div>
+        <div class="col-sm-5 col-md-5">
+          <div class="field">
+            <h4>{{ user.full_name }}</h4>
+          </div>
+          <div class="field">
+            {{ user.email }}
+          </div>
+          <div class="field">
+            {{ user.professional_profile }}
+          </div>
+        </div>
+        <div class="col-sm-5 col-md-5">
+          <div class="field">
+            {{ user.phone }}
+          </div>
+          <div class="field" *ngIf="user.user_type == 'profesor'">
+            {{ user.office }}
+          </div>
+          <div class="field">
+            {{ user.cvlac_link }}
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
+          </div>
+        </div>
+      </div>
+      <div class="row" [hidden]="!showInput">
+        <form (ngSubmit)="updateProfile()">
+          <div class="col-sm-2 col-md-2">
+            <img src="{{user.photo.link}}" alt="No photo" class="img-rounded img-responsive profile-image" />
+          </div>
+          <div class="col-sm-5 col-md-5">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="inputName">Nombres</label>
+                <input id="inputName" type="text" class="form-control" required [(ngModel)]="user.name" name="Name" />
+              </div>
+              <div class="col-md-6">
+                <label for="inputLastName">Apellidos</label>
+                <input id="inputLastName" type="text" class="form-control" required [(ngModel)]="user.lastname" name="lastname" />
+              </div>
+            </div>
+            <label for="inputProfessionalProfile">Perfil profesional</label>
+            <textarea id="inputProfessionalProfile" type="text" class="form-control" required [(ngModel)]="user.professional_profile" name="professional_profile" rows="3"></textarea>
+          </div>
+          <div class="col-sm-5 col-md-5">
+            <label for="inputPhone">Teléfono</label>
+            <input id="inputPhone" type="text" class="form-control" placeholder="Teléfono" required [(ngModel)]="user.phone" name="phone" />
+            <label for="inputOffice">Oficina</label>
+            <input *ngIf="user.user_type == 'profesor'" id="inputOffice" type="text" class="form-control" placeholder="Oficina" required [(ngModel)]="user.office" name="office" />
+            <label for="inputCvLAC">CvLAC</label>
+            <input id="inputCvLAC" type="text" class="form-control" placeholder="CvLAC" required [(ngModel)]="user.cvlac_link" name="cvlac_link" />
+            <div class="btn-group">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div *ngIf="user.research_groups" class="container-fluid main-container">
+      <h2>Grupos de investigación</h2><br>
+      <div class="row items-row">
+        <div *ngFor="let rg of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
+          <div class="card" routerLink="/">
+            <canvas class="header-bg" width="250" height="70" id="header-blur"></canvas>
+            <div class="avatar">
+              <img src="{{user.photo.link}}" alt="" />
+              <!--img src="{{rg.photo.link}}" alt="" /-->
+            </div>
+            <div class="content">
+              <p><b>{{ rg.name }}</b><br> {{ rg.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="user.publications" class="container-fluid main-container">
+      <h2>Publicaciones</h2><br>
+      <div class="row items-row">
+        <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
+          <div class="card" routerLink="/">
+            <div class="header">
+              <b>{{ pub.name }}</b>
+            </div>
+            <div class="content">
+              <p>{{ pub.brief_description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="user.events" class="container-fluid main-container">
+      <h2>Eventos</h2><br>
+      <div class="row items-row">
+        <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-3">
+          <div class="card" routerLink="/">
+            <div class="header">
+              <b>{{ ev.topic }}</b>
+            </div>
+            <div class="content">
+              <p>{{ ev.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
