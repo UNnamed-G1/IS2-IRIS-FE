@@ -18,6 +18,7 @@ import { PermissionManager } from './permission-manager'
 // Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './login/register/register.component';
 import { AppHeaderComponent } from './template/app-header/app-header.component';
 import { AppFooterComponent } from './template/app-footer/app-footer.component';
 import { AppServicesComponent } from './template/app-services/app-services.component';
@@ -80,7 +81,8 @@ export const appRoutes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    children: [{path:'register', component: RegisterComponent}]
   },
   {
     path: 'users',
@@ -130,7 +132,8 @@ export const appRoutes: Routes = [
     NotFoundComponent,
     UsersComponent,
     AddUserComponent,
-    AddResearchGroupComponent
+    AddResearchGroupComponent,
+    RegisterComponent
   ],
   providers: [
     {

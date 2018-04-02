@@ -16,7 +16,7 @@ import { UserService } from '../user.service';
 
 export class AddUserComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
-  user: User;
+  user: User = new User();;
 
   constructor(private userService: UserService,
     private permMan: PermissionManager,
@@ -24,7 +24,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.user = new User();
     if (this.permMan.validateSession(["admin"])) {
       this.auxiliarID.subscribe(id => {
         if (id) {

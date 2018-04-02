@@ -18,7 +18,6 @@ import { PermissionManager } from '../permission-manager'
 })
 
 export class LoginComponent implements OnInit {
-  userSignUp: { name: string, lastname: string, email: string, password: string, password_confirmation: string };
   userSignIn: { username: string, password: string };
 
   constructor(private socialAuthService: AuthService,
@@ -29,17 +28,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.permMan.validateNotLogged();
-    this.userSignUp = Object.assign({}, this.userSignUp)
     this.userSignIn = Object.assign({}, this.userSignIn)
-  }
-
-  register() {
-    if (!this.userSignUp) { return; }
-    this.loginService.registerUser({ "user": this.userSignUp })
-      .subscribe(
-        response => console.log("¡Listo!"),
-        error => console.error(error.message)
-      );
   }
 
   signIn() {
@@ -47,9 +36,10 @@ export class LoginComponent implements OnInit {
   }
 
   googleSignIn() {
-    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(userData => {
-      this.fillSession({ access_token: userData.idToken });
-    });
+    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
+      userData => this.fillSession({ access_token: userData.idToken }),
+      error => console.error(error.message)
+    );
   }
 
   private fillSession(userAuth) {
@@ -57,17 +47,19 @@ export class LoginComponent implements OnInit {
       let session: ISession;
       session = Object.assign({}, session, { token: response['jwt'] });
       this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
-      this.loginService.getCurrentUser().subscribe(response => {
-        let data = response['user'];
-        if (data.photo)
-          data.photo = data.photo.link;
-        Object.assign(session, {
-          name: data.full_name,
-          type: data.user_type,
-          photo: data.photo
-        });
-        this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
-      });
+      this.loginService.getCurrentUser().subscribe(
+        response => {
+          let data = response['user'];
+          if (data.photo)
+            data.photo = data.photo.link;
+          Object.assign(session, {
+            name: data.full_name,
+            type: data.user_type,
+            photo: data.photo
+          });
+          this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
+        },
+        error => console.error(error.message));
       this.permMan.validateNotLogged();
     });
   }
