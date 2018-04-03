@@ -11,38 +11,43 @@ import * as persistState from 'redux-localstorage';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
-
 // Requests interceptor
 import { AuthInterceptor } from './auth-interceptor'
-
 // Permission manager
-import { PermissionManager } from './permission-manager'
+import { PermissionManager } from 'app/permission-manager'
 
 // Components
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
+  // Template
 import { AppHeaderComponent } from './template/app-header/app-header.component';
 import { AppFooterComponent } from './template/app-footer/app-footer.component';
 import { AppServicesComponent } from './template/app-services/app-services.component';
-import { HomeComponent } from './home/home.component';
-import { NewsComponent } from './news/news.component';
-import { EventsComponent } from './events/events.component';
-import { AboutComponent } from './about/about.component';
-import { ProfileComponent } from './profile/profile.component';
-import { TimeLineComponent } from './time-line/time-line.component';
-import { SearchComponent } from './search/search.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-import { UsersComponent } from './users/users.component';
-import { AddUserComponent } from './users/add/add-user.component';
-import { ResearchGroupsComponent } from './research-groups/research-groups.component';
-import { AddResearchGroupComponent } from './research-groups/add/add-research-group.component';
+  // Admin
+import { AddUserComponent } from './admin/users/add/add-user.component';
+import { UsersComponent } from './admin/users/users.component';
+import { AddResearchGroupComponent } from './admin/research-groups/add/add-research-group.component';
+  // Professor
+
+  // Student
+
+  // Public
+import { AboutComponent } from './public/about/about.component';
+import { EventsComponent } from './public/events/events.component';
+import { HomeComponent } from './public/home/home.component';
+import { LoginComponent } from './public/login/login.component';
+import { NewsComponent } from './public/news/news.component';
+import { NotFoundComponent } from './public/not-found/not-found.component';
+import { ProfileComponent } from './public/profile/profile.component';
+import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
+import { SearchComponent } from './public/search/search.component';
+import { TimeLineComponent } from './public/time-line/time-line.component';
 
 // Services
-import { CommonService } from './common.service';
-import { LoginService } from './login/login.service';
-import { ResearchGroupService } from './research-groups/research-groups.service';
-import { UserService } from './users/user.service';
-import { EventService } from './events/events.service';
+import { CommonService } from './services/common.service';
+import { EventService } from './services/event.service';
+import { LoginService } from './services/login.service';
+import { ResearchGroupService } from './services/research-group.service';
+import { UserService } from './services/user.service';
 
 export const appRoutes: Routes = [
   {
@@ -137,8 +142,6 @@ export const appRoutes: Routes = [
     AddResearchGroupComponent
   ],
   providers: [
-  ResearchGroupService,
-  EventService,
     {
       provide: APP_BASE_HREF,
       useValue: '/'
@@ -153,8 +156,9 @@ export const appRoutes: Routes = [
       multi: true
     },
     PermissionManager,
-    CommonService,
+    EventService,
     LoginService,
+    ResearchGroupService,
     UserService
   ],
   bootstrap: [AppComponent]
