@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { NgRedux, select } from '@angular-redux/store';
-import { AppState } from '../../redux/store';
-import { REMOVE_AUXILIAR } from '../../redux/actions';
+import { AppState } from 'app/redux/store';
+import { REMOVE_AUXILIAR } from 'app/redux/actions';
 
-import { PermissionManager } from '../../permission-manager';
-import { User } from '../user';
-import { UserService } from '../user.service';
+import { PermissionManager } from 'app/permission-manager';
+import { User } from 'app/classes/user';
+import { UserService } from 'app/services/user.service';
 
 @Component({
   selector: 'app-add-user',
@@ -28,7 +28,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     if (this.permMan.validateSession(["admin"])) {
       this.auxiliarID.subscribe(id => {
         if (id) {
-          this.userService.get("users/" + id).subscribe((user: { user: User }) => {
+          this.userService.get(id).subscribe((user: { user: User }) => {
             this.user = user.user;
           });
         }
@@ -42,11 +42,11 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   public onSubmit() {
     if (this.user.id) {
-      this.userService.update("users/" + this.user.id, this.user).subscribe(r => {
+      this.userService.update(this.user.id, this.user).subscribe(r => {
         console.log(r);
       })
     } else {
-      this.userService.post("users", this.user).subscribe(r => {
+      this.userService.create(this.user).subscribe(r => {
         console.log(r);
       });
     }

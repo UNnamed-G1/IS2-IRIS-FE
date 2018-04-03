@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { NgRedux, select } from '@angular-redux/store';
-import { AppState } from '../redux/store';
+import { AppState } from 'app/redux/store';
 
-import { PermissionManager } from '../permission-manager'
+import { PermissionManager } from 'app/permission-manager'
 
 @Component({
   selector: 'app-home',

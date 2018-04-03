@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { PermissionManager } from './permission-manager';
+import { PermissionManager } from 'app/permission-manager';
 import { ISession } from './redux/session';
 import { Observable } from "rxjs";
 import { select } from '@angular-redux/store';

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Event } from './events';
-import { EventService } from './events.service';
+import { Event } from 'app/classes/events';
+import { EventService } from 'app/services/event.service';
 
 @Component({
   selector: 'app-events',
@@ -13,14 +13,14 @@ export class EventsComponent implements OnInit {
   	rows : Array<Event>;
     news : Array<Event>;
 
-  	constructor(private researchGrousService: EventService ,private  router : Router) {}
+  	constructor(private eventService: EventService ,private  router : Router) {}
 
   	ngOnInit() {
-    	this.researchGrousService.get("events").subscribe((res : Event[]) => {
+    	this.eventService.get().subscribe((res : Event[]) => {
       		console.log(res['events'])
       		this.rows = res['events'];
     	});
-      this.researchGrousService.get("events_news").subscribe((res : Event[]) => {
+      this.eventService.get().subscribe((res : Event[]) => {
           console.log(res['events'])
           this.news = res['events'];
       });

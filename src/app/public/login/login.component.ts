@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
-import { LoginService } from './login.service'
+import { LoginService } from 'app/services/login.service'
 
 import { NgRedux } from '@angular-redux/store';
-import { AppState } from '../redux/store';
-import { ISession } from '../redux/session';
-import { ADD_SESSION } from '../redux/actions';
+import { AppState } from 'app/redux/store';
+import { ISession } from 'app/redux/session';
+import { ADD_SESSION } from 'app/redux/actions';
 
-import { PermissionManager } from '../permission-manager'
+import { PermissionManager } from 'app/permission-manager'
 
 @Component({
   selector: 'app-login',
