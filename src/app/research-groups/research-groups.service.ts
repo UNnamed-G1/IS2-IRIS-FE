@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CommonService } from '../common.service'
-import { ResearchGroup } from './research-groups';
+import { ResearchGroup } from './research-group';
 
 @Injectable()
 export class ResearchGroupService {

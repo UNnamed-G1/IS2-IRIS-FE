@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ResearchGroup } from './research-groups';
+import { ResearchGroup } from './research-group';
 import { ResearchGroupService } from './research-groups.service';
 
 @Component({

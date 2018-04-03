@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ResearchGroup } from '../research-groups';
+import { ResearchGroup } from '../research-group';
 import { ResearchGroupService } from '../research-groups.service';
 import { ActivatedRoute } from '@angular/router';
 
