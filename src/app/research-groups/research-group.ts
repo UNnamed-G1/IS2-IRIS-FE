@@ -1,5 +1,5 @@
-export class Research_groups {
-  public id: number;
+export class ResearchGroup {
+	public id: number;
   public name: string;
   public description: string;
   public strategic_focus: string;

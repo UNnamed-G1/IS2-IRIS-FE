@@ -11,10 +11,13 @@ import * as persistState from 'redux-localstorage';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
+
 // Requests interceptor
 import { AuthInterceptor } from './auth-interceptor'
+
 // Permission manager
 import { PermissionManager } from './permission-manager'
+
 // Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -37,8 +40,9 @@ import { AddResearchGroupComponent } from './research-groups/add/add-research-gr
 // Services
 import { CommonService } from './common.service';
 import { LoginService } from './login/login.service';
-import { ResearchGroupsService } from './research-groups/research-groups.service';
+import { ResearchGroupService } from './research-groups/research-groups.service';
 import { UserService } from './users/user.service';
+import { EventService } from './events/events.service';
 
 export const appRoutes: Routes = [
   {
@@ -133,6 +137,8 @@ export const appRoutes: Routes = [
     AddResearchGroupComponent
   ],
   providers: [
+  ResearchGroupService,
+  EventService,
     {
       provide: APP_BASE_HREF,
       useValue: '/'
@@ -149,7 +155,6 @@ export const appRoutes: Routes = [
     PermissionManager,
     CommonService,
     LoginService,
-    ResearchGroupsService,
     UserService
   ],
   bootstrap: [AppComponent]

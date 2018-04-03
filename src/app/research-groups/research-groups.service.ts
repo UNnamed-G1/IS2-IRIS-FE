@@ -1,36 +1,26 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+//import { ResearchGroup } from './research-group';
 
 @Injectable()
-export class ResearchGroupsService {
+export class ResearchGroupService {
+	private API_URL : string = "http://localhost:3000/";
 
-  API_URL: string = "http://localhost:3000/";
-  constructor(public http: HttpClient) { }
-  // read method
-  public get(path) {
+	constructor(private http: HttpClient){}
 
-    var endpoint = this.API_URL + path;
-    return this.http.get(endpoint);
+	public get(path){
+	  return this.http.get(this.API_URL + path);
+	}
 
-  }
-
-  // create method
   public post(path: string, body: any) {
-
-    var endpoint = this.API_URL + path;
-    return this.http.post(endpoint, body);
-
+    return this.http.post(this.API_URL + path, body);
   }
-  // delete method
+
   public delete(path: string) {
-
-    var endpoint = this.API_URL + path;
-    return this.http.delete(endpoint);
+    return this.http.delete(this.API_URL + path);
   }
-  // update method
+
   public update(path: string, body: any) {
-    var endpoint = this.API_URL + path;
-    return this.http.put(endpoint, body);
+    return this.http.put(this.API_URL + path, body);
   }
-
 }

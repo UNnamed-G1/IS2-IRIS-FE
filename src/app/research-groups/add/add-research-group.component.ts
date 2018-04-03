@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Research_groups } from '../research_groups';
-import { ResearchGroupsService } from '../research-groups.service';
+import { ResearchGroup } from '../research-group';
+import { ResearchGroupService } from '../research-groups.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -9,9 +9,9 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./add-research-group.component.css']
 })
 export class AddResearchGroupComponent implements OnInit {
-  public research_group: Research_groups = new Research_groups();
+  public researchGroup: ResearchGroup;
 
-  constructor(private research_groups_Service: ResearchGroupsService,
+  constructor(private researchGroupService: ResearchGroupService,
     private acRoute: ActivatedRoute) {
   }
 
@@ -19,26 +19,26 @@ export class AddResearchGroupComponent implements OnInit {
     this.acRoute.params.subscribe((data: any) => {
       console.log(data.id);
       if (data && data.id) {
-        this.research_groups_Service.get("research_group/" + data.id).subscribe((data: Research_groups) => {
-          this.research_group = data;
+        this.researchGroupService.get("research_groups/" + data.id).subscribe((data: ResearchGroup) => {
+          this.researchGroup = data;
         });
       } else {
-        this.research_group = new Research_groups();
+        this.researchGroup = new ResearchGroup();
       }
     })
   }
 
   public onSubmit() {
-    console.log("Adding a User: " + this.research_group.name);
-    if (this.research_group.id) {
-      this.research_groups_Service.update("research_groups/" + this.research_group.id, this.research_group).subscribe((r) => {
+    console.log("Adding a User: " + this.researchGroup.name);
+    if (this.researchGroup.id) {
+      this.researchGroupService.update("research_groups/" + this.researchGroup.id, this.researchGroup).subscribe((r) => {
         console.log(r);
         alert("Research group updated !");
       })
     } else {
-      this.research_groups_Service.post("users", this.research_group).subscribe((r) => {
+      this.researchGroupService.post("research_groups", this.researchGroup).subscribe((r) => {
         console.log(r);
-        this.research_group = new Research_groups();
+        this.researchGroup = new ResearchGroup();
         alert("Research group added !");
       });
     }
