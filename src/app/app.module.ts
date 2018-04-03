@@ -39,6 +39,9 @@ import { CommonService } from './common.service';
 import { LoginService } from './login/login.service';
 import { ResearchGroupsService } from './research-groups/research-groups.service';
 import { UserService } from './users/user.service';
+import { FacultyService } from 'app/services/faculty.service'
+import { DepartmentService } from 'app/services/department.service'
+import { CareerService } from 'app/services/career.service'
 
 export const appRoutes: Routes = [
   {
@@ -149,6 +152,9 @@ export const appRoutes: Routes = [
     PermissionManager,
     CommonService,
     LoginService,
+    CareerService,
+    DepartmentService,
+    FacultyService,
     ResearchGroupsService,
     UserService
   ],
