@@ -1,13 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { UserService } from 'app/services/user.service';
 import { User } from 'app/classes/user';
-
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
-
 import { PermissionManager } from 'app/permission-manager';
 
 @Component({

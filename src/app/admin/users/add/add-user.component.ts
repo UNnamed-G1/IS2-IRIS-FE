@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
-
 import { PermissionManager } from 'app/permission-manager';
 import { User } from 'app/classes/user';
 import { UserService } from 'app/services/user.service';

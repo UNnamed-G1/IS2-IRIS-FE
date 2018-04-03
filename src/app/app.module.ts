@@ -48,6 +48,8 @@ import { EventService } from './services/event.service';
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
+import { ManageComponent } from './admin/manage/manage.component';
+import { ResearchListComponent } from './admin/research-groups/research-list.component';
 
 export const appRoutes: Routes = [
   {
@@ -103,6 +105,14 @@ export const appRoutes: Routes = [
   {
     path: 'research-groups/add',
     component: AddResearchGroupComponent
+  },
+  {
+    path: 'admin/manage',
+    component: ManageComponent
+  },
+  {
+    path: 'research-list',
+    component: ResearchListComponent
   }/*,
   {
     path: '404',
@@ -139,7 +149,9 @@ export const appRoutes: Routes = [
     NotFoundComponent,
     UsersComponent,
     AddUserComponent,
-    AddResearchGroupComponent
+    AddResearchGroupComponent,
+    ManageComponent,
+    ResearchListComponent
   ],
   providers: [
     {

@@ -14,9 +14,9 @@
 				<div class="col-xs-8">
 					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.strategic_focus" name="strategic_focus">
 				</div>
-				<label class="col-xs-4 control-label" for="">Reasearch Priorities: </label>
+				<label class="col-xs-4 control-label" for="">Research Priorities: </label>
 				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.reasearch_priorities" name="reasearch_priorities">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.research_priorities" name="research_priorities">
 				</div>
 				<label class="col-xs-4 control-label" for="">Foundation Date: </label>
 				<div class="col-xs-8">
@@ -36,6 +36,8 @@
 				</div>
 				<div>
 					<button type="submit" class="btn btn-default">Submit</button>
+					<button routerLink="/admin/manage" role="button">Volver</button>
+
 				</div>
 			</div>
 		</form>
