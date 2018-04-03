@@ -16,11 +16,11 @@ export class EventsComponent implements OnInit {
   	constructor(private researchGrousService: EventService ,private  router : Router) {}
 
   	ngOnInit() {
-    	this.researchGrousService.get("events").subscribe((res : Event[]) => {
+    	this.researchGrousService.getEvents().subscribe((res : Event[]) => {
       		console.log(res['events'])
       		this.rows = res['events'];
     	});
-      this.researchGrousService.get("events_news").subscribe((res : Event[]) => {
+      this.researchGrousService.getEventsNews().subscribe((res : Event[]) => {
           console.log(res['events'])
           this.news = res['events'];
       });

@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
+import { CommonService } from '../common.service'
 import { Event } from './events';
 
 @Injectable()
 export class EventService {
-	private API_URL : string = "http://localhost:3000/";
 
-	constructor(private http: HttpClient){}
+	constructor(private commonService: CommonService){}
 
-	get(path){
-		return this.http.get(this.API_URL + path);
+	getEvents(){
+		return this.commonService.get("events");
+	}
+
+	getEventsNews(){
+		return this.commonService.get("events_news");
 	}
 }

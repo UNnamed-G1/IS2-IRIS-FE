@@ -16,11 +16,11 @@ export class ResearchGroupsComponent implements OnInit {
   	constructor(private researchGrousService: ResearchGroupService ,private  router : Router) {}
 
   	ngOnInit() {
-    	this.researchGrousService.get("research_groups").subscribe((res : ResearchGroup[]) => {
+    	this.researchGrousService.getResearchGroups().subscribe((res : ResearchGroup[]) => {
       		console.log(res['research_groups'])
       		this.rows = res['research_groups'];
     	});
-      this.researchGrousService.get("research_groups_news").subscribe((res : ResearchGroup[]) => {
+      this.researchGrousService.getResearchGroupsNews().subscribe((res : ResearchGroup[]) => {
           console.log(res['research_groups'])
           this.news = res['research_groups'];
       });
