@@ -1,3 +1,5 @@
+import { Career } from 'app/classes/career'
+
 export class User {
   public id: number;
   public name: string;
@@ -11,4 +13,6 @@ export class User {
   public cvlac_link: string;
   public full_name: string;
   public user_type: number;
+  public career_id: number;
+  public career: Career;
 }

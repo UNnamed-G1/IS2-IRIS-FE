@@ -28,7 +28,7 @@
       "assets/css/unal.css"
     ],
     "scripts": [
-      "assets/js/jquery.js",
+      "assets/js/jquery.min.js",
       "assets/js/bootstrap.min.js",
       "assets/js/html5shiv.js",
       "assets/js/matchmedia.addListener.js",

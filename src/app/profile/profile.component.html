@@ -14,21 +14,21 @@
           <div class="field">
             {{ user.email }}
           </div>
-          <div class="field">
+          <div *ngIf="user.professional_profile" class="field">
             {{ user.professional_profile }}
           </div>
         </div>
         <div class="col-sm-5 col-md-5">
-          <div class="field">
+          <div *ngIf="user.phone" class="field">
             {{ user.phone }}
           </div>
           <div class="field" *ngIf="user.user_type == 'profesor'">
             {{ user.office }}
           </div>
-          <div class="field">
+          <div *ngIf="user.cvlac_link" class="field">
             {{ user.cvlac_link }}
           </div>
-          <div class="field">
+          <div *ngIf="user.career" class="field">
             {{ user.career.degree_type }} {{ user.career.name }}
           </div>
           <div class="btn-group">
@@ -58,10 +58,55 @@
           <div class="col-sm-5 col-md-5">
             <label for="inputPhone">Teléfono</label>
             <input id="inputPhone" type="text" class="form-control" placeholder="Teléfono" required [(ngModel)]="user.phone" name="phone" />
-            <label for="inputOffice">Oficina</label>
+            <label *ngIf="user.user_type == 'profesor'" for="inputOffice">Oficina</label>
             <input *ngIf="user.user_type == 'profesor'" id="inputOffice" type="text" class="form-control" placeholder="Oficina" required [(ngModel)]="user.office" name="office" />
-            <label for="inputCvLAC">CvLAC</label>
+            <label for="inputCvLAC">CvLAC link</label>
             <input id="inputCvLAC" type="text" class="form-control" placeholder="CvLAC" required [(ngModel)]="user.cvlac_link" name="cvlac_link" />
+            <div id="dependencies-dropdowns" class="row">
+              <div id="faculty-dropdown" class="col-md-4">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                  <!--{{ user.faculty ? user.faculty.name : "Facultad" }}-->
+                  Facultad
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li *ngFor="let faculty of faculties">
+                    <a (click)="setDepartments(faculty.id)">
+                      {{ faculty.name }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div id="department-dropdown" class="col-md-4">
+                <button class="btn btn-primary dropdown-toggle {{ departments.length ? '' : 'disabled'}}" type="button" data-toggle="dropdown">
+                  <!--{{ user.department ? user.department.name : "Departamento" }}-->
+                  Departamento
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li *ngFor="let department of departments">
+                    <a (click)="setCareers(department.id)">
+                      {{ department.name }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div id="career-dropdown" class=" col-md-4">
+                <button class="btn btn-primary dropdown-toggle {{ careers.length ? '' : 'disabled'}}" type="button" data-toggle="dropdown">
+                  <!--{{ user.career ? user.career.name : "Carrera" }}-->
+                  Carrera
+                   <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li *ngFor="let career of careers">
+                    <a (click)="careerClicked(career.id)">
+                      {{ career.name }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <br>
             <div class="btn-group">
               <button type="submit" class="btn btn-primary">Guardar</button>
               <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
@@ -70,8 +115,8 @@
         </form>
       </div>
     </div>
-    <div *ngIf="user.research_subjects" class="container-fluid main-container">
-      <h2>Intereses en investigación</h2><br>
+    <div *ngIf="user.research_subjects.length" class="container-fluid main-container">
+      <h2>Temas de intereses</h2><br>
       <div class="row items-row">
         <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
           <div class="card" routerLink="/">
@@ -82,7 +127,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="user.research_groups" class="container-fluid main-container">
+    <div *ngIf="user.research_groups.length" class="container-fluid main-container">
       <h2>Grupos de investigación</h2><br>
       <div class="row items-row">
         <div *ngFor="let rg of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
@@ -99,7 +144,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="user.publications" class="container-fluid main-container">
+    <div *ngIf="user.publications.length" class="container-fluid main-container">
       <h2>Publicaciones</h2><br>
       <div class="row items-row">
         <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
@@ -114,7 +159,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="user.events" class="container-fluid main-container">
+    <div *ngIf="user.events.length" class="container-fluid main-container">
       <h2>Eventos</h2><br>
       <div class="row items-row">
         <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-3">

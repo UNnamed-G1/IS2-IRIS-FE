@@ -32,33 +32,30 @@ export class ProfileComponent implements OnInit {
     private careerService: CareerService,
     private permMan: PermissionManager) { }
 
-  ngOnInit() {
-    this.facultyService.getAll().subscribe(
-      (response: { faculties: {} }) => this.addFaculties(response.faculties),
-      error => console.log(error)
-    );
-    this.departmentService.getByFaculty(4).subscribe(
-      (response: { departments: {} }) => this.addDepartments(response.departments),
-      error => console.log(error)
-    );
-    this.careerService.getByDepartment(10).subscribe(
-      (response: { careers: {} }) => this.addCareers(response.careers),
-      error => console.log(error)
-    );
-    if (this.permMan.validateLogged()) {
-      this.auxiliarID.subscribe(id => {
-        let getUser = (id) ? this.userService.getUser(id) : this.userService.getCurrentUser();
-        getUser.subscribe((user: { user: User }) => {
-          this.user = new User();
-          Object.assign(this.user, user.user);
-          console.log(this.user)
-        });
+  ngOnInit() { }
+
+  ngAfterViewInit() {
+    this.auxiliarID.subscribe(id => {
+      let getUser;
+      if (id) {
+        getUser = this.userService.getUser(id)
+      } else if (this.permMan.validateLogged()) {
+        getUser = this.userService.getCurrentUser();
+      }
+      getUser.subscribe((response: { user: User }) => {
+        this.user = Object.assign(new User(), response.user);
+        console.log(this.user)
+        if (this.user.career) {
+          this.setDepartments(this.user.career_id)
+          this.setCareers(this.user.career_id)
+        }
       });
-    }
+    });
+    this.setFaculties();
   }
 
   updateProfile() {
-    this.userService.updateUser(this.user.id, this.user).subscribe(
+    this.userService.updateUser(this.user.id, { user: this.user }).subscribe(
       response => console.log(response),
       error => console.error(error)
     );
@@ -69,24 +66,44 @@ export class ProfileComponent implements OnInit {
     this.showInput = !this.showInput
   }
 
-  addFaculties(faculties) {
+  careerClicked(idCareer: number) {
+    this.user.career_id = idCareer
+  }
+
+  setFaculties() {
+    this.facultyService.getAll().subscribe(
+      (response: { faculties: Array<Faculty> }) => {
+        response.faculties.forEach(function(faculty) {
+          this.faculties.push(Object.assign(new Faculty(), faculty))
+        }, this);
+      },
+      error => console.log(error)
+    );
     this.faculties = new Array<Faculty>();
-    faculties.forEach(function(faculty) {
-      this.faculties.push(Object.assign(new Faculty(), faculty))
-    }, this);
   }
 
-  addDepartments(departments) {
+  setDepartments(idFaculty: number) {
+    this.departmentService.getByFaculty(idFaculty).subscribe(
+      (response: { departments: Array<Department> }) => {
+        response.departments.forEach(function(department) {
+          this.departments.push(Object.assign(new Department(), department))
+        }, this);
+      },
+      error => console.log(error)
+    );
     this.departments = new Array<Department>();
-    departments.forEach(function(department) {
-      this.departments.push(Object.assign(new Department(), department))
-    }, this);
+    this.careers = new Array<Career>();
   }
 
-  addCareers(careers) {
+  setCareers(idDepartment: number) {
+    this.careerService.getByDepartment(idDepartment).subscribe(
+      (response: { careers: Array<Career> }) => {
+        response.careers.forEach(function(career) {
+          this.careers.push(Object.assign(new Career(), career))
+        }, this);
+      },
+      error => console.log(error)
+    );
     this.careers = new Array<Career>();
-    careers.forEach(function(career) {
-      this.careers.push(Object.assign(new Career(), career))
-    }, this);
   }
 }
