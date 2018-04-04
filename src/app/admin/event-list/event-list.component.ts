@@ -5,7 +5,7 @@ import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { EventService } from 'app/services/event.service';
-import { Event } from 'app/classes/event';
+import { Event } from 'app/classes/events';
 
 @Component({
   selector: 'app-event-list',
@@ -13,7 +13,7 @@ import { Event } from 'app/classes/event';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit {
-  columns: Array<string> = ['research_group_id', 'topic', 'description', 'date'];
+  columns: Array<string> = ['id','research_group_id', 'topic', 'description', 'date'];
   rows: Array<Event>;
 
   constructor(

@@ -1,9 +1,12 @@
 <div class="jumbotron">
 	<div class="container">
 		<form (ngSubmit)="onSubmit()">
-
       <div class="form-group">
-				<label class="col-xs-4 control-label" for="">research_group_id: </label>
+        <label class="col-xs-4 control-label" for="">id: </label>
+				<div class="col-xs-8">
+					<input type="number" style="width: 300px" class="form-control" required [(ngModel)]="event.id" name="id">
+   	    </div>
+        <label class="col-xs-4 control-label" for="">research_group_id: </label>
 				<div class="col-xs-8">
 					<input type="number" style="width: 300px" class="form-control" required [(ngModel)]="event.research_group_id" name="research_group_id">
    	    </div>
