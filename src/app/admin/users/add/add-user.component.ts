@@ -40,13 +40,16 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit() {
+    console.log("Adding a Group: " + this.user.name);
     if (this.user.id) {
       this.userService.update(this.user.id, { user: this.user }).subscribe(r => {
         console.log(r);
+        alert("User Updated !");
       })
     } else {
       this.userService.create({ user: this.user }).subscribe(r => {
         console.log(r);
+        alert("User Added !");
       });
     }
   }
