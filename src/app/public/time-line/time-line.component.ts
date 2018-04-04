@@ -9,7 +9,6 @@ export class TimeLineComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
 }

@@ -4,6 +4,7 @@ export class User {
   public lastname: string;
   public username: string;
   public password: string;
+  public password_confirmation: string;
   public email: string;
   public professional_profile: string;
   public phone: string;

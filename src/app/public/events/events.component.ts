@@ -9,20 +9,22 @@ import { EventService } from 'app/services/event.service';
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
-    columns = ['research_group_id','topic','description','date'];
-  	rows : Array<Event>;
-    news : Array<Event>;
+  columns = ['research_group_id', 'topic', 'description', 'date'];
+  rows: Array<Event>;
+  news: Array<Event>;
 
-  	constructor(private eventService: EventService ,private  router : Router) {}
+  constructor(private eventService: EventService, private router: Router) { }
 
-  	ngOnInit() {
-    	this.eventService.get().subscribe((res : Event[]) => {
-      		console.log(res['events'])
-      		this.rows = res['events'];
-    	});
-      this.eventService.get().subscribe((res : Event[]) => {
-          console.log(res['events'])
-          this.news = res['events'];
-      });
-  	};
+  ngOnInit() { };
+
+  ngAfterViewInit() {
+    this.eventService.get().subscribe((res: Event[]) => {
+      console.log(res['events'])
+      this.rows = res['events'];
+    });
+    this.eventService.get().subscribe((res: Event[]) => {
+      console.log(res['events'])
+      this.news = res['events'];
+    });
+  }
 }

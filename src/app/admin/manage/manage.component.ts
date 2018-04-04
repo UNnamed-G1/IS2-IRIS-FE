@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PermissionManager } from 'app/permission-manager';
 
 @Component({
   selector: 'app-manage',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ManageComponent implements OnInit {
 
-  constructor() { }
+  constructor(private permMan: PermissionManager) { }
 
   ngOnInit() {
+    this.permMan.validateSession(["admin"]);
   }
 
 }

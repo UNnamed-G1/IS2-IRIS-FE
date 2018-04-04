@@ -18,20 +18,21 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   constructor(private userService: UserService,
     private permMan: PermissionManager,
-    private ngRedux: NgRedux<AppState>) {
-  }
+    private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
     this.user = new User();
-    if (this.permMan.validateSession(["admin"])) {
-      this.auxiliarID.subscribe(id => {
-        if (id) {
-          this.userService.get(id).subscribe((user: { user: User }) => {
-            this.user = user.user;
-          });
-        }
-      });
-    }
+    this.permMan.validateSession(["admin"]);
+  }
+
+  ngAfterViewInit() {
+    this.auxiliarID.subscribe(id => {
+      if (id) {
+        this.userService.get(id).subscribe((user: { user: User }) => {
+          this.user = user.user;
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -40,11 +41,11 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   public onSubmit() {
     if (this.user.id) {
-      this.userService.update(this.user.id, this.user).subscribe(r => {
+      this.userService.update(this.user.id, { user: this.user }).subscribe(r => {
         console.log(r);
       })
     } else {
-      this.userService.create(this.user).subscribe(r => {
+      this.userService.create({ user: this.user }).subscribe(r => {
         console.log(r);
       });
     }

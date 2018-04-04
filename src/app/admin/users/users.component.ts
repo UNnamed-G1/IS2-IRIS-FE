@@ -23,11 +23,13 @@ export class UsersComponent implements OnInit {
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    if (this.permMan.validateSession(["admin"])) {
-      this.userService.get().subscribe((res: User[]) => {
-        this.rows = res['users'];
-      });
-    }
+    this.permMan.validateSession(["admin"]);
+  }
+
+  ngAfterViewInit() {
+    this.userService.get().subscribe((res: User[]) => {
+      this.rows = res['users'];
+    });
   }
 
   public delete(id: number) {

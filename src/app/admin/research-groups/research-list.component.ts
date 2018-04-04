@@ -16,33 +16,38 @@ import { ResearchGroup } from 'app/classes/research-group';
 export class ResearchListComponent implements OnInit {
   columns: Array<string> = ['id', 'name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
   rows: Array<ResearchGroup>;
+
   constructor(
     private researchGroupService: ResearchGroupService,
     private router: Router,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>) { }
 
-    ngOnInit() {
-      if (this.permMan.validateSession(["admin"])) {
-        this.researchGroupService.get().subscribe((res: ResearchGroup[]) => {
-          this.rows = res['research_groups'];
-        });
-      }
-    }
-    public delete(id: number) {
-      console.log("delete : " + id);
-      this.researchGroupService.delete(id).subscribe((r) => {
-        this.rows = this.rows.filter((p, i) => {
-          if (Number(id) === p.id) {
-            return false;
-          }
-          return true;
-        }, this.rows)
-      });
-    }
+  ngOnInit() {
+    this.permMan.validateSession(["admin"]);
+  }
 
-    public update(id: string) {
-      this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
-      this.router.navigateByUrl('/research-groups/add');
-    }
+  ngAfterViewInit() {
+    this.researchGroupService.get().subscribe((res: ResearchGroup[]) => {
+      this.rows = res['research_groups'];
+    });
+  }
+
+  public delete(id: number) {
+    console.log("delete : " + id);
+    this.researchGroupService.delete(id).subscribe((r) => {
+      this.rows = this.rows.filter((p, i) => {
+        if (Number(id) === p.id) {
+          return false;
+        }
+        return true;
+      }, this.rows)
+    });
+  }
+
+  public update(id: number) {
+    console.log(id)
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/research-groups/add');
+  }
 }

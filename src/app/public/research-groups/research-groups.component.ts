@@ -16,7 +16,9 @@ export class ResearchGroupsComponent implements OnInit {
   constructor(private researchGroupService: ResearchGroupService,
     private router: Router) { }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  ngAfterViewInit() {
     this.researchGroupService.get().subscribe((res: ResearchGroup[]) => {
       console.log(res['research_groups'])
       this.rows = res['research_groups'];
@@ -25,5 +27,5 @@ export class ResearchGroupsComponent implements OnInit {
       console.log(res['research_groups'])
       this.news = res['research_groups'];
     });
-  };
+  }
 }

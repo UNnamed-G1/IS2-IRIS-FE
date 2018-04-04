@@ -20,20 +20,24 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
 
   constructor(private researchGroupService: ResearchGroupService,
     private permMan: PermissionManager,
-    private ngRedux: NgRedux<AppState>) {
-  }
+    private ngRedux: NgRedux<AppState>) { }
+
   ngOnInit() {
     this.researchGroup = new ResearchGroup();
-    if (this.permMan.validateSession(["admin"])) {
-      this.auxiliarID.subscribe(id => {
-        if (id) {
-          this.researchGroupService.get(id).subscribe((researchGroup: { researchGroup: ResearchGroup }) => {
-            this.researchGroup = researchGroup.researchGroup;
-          });
-        }
-      });
-    }
+    this.permMan.validateSession(["admin"]);
   }
+
+  ngAfterViewInit() {
+    this.auxiliarID.subscribe(id => {
+      if (id) {
+        this.researchGroupService.get(id).subscribe((researchGroup: { research_group: ResearchGroup }) => {
+          console.log(researchGroup)
+          this.researchGroup = researchGroup.research_group;
+        });
+      }
+    });
+  }
+
   ngOnDestroy() {
     this.ngRedux.dispatch({ type: REMOVE_AUXILIAR })
   }
