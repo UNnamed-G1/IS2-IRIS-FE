@@ -28,10 +28,10 @@ import { UsersComponent } from './admin/users/users.component';
 import { AddResearchGroupComponent } from './admin/research-groups/add/add-research-group.component';
 import { ManageComponent } from './admin/manage/manage.component';
 import { ResearchListComponent } from './admin/research-groups/research-list.component';
-import { EventListComponent } from './admin/event-list/event-list.component';
 import { AddEventComponent } from './admin/event-list/add/add-event.component';
 
   // Professor
+import { EventListComponent } from './admin/event-list/event-list.component';
 
   // Student
 

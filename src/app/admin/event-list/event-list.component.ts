@@ -23,7 +23,7 @@ export class EventListComponent implements OnInit {
     private ngRedux: NgRedux<AppState>) { }
 
     ngOnInit() {
-      this.permMan.validateSession(["admin"]);
+      this.permMan.validateSession(["profesor"]);
     }
     ngAfterViewInit() {
       this.eventService.get().subscribe((res: Event[]) => {
