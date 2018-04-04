@@ -26,6 +26,11 @@ import { AppServicesComponent } from './template/app-services/app-services.compo
 import { AddUserComponent } from './admin/users/add/add-user.component';
 import { UsersComponent } from './admin/users/users.component';
 import { AddResearchGroupComponent } from './admin/research-groups/add/add-research-group.component';
+import { ManageComponent } from './admin/manage/manage.component';
+import { ResearchListComponent } from './admin/research-groups/research-list.component';
+import { EventListComponent } from './admin/event-list/event-list.component';
+import { AddEventComponent } from './admin/event-list/add/add-event.component';
+
   // Professor
 
   // Student
@@ -48,8 +53,6 @@ import { EventService } from './services/event.service';
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
-import { ManageComponent } from './admin/manage/manage.component';
-import { ResearchListComponent } from './admin/research-groups/research-list.component';
 
 export const appRoutes: Routes = [
   {
@@ -107,12 +110,21 @@ export const appRoutes: Routes = [
     component: AddResearchGroupComponent
   },
   {
+    path: 'events/add',
+    component: AddEventComponent
+  },
+
+  {
     path: 'admin/manage',
     component: ManageComponent
   },
   {
     path: 'research-list',
     component: ResearchListComponent
+  },
+  {
+    path: 'event-list',
+    component: EventListComponent
   }/*,
   {
     path: '404',
@@ -151,7 +163,9 @@ export const appRoutes: Routes = [
     AddUserComponent,
     AddResearchGroupComponent,
     ManageComponent,
-    ResearchListComponent
+    ResearchListComponent,
+    EventListComponent,
+    AddEventComponent
   ],
   providers: [
     {

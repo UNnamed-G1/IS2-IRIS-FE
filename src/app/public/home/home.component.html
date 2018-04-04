@@ -10,6 +10,8 @@
 						<button class="btn btn-primary btn-lg" routerLink="/about" role="button">Mas información</button>
 						<button *ngIf="!(isLogged | async)" class="btn btn-primary btn-lg" routerLink="/login" role="button">Login</button>
 						<button *ngIf="(session | async).type === 'admin'" class="btn btn-primary btn-lg" routerLink="/admin/manage" role="button">ADMINISTRAR</button>
+						<button *ngIf="(session | async).type === 'profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">EVENTOS</button>
+
 					</p>
 				</div>
 			</div>

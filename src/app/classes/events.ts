@@ -1,6 +1,6 @@
 export class Event {
 	public research_group_id: number
 	public topic: string
-	public desciption: string
+	public description: string
 	public date: string
 }
