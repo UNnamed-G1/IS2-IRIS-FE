@@ -1,4 +1,5 @@
 import { Career } from 'app/classes/career'
+import { ResearchSubject } from 'app/classes/research-subject'
 
 export class User {
   public id: number;
@@ -14,5 +15,6 @@ export class User {
   public full_name: string;
   public user_type: number;
   public career_id: number;
+  public research_subjects: ResearchSubject[];
   public career: Career;
 }

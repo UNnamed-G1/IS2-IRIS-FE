@@ -5,7 +5,7 @@
       <div class="row" [hidden]="showInput">
         <h2>Perfil</h2><br>
         <div class="col-sm-2 col-md-2">
-          <img src="{{user.photo.link}}" alt="No photo" class="img-rounded img-responsive profile-image" />
+          <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image" />
         </div>
         <div class="col-sm-5 col-md-5">
           <div class="field">
@@ -31,7 +31,7 @@
           <div *ngIf="user.career" class="field">
             {{ user.career.degree_type }} {{ user.career.name }}
           </div>
-          <div class="btn-group">
+          <div *ngIf="!( auxiliarID | async )" class="btn-group">
             <button type="button" class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
           </div>
         </div>
@@ -39,7 +39,7 @@
       <div class="row" [hidden]="!showInput">
         <form (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
-            <img src="{{user.photo.link}}" alt="No photo" class="img-rounded img-responsive profile-image" />
+            <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image" />
           </div>
           <div class="col-sm-5 col-md-5">
             <div class="row">
@@ -99,7 +99,7 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li *ngFor="let career of careers">
-                    <a (click)="careerClicked(career.id)">
+                    <a (click)="careerClicked(career)">
                       {{ career.name }}
                     </a>
                   </li>
@@ -115,60 +115,67 @@
         </form>
       </div>
     </div>
-    <div *ngIf="user.research_subjects.length" class="container-fluid main-container">
-      <h2>Temas de intereses</h2><br>
-      <div class="row items-row">
-        <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
-          <div class="card" routerLink="/">
-            <div class="content">
-              <p><b>{{ rs.name }}</b></p>
+    <div *ngIf="user.research_subjects">
+      <div *ngIf="user.research_subjects.length" class="container-fluid main-container">
+        <div class="row items-row">
+          <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
+            <h2>Temas de interes</h2><br>
+            <div class="alert alert-info">
+              <a (click)="delete(rs.id)" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+              <p>{{ rs.name }}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div *ngIf="user.research_groups.length" class="container-fluid main-container">
-      <h2>Grupos de investigación</h2><br>
-      <div class="row items-row">
-        <div *ngFor="let rg of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
-          <div class="card" routerLink="/">
-            <canvas class="header-bg" width="250" height="70" id="header-blur"></canvas>
-            <div class="avatar">
-              <img src="{{user.photo.link}}" alt="" />
-              <!--img src="{{rg.photo.link}}" alt="" /-->
-            </div>
-            <div class="content">
-              <p><b>{{ rg.name }}</b><br> {{ rg.description }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="user.publications.length" class="container-fluid main-container">
-      <h2>Publicaciones</h2><br>
-      <div class="row items-row">
-        <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
-          <div class="card" routerLink="/">
-            <div class="header">
-              <b>{{ pub.name }}</b>
-            </div>
-            <div class="content">
-              <p>{{ pub.brief_description }}</p>
+    <div *ngIf="user.research_groups">
+      <div *ngIf="user.research_groups.length" class="container-fluid main-container">
+        <h2>Grupos de investigación</h2><br>
+        <div class="row items-row">
+          <div *ngFor="let rg of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card" routerLink="/">
+              <div class="header-bg"></div>
+              <div class="avatar">
+                <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" alt="" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image" />
+                <!--img src="{{rg.photo.link}}" alt="" /-->
+              </div>
+              <div class="content">
+                <p><b>{{ rg.name }}</b><br> {{ rg.description }}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div *ngIf="user.events.length" class="container-fluid main-container">
-      <h2>Eventos</h2><br>
-      <div class="row items-row">
-        <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-3">
-          <div class="card" routerLink="/">
-            <div class="header">
-              <b>{{ ev.topic }}</b>
+    <div *ngIf="user.publications">
+      <div *ngIf="user.publications.length" class="container-fluid main-container">
+        <h2>Publicaciones</h2><br>
+        <div class="row items-row">
+          <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card" routerLink="/">
+              <div class="header">
+                <b>{{ pub.name }}</b>
+              </div>
+              <div class="content">
+                <p>{{ pub.brief_description }}</p>
+              </div>
             </div>
-            <div class="content">
-              <p>{{ ev.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="user.research_subjects">
+      <div *ngIf="user.events.length" class="container-fluid main-container">
+        <h2>Eventos</h2><br>
+        <div class="row items-row">
+          <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card" routerLink="/">
+              <div class="header">
+                <b>{{ ev.topic }}</b>
+              </div>
+              <div class="content">
+                <p>{{ ev.description }}</p>
+              </div>
             </div>
           </div>
         </div>

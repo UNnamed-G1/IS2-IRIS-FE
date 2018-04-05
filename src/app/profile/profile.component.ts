@@ -38,18 +38,12 @@ export class ProfileComponent implements OnInit {
     this.auxiliarID.subscribe(id => {
       let getUser;
       if (id) {
-        getUser = this.userService.getUser(id)
+        this.setUser(this.userService.getUser(id));
       } else if (this.permMan.validateLogged()) {
-        getUser = this.userService.getCurrentUser();
+        this.userService.getCurrentUser().subscribe((response: { user: User }) => {
+          this.setUser(this.userService.getUser(response.user.id));
+        });
       }
-      getUser.subscribe((response: { user: User }) => {
-        this.user = Object.assign(new User(), response.user);
-        console.log(this.user)
-        if (this.user.career) {
-          this.setDepartments(this.user.career_id)
-          this.setCareers(this.user.career_id)
-        }
-      });
     });
     this.setFaculties();
   }
@@ -66,8 +60,20 @@ export class ProfileComponent implements OnInit {
     this.showInput = !this.showInput
   }
 
-  careerClicked(idCareer: number) {
-    this.user.career_id = idCareer
+  careerClicked(career: Career) {
+    this.user.career = career;
+    this.user.career_id = career.id;
+  }
+
+  setUser(user) {
+    user.subscribe((response: { user: User }) => {
+      this.user = Object.assign(new User(), response.user);
+      console.log(this.user);
+      if (this.user.career) {
+        this.setDepartments(this.user.career_id)
+        this.setCareers(this.user.career_id)
+      }
+    });
   }
 
   setFaculties() {

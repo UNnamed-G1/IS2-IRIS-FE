@@ -43,6 +43,13 @@ small {
   display: flex;
 }
 
+.close {
+  position: relative;
+  top: -15px;
+  right: -10px;
+  color: inherit;
+}
+
 .card {
   height: 100%;
   max-width: 200px;
