@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
@@ -17,8 +17,11 @@ export class ResearchListComponent implements OnInit {
   columns: Array<string> = ['id', 'name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
   rows: Array<ResearchGroup>;
 
+  page: number;
+
   constructor(
     private researchGroupService: ResearchGroupService,
+    private route: ActivatedRoute,
     private router: Router,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>) { }
@@ -28,9 +31,12 @@ export class ResearchListComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.researchGroupService.get().subscribe((res: ResearchGroup[]) => {
-      this.rows = res['research_groups'];
-    });
+    this.route.queryParams.subscribe(params => {
+      this.page = +params['page'] || 1;
+      this.researchGroupService.getAll(this.page).subscribe((res: ResearchGroup[]) => {
+        this.rows = res['research_groups'];
+      });
+    })
   }
 
   public delete(id: number) {
@@ -49,5 +55,17 @@ export class ResearchListComponent implements OnInit {
     console.log(id)
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/research-groups/add');
+  }
+
+  nextPage() {
+    this.router.navigate(['/research-list'], { queryParams: { page: this.page + 1 } });
+  }
+
+  prevPage() {
+    this.router.navigate(['/reseach-list'], { queryParams: { page: this.page - 1 } });
+  }
+
+  goToPage(page: number) {
+    this.router.navigate(['/research-list'], { queryParams: { page: page } });
   }
 }

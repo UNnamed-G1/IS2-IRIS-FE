@@ -32,4 +32,13 @@
       </table>
     </div>
   </div>
+  <nav aria-label="Page navigation">
+    <ul *ngIf="page" class="pagination justify-content-center">
+      <li class="page-item"><a class="page-link" (click)="prevPage()">Previous</a></li>
+      <li class="page-item {{ page == 1 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(1)">1</a></li>
+      <li class="page-item {{ page == 2 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(2)">2</a></li>
+      <li class="page-item {{ page == 3 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(3)">3</a></li>
+      <li class="page-item"><a class="page-link" (click)="nextPage()">Next</a></li>
+    </ul>
+  </nav>
 </div>

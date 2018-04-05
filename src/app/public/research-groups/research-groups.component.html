@@ -1,53 +1,53 @@
 <div class="jumbotron">
-	<div class="research-group" >
+	<div class="research-group">
 		<div id="myCarousel" class="carousel slide" data-ride="carousel">
 			<ul class="carousel-indicators">
-	    		<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-	    		<li data-target="#myCarousel" data-slide-to="1"></li>
-	  		</ul>
+				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+				<li data-target="#myCarousel" data-slide-to="1"></li>
+			</ul>
 
-		  	<div class="carousel-inner">
-				    <!--div class="item active" ng="let item_active"-->
-				    <div class="item active">
-				    	<div class="container">
-						    <div class="row" style="align-self: center;">
-							    <div class="col-md-5">
-								      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" width="400" height="250">
-								</div>
+			<div class="carousel-inner">
+				<!--div class="item active" ng="let item_active"-->
+				<div class="item active">
+					<div class="container">
+						<div class="row" style="align-self: center;">
+							<div class="col-md-5">
+								<img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" width="400" height="250">
+							</div>
 
-								<div class="col-md-6 container">
-								        <h1>Nombre</h1>
-								        <p>Descripcion</p>
-								        <a href="#">Mas informacion</a>
-							    </div>
+							<div class="col-md-6 container">
+								<h1>Nombre</h1>
+								<p>Descripcion</p>
+								<a href="#">Mas informacion</a>
 							</div>
 						</div>
-				   	</div>
+					</div>
+				</div>
 
-				   	<!--div class="item" *ngFor="let item of items"-->
-				   	<div class="item">
-				      <div class="container">
-						    <div class="row" style="align-self: center;">
-							    <div class="col-md-5">
-								      <img src="https://image.freepik.com/vector-gratis/plantilla-abstracta-de-inteligencia-artificial_23-2147723488.jpg" width="400" height="250">
-									</div>
-
-									<div class="col-md-6 container">
-								        <h1>Nombre</h1>
-								        <p>Descripcion</p>
-								        <a href="#">Mas informacion</a>
-							    </div>
-								</div>
+				<!--div class="item" *ngFor="let item of items"-->
+				<div class="item">
+					<div class="container">
+						<div class="row" style="align-self: center;">
+							<div class="col-md-5">
+								<img src="https://image.freepik.com/vector-gratis/plantilla-abstracta-de-inteligencia-artificial_23-2147723488.jpg" width="400" height="250">
 							</div>
-				    </div>
-		  	</div>
-			
+
+							<div class="col-md-6 container">
+								<h1>Nombre</h1>
+								<p>Descripcion</p>
+								<a href="#">Mas informacion</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<a class="left carousel-control" href="#myCarousel" data-slide="prev">
 			    <span class="glyphicon glyphicon-chevron-left"></span>
 			    <span class="sr-only">Previous</span>
 		  	</a>
 
-		  	<a class="right carousel-control" href="#myCarousel" data-slide="next">
+			<a class="right carousel-control" href="#myCarousel" data-slide="next">
 		    	<span class="glyphicon glyphicon-chevron-right"></span>
 		    	<span class="sr-only">Next</span>
 		  	</a>
@@ -56,35 +56,35 @@
 
 	<div class="row" id="research_groups_view">
 		<div class="research-group" *ngFor="let row of rows">
-	      	<div class="col-xs-6 col-md-3 col-lg-3">
-	        	<div class="panel panel-default">
-	          		<div class="panel panel-heading">
-	            		<h5 class="text-center">{{row.name}}</h5>
-	          		</div>
+			<div class="col-xs-6 col-md-3 col-lg-3">
+				<div class="panel panel-default">
+					<div class="panel panel-heading">
+						<h5 class="text-center">{{row.name}}</h5>
+					</div>
 
-	          		<div class="panel panel-body">
-	            		<div class="screen">
-	              			<div class="row">
-	                			<div class="col-sm-12 center-block">
-	                  				<div class="box">
-	                    				<p class="white-text ">{{row.description}}</p>
-	                    				<div class="glyphicon pull-right pull-down" align="bottom">
-		                    				<a href="#" >
+					<div class="panel panel-body">
+						<div class="screen">
+							<div class="row">
+								<div class="col-sm-12 center-block">
+									<div class="box">
+										<p class="white-text ">{{row.description}}</p>
+										<div class="glyphicon pull-right pull-down" align="bottom">
+											<a href="#">
 	          											<span class="glyphicon glyphicon-eye-open align-index"></span>
 	        											</a>
-        											</div>
-	                  				</div>
-	                			</div>
-	              			</div>
-	            		</div>
-	          		</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
-	          		<div class="panel-footer">
-	                	<h5 class="text-right">{{row.date_classification}}</h5>
-	          		</div>
-	        	</div>
-	      	</div>
-	    </div>
+					<div class="panel-footer">
+						<h5 class="text-right">{{row.date_classification}}</h5>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!--div class="container" id="research-groups">
@@ -92,7 +92,7 @@
 		 	<div class="media-left media-middle">
 		    	<img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:60px">
 		  	</div>
-		  
+
 		  	<div class="media-body">
 		    	<h4 class="media-heading">Grupo 01</h4>
 		    	<p>Descripcion del respectivo grupo de investicacion</p>
@@ -104,7 +104,7 @@
 		 	<div class="media-left media-middle">
 		    	<img src="https://image.freepik.com/vector-gratis/plantilla-abstracta-de-inteligencia-artificial_23-2147723488.jpg" class="media-object" style="width:60px">
 		  	</div>
-		  
+
 		  	<div class="media-body">
 		    	<h4 class="media-heading">Grupo 02</h4>
 		    	<p>Descripcion del respectivo grupo de investicacion</p>
@@ -116,7 +116,7 @@
 		 	<div class="media-left media-middle">
 		    	<img src="https://pic.pimg.tw/dynamics189/1485761650-3339166697.jpg" class="media-object" style="width:60px">
 		  	</div>
-		  
+
 		  	<div class="media-body">
 		    	<h4 class="media-heading">Grupo 03</h4>
 		    	<p>Descripcion del respectivo grupo de investicacion</p>
@@ -125,18 +125,20 @@
 		</div>
 	</div-->
 
+	<nav aria-label="Page navigation">
+		<ul *ngIf="page" class="pagination justify-content-center">
+			<li class="page-item"><a class="page-link" (click)="prevPage()">Previous</a></li>
+			<li class="page-item {{ page == 1 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(1)">1</a></li>
+			<li class="page-item {{ page == 2 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(2)">2</a></li>
+			<li class="page-item {{ page == 3 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(3)">3</a></li>
+			<li class="page-item"><a class="page-link" (click)="nextPage()">Next</a></li>
+		</ul>
+	</nav>
 
-	<ul class="pagination">
-	    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-	    <li class="page-item"><a class="page-link" href="#">1</a></li>
-	    <li class="page-item"><a class="page-link" href="#">2</a></li>
-	    <li class="page-item"><a class="page-link" href="#">3</a></li>
-	    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-  	</ul>
+	<hr>
+	<hr>
 
-	<hr><hr>
-
-    <div class="row" align="center">
-        <p><a class="btn btn-primary btn-lg" routerLink="/home" role="button">Inicio</a></p>
+	<div class="row" align="center">
+		<p><a class="btn btn-primary btn-lg" routerLink="/home" role="button">Inicio</a></p>
 	</div>
 </div><br>

@@ -7,7 +7,7 @@ export class ResearchGroupService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "research_groups";
+    this.url += "research_groups/";
   }
 
   public getNews() {

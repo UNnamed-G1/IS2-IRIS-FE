@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { NgRedux, select } from '@angular-redux/store';
-import { AppState } from 'app/redux/store';
+import { select } from '@angular-redux/store';
 
 import { PermissionManager } from 'app/permission-manager'
 
@@ -14,7 +13,7 @@ export class HomeComponent implements OnInit {
   @select() session;
   @select() isLogged;
 
-  constructor(private ngRedux: NgRedux<AppState>) { }
+  constructor() { }
 
   ngOnInit() {
   }

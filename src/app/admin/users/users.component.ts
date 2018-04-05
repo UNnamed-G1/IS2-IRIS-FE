@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'app/services/user.service';
 import { User } from 'app/classes/user';
 import { NgRedux } from '@angular-redux/store';
@@ -17,7 +17,10 @@ export class UsersComponent implements OnInit {
   columns: Array<string> = ['id', 'name', 'lastname', 'username', 'email', 'professional_profile', 'phone, office', 'cvlac_link', 'full_name', 'user_type'];
   rows: Array<User>;
 
+  page: number;
+
   constructor(private userService: UserService,
+    private route: ActivatedRoute,
     private router: Router,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>) { }
@@ -27,9 +30,12 @@ export class UsersComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.userService.get().subscribe((res: User[]) => {
-      this.rows = res['users'];
-    });
+    this.route.queryParams.subscribe(params => {
+      this.page = +params['page'] || 1;
+      this.userService.getAll(this.page).subscribe((res: User[]) => {
+        this.rows = res['users'];
+      });
+    })
   }
 
   public delete(id: number) {
@@ -47,5 +53,17 @@ export class UsersComponent implements OnInit {
   public update(id: string) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/users/add');
+  }
+
+  nextPage() {
+    this.router.navigate(['/users'], { queryParams: { page: this.page + 1 } });
+  }
+
+  prevPage() {
+    this.router.navigate(['/users'], { queryParams: { page: this.page - 1 } });
+  }
+
+  goToPage(page: number) {
+    this.router.navigate(['/users'], { queryParams: { page: page } });
   }
 }

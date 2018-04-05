@@ -15,6 +15,10 @@ export abstract class CommonService {
     return this.http.get(this.url + idValue);
   }
 
+  public getAll(page: number) {
+    return this.http.post(this.url.substring(0, this.url.length - 1) + "_pag", { page: page });
+  }
+
   public create(body: any) {
     return this.http.post(this.url, body);
   }

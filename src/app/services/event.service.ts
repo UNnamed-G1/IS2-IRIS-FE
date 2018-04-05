@@ -7,11 +7,7 @@ export class EventService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "events";
-  }
-
-  public getEvents() {
-    return this.applyRequestPath(this.get, "events");
+    this.url += "events/";
   }
 
   public getNews() {
