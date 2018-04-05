@@ -49,12 +49,22 @@ import { TimeLineComponent } from './public/time-line/time-line.component';
 import { LeaveCommentsComponent } from './public/leave-comments/leave-comments.component';
 
 // Services
+<<<<<<< HEAD
 import { CommonService } from './services/common.service';
 import { EventService } from './services/event.service';
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { CommentService } from './services/comment.service';
+=======
+import { CommonService } from './common.service';
+import { LoginService } from './login/login.service';
+import { ResearchGroupsService } from './research-groups/research-groups.service';
+import { UserService } from './users/user.service';
+import { FacultyService } from 'app/services/faculty.service'
+import { DepartmentService } from 'app/services/department.service'
+import { CareerService } from 'app/services/career.service'
+>>>>>>> feature/profile
 
 export const appRoutes: Routes = [
   {
@@ -192,7 +202,14 @@ export const appRoutes: Routes = [
     CommentService,
     EventService,
     LoginService,
+<<<<<<< HEAD
     ResearchGroupService,
+=======
+    CareerService,
+    DepartmentService,
+    FacultyService,
+    ResearchGroupsService,
+>>>>>>> feature/profile
     UserService
   ],
   bootstrap: [AppComponent]
