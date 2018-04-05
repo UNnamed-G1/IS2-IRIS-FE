@@ -46,6 +46,7 @@ import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
+import { LeaveCommentsComponent } from './public/leave-comments/leave-comments.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -53,6 +54,7 @@ import { EventService } from './services/event.service';
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
+import { CommentService } from './services/comment.service';
 
 export const appRoutes: Routes = [
   {
@@ -125,6 +127,10 @@ export const appRoutes: Routes = [
   {
     path: 'event-list',
     component: EventListComponent
+  },
+  {
+    path: 'leave-comments',
+    component: LeaveCommentsComponent
   }/*,
   {
     path: '404',
@@ -165,7 +171,8 @@ export const appRoutes: Routes = [
     ManageComponent,
     ResearchListComponent,
     EventListComponent,
-    AddEventComponent
+    AddEventComponent,
+    LeaveCommentsComponent
   ],
   providers: [
     {
@@ -182,6 +189,7 @@ export const appRoutes: Routes = [
       multi: true
     },
     PermissionManager,
+    CommentService,
     EventService,
     LoginService,
     ResearchGroupService,
