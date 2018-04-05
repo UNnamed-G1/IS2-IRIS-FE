@@ -14,7 +14,7 @@ import { PermissionManager } from 'app/permission-manager';
 })
 
 export class UsersComponent implements OnInit {
-  columns: Array<string> = ['id', 'name', 'lastname', 'username', 'email', 'professional_profile', 'phone, office', 'cvlac_link', 'full_name', 'user_type'];
+  columns: Array<string> = ['name', 'lastname', 'username', 'email', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
   rows: Array<User>;
 
   page: number;

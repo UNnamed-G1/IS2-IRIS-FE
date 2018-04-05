@@ -8,22 +8,29 @@
       <button routerLink="/research-groups/add" role="button">Agregar</button>
       <button routerLink="/admin/manage" role="button">Volver</button>
 
-      <table class="table">
+      <table class="table table-bordered">
         <thead>
           <tr>
+            <th>name</th>
+            <th>description</th>
+            <th>strategic_focus</th>
+            <th>research_priorities</th>
+            <th>foundation_date</th>
+            <th>classification</th>
+            <th>date_classification</th>
+            <th>url</th>
             <th>Actions</th>
-            <th *ngFor="let column of columns">
-            </th>
+            <!--th *ngFor="let column of columns"></th-->
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let row of rows">
-            <button (click)="delete(row['id'])">delete</button> ||
-            <button (click)="update(row['id'])">update</button>
-
             <td *ngFor="let column of columns">
               {{row[column]}}
             </td>
+            <button class="btn btn-danger btn-sm" (click)="delete(row['id'])">Eliminar</button> ||
+            <button class="btn btn-primary btn-sm" (click)="update(row['id'])">Actualizar</button>
+
           </tr>
           <br>
           <button routerLink="/admin/manage" role="button">Volver</button>

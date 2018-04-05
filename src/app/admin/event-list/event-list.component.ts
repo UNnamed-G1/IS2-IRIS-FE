@@ -13,7 +13,7 @@ import { Event } from 'app/classes/events';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit {
-  columns: Array<string> = ['id', 'research_group_id', 'topic', 'description', 'date'];
+  columns: Array<string> = ['research_group_id', 'topic', 'description', 'date'];
   rows: Array<Event>;
 
   page: number;
@@ -28,7 +28,7 @@ export class EventListComponent implements OnInit {
   ngOnInit() {
     this.permMan.validateSession(["profesor"]);
   }
-  
+
   ngAfterViewInit() {
     this.route.queryParams.subscribe(params => {
       this.page = +params['page'] || 1;

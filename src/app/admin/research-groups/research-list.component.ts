@@ -14,7 +14,7 @@ import { ResearchGroup } from 'app/classes/research-group';
 })
 
 export class ResearchListComponent implements OnInit {
-  columns: Array<string> = ['id', 'name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
+  columns: Array<string> = ['name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
   rows: Array<ResearchGroup>;
 
   page: number;
