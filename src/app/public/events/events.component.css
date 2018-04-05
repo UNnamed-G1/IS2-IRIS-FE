@@ -14,7 +14,7 @@
 #events_view .panel-heading {
   height: 3rem;
   overflow: hidden;
-  padding-top: 5%;
+  padding-top: 2%;
   margin: 0;
   background-color: #111;
   border-style: none;
@@ -113,4 +113,19 @@
 #events_view .box #show:hover {
   text-decoration: none;
   color: $secondary-color;
+}
+
+.glyphicon.pull-right.pull-down {
+  margin-left: .3em;
+  border-radius: 50%;
+  height: 4.5rem;
+  width: 4.5rem;
+  font-size: 2.6rem;
+  padding: 0.5;
+  background-color: $primary-color;
+  color: white;
+}
+
+.glyphicon.glyphicon-eye-open.align-index {
+  padding: 0.21em;
 }
