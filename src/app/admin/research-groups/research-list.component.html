@@ -1,0 +1,35 @@
+<div class="panel panel-default" style="margin-top:10px;">
+  <div class="panel-heading">
+    <h1>Grupos de Investigación</h1>
+  </div>
+
+  <div class="panel-body" style="position:relative">
+    <div class="table-responsive">
+      <button routerLink="/research-groups/add" role="button">Agregar</button>
+      <button routerLink="/admin/manage" role="button">Volver</button>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Actions</th>
+            <th *ngFor="let column of columns">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows">
+            <button (click)="delete(row['id'])">delete</button> ||
+            <button (click)="update(row['id'])">update</button>
+
+            <td *ngFor="let column of columns">
+              {{row[column]}}
+            </td>
+          </tr>
+          <br>
+          <button routerLink="/admin/manage" role="button">Volver</button>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

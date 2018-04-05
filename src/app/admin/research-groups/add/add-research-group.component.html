@@ -1,0 +1,44 @@
+<div class="jumbotron">
+	<div class="container">
+		<form (ngSubmit)="onSubmit()">
+			<div class="form-group">
+				<label class="col-xs-4 control-label" for="">Nombre: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.name" name="Name">
+				</div>
+				<label class="col-xs-4 control-label" for="">Descripción: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.description" name="description">
+				</div>
+				<label class="col-xs-4 control-label" for="">Enfoque estratégico: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.strategic_focus" name="strategic_focus">
+				</div>
+				<label class="col-xs-4 control-label" for="">Prioridades de investigación: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.research_priorities" name="research_priorities">
+				</div>
+				<label class="col-xs-4 control-label" for="">Fecha de fundación: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.foundation_date" name="foundation_date">
+				</div>
+				<label class="col-xs-4 control-label" for="">Clasificación: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.classification" name="classification">
+				</div>
+				<label class="col-xs-4 control-label" for="">Fecha de clasificación: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.date_classification" name="date_classification">
+				</div>
+				<label class="col-xs-4 control-label" for="">Url: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.url" name="url">
+				</div>
+				<div>
+					<button type="submit" class="btn btn-default">Enviar</button>
+					<button routerLink="/research-list" role="button">Volver</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

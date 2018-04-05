@@ -1,0 +1,32 @@
+<div class="jumbotron">
+	<div class="container">
+		<form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label class="col-xs-4 control-label" for="">id: </label>
+				<div class="col-xs-8">
+					<input type="number" style="width: 300px" class="form-control" required [(ngModel)]="event.id" name="id">
+   	    </div>
+        <label class="col-xs-4 control-label" for="">research_group_id: </label>
+				<div class="col-xs-8">
+					<input type="number" style="width: 300px" class="form-control" required [(ngModel)]="event.research_group_id" name="research_group_id">
+   	    </div>
+				<label class="col-xs-4 control-label" for="">topic: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="event.topic" name="topic">
+				</div>
+				<label class="col-xs-4 control-label" for="">description: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="event.description" name="description">
+				</div>
+				<label class="col-xs-4 control-label" for="">date: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="event.date" name="date">
+				</div>
+				<div>
+					<button type="submit" class="btn btn-default">Enviar</button>
+					<button routerLink="/event-list" role="button">Volver</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
