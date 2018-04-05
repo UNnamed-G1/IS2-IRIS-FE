@@ -12,6 +12,8 @@ export class ResearchGroupsComponent implements OnInit {
 	  columns = ['id', 'name', 'description', 'strategic_focus', 'reasearch_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
   	rows : Array<ResearchGroup>;
     news : Array<ResearchGroup>;
+    item_active : ResearchGroup;
+    items : Array<ResearchGroup>
 
   	constructor(private researchGrousService: ResearchGroupService ,private  router : Router) {}
 
@@ -23,6 +25,8 @@ export class ResearchGroupsComponent implements OnInit {
       this.researchGrousService.getResearchGroupsNews().subscribe((res : ResearchGroup[]) => {
           console.log(res['research_groups'])
           this.news = res['research_groups'];
+          this.item_active = this.news[0];
+          this.items = this.news.copyWithin(2,0);
       });
   	};
 
