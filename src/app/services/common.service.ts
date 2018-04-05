@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export abstract class CommonService {
@@ -30,9 +30,9 @@ export abstract class CommonService {
   public applyRequestPath(request, path, params = []) {
     let temp = this.url;
     this.url = environment.api_url + path;
-    let r = request.apply(this, params);
+    let response = request.apply(this, params);
     this.url = temp;
-    return r;
+    return response;
   }
 
 }

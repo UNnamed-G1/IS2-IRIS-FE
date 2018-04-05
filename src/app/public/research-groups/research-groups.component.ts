@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ResearchGroup } from '../../classes/research-group';
-import { ResearchGroupService } from '../../services/research-group.service';
+import { ResearchGroup } from 'app/classes/research-group';
+import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
   selector: 'app-research-groups',
@@ -20,7 +20,7 @@ export class ResearchGroupsComponent implements OnInit {
   ngOnInit() { }
 
   ngAfterViewInit() {
-    this.researchGroupService.getResearchGroups().subscribe((res: ResearchGroup[]) => {
+    this.researchGroupService.get().subscribe((res: ResearchGroup[]) => {
       console.log(res['research_groups']);
       this.rows = res['research_groups'];
     });

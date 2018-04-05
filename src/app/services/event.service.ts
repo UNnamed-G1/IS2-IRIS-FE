@@ -7,7 +7,7 @@ export class EventService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "";
+    this.url += "events";
   }
 
   public getEvents() {

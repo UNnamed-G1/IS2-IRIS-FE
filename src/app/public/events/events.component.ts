@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Event } from '../../classes/events';
-import { EventService } from '../../services/event.service';
+import { Event } from 'app/classes/events';
+import { EventService } from 'app/services/event.service';
 
 @Component({
   selector: 'app-events',
@@ -20,7 +20,7 @@ export class EventsComponent implements OnInit {
   ngOnInit() { };
 
   ngAfterViewInit() {
-    this.eventService.getEvents().subscribe((res: Event[]) => {
+    this.eventService.get().subscribe((res: Event[]) => {
       console.log(res['events'])
       this.rows = res['events'];
     });
