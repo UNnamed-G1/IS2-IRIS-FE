@@ -8,8 +8,6 @@
       <div class="col-md-5">
         <form class="comments" (ngSubmit)="sendComments()">
           <h2>Déjanos un comentario</h2><br>
-          <label *ngIf="!(isLogged | async)" for="inputEmail">Email</label>
-          <input *ngIf="!(isLogged | async)" type="text" id="inputEmail" class="form-control" placeholder="Email" required autofocus [(ngModel)]="comment.email" name="email">
           <label for="inputSubject">Asunto</label>
           <input type="text" id="inputSubject" class="form-control" placeholder="Asunto" required [(ngModel)]="comment.subject" name="subject">
           <label for="inputComment">Comentarios</label>

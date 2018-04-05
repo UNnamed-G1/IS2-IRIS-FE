@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 
 import { select } from '@angular-redux/store';
-import { PermissionManager } from '../permission-manager';
+import { PermissionManager } from 'app/permission-manager';
 
-import { FacultyService } from 'app/services/faculty.service'
-import { DepartmentService } from 'app/services/department.service'
-import { CareerService } from 'app/services/career.service'
-import { UserService } from 'app/users/user.service'
+import { FacultyService } from 'app/services/faculty.service';
+import { DepartmentService } from 'app/services/department.service';
+import { CareerService } from 'app/services/career.service';
+import { UserService } from 'app/services/user.service';
 
-import { User } from '../users/user';
-import { Faculty } from 'app/classes/faculty'
-import { Department } from 'app/classes/department'
-import { Career } from 'app/classes/career'
+import { User } from 'app/classes/user';
+import { Faculty } from 'app/classes/faculty';
+import { Department } from 'app/classes/department';
+import { Career } from 'app/classes/career';
 
 @Component({
   selector: 'app-profile',
@@ -38,10 +38,10 @@ export class ProfileComponent implements OnInit {
     this.auxiliarID.subscribe(id => {
       let getUser;
       if (id) {
-        this.setUser(this.userService.getUser(id));
+        this.setUser(this.userService.get(id));
       } else if (this.permMan.validateLogged()) {
         this.userService.getCurrentUser().subscribe((response: { user: User }) => {
-          this.setUser(this.userService.getUser(response.user.id));
+          this.setUser(this.userService.get(response.user.id));
         });
       }
     });
@@ -49,7 +49,7 @@ export class ProfileComponent implements OnInit {
   }
 
   updateProfile() {
-    this.userService.updateUser(this.user.id, { user: this.user }).subscribe(
+    this.userService.update(this.user.id, { user: this.user }).subscribe(
       response => console.log(response),
       error => console.error(error)
     );
@@ -77,7 +77,7 @@ export class ProfileComponent implements OnInit {
   }
 
   setFaculties() {
-    this.facultyService.getAll().subscribe(
+    this.facultyService.get().subscribe(
       (response: { faculties: Array<Faculty> }) => {
         response.faculties.forEach(function(faculty) {
           this.faculties.push(Object.assign(new Faculty(), faculty))

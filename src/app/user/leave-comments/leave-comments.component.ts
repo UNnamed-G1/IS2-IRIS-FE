@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { select } from '@angular-redux/store';
 
+import { ISession } from 'app/redux/session';
+import { PermissionManager } from 'app/permission-manager';
 import { CommentService } from 'app/services/comment.service';
 import { Comment } from 'app/classes/comment';
 
@@ -10,12 +12,20 @@ import { Comment } from 'app/classes/comment';
   styleUrls: ['./leave-comments.component.css']
 })
 export class LeaveCommentsComponent implements OnInit {
-  @select() isLogged: boolean;
+  @select() session;
   comment: Comment = new Comment();
 
-  constructor(private commentService: CommentService) { }
+  constructor(private commentService: CommentService,
+    private permMan: PermissionManager) { }
 
   ngOnInit() {
+    this.permMan.validateLogged();
+  }
+
+  ngAfterViewInit() {
+    this.session.subscribe((session: ISession) => {
+      this.comment.email = session.username + "@unal.edu.co";
+    });
   }
 
   sendComments() {

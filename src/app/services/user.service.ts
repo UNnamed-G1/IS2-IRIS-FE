@@ -10,4 +10,8 @@ export class UserService extends CommonService {
     this.url += "users/";
   }
 
+  public getCurrentUser() {
+    return this.applyRequestPath(this.get, "users/current/");
+  }
+
 }

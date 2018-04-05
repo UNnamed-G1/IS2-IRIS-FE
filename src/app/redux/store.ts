@@ -11,6 +11,7 @@ export const INITIAL_STATE: AppState = {
   session: {
     token: undefined,
     name: undefined,
+    username: undefined,
     photo: undefined,
     type: undefined
   },

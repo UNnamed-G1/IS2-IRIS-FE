@@ -18,7 +18,6 @@ import { PermissionManager } from 'app/permission-manager'
 
 // Components
 import { AppComponent } from './app.component';
-  // Template
 import { AppHeaderComponent } from './template/app-header/app-header.component';
 import { AppFooterComponent } from './template/app-footer/app-footer.component';
 import { AppServicesComponent } from './template/app-services/app-services.component';
@@ -35,36 +34,32 @@ import { EventListComponent } from './admin/event-list/event-list.component';
 
   // Student
 
+  // User
+import { LeaveCommentsComponent } from './user/leave-comments/leave-comments.component';
+
   // Public
+import { LoginComponent } from './public/login/login.component';
+import { RegisterComponent } from './public/login/register/register.component';
 import { AboutComponent } from './public/about/about.component';
 import { EventsComponent } from './public/events/events.component';
 import { HomeComponent } from './public/home/home.component';
-import { LoginComponent } from './public/login/login.component';
 import { NewsComponent } from './public/news/news.component';
 import { NotFoundComponent } from './public/not-found/not-found.component';
 import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
-import { LeaveCommentsComponent } from './public/leave-comments/leave-comments.component';
 
 // Services
-<<<<<<< HEAD
 import { CommonService } from './services/common.service';
+import { CareerService } from './services/career.service'
+import { CommentService } from './services/comment.service';
+import { DepartmentService } from './services/department.service'
 import { EventService } from './services/event.service';
+import { FacultyService } from './services/faculty.service'
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
-import { CommentService } from './services/comment.service';
-=======
-import { CommonService } from './common.service';
-import { LoginService } from './login/login.service';
-import { ResearchGroupsService } from './research-groups/research-groups.service';
-import { UserService } from './users/user.service';
-import { FacultyService } from 'app/services/faculty.service'
-import { DepartmentService } from 'app/services/department.service'
-import { CareerService } from 'app/services/career.service'
->>>>>>> feature/profile
 
 export const appRoutes: Routes = [
   {
@@ -106,7 +101,8 @@ export const appRoutes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    children: [{path:'register', component: RegisterComponent}]
   },
   {
     path: 'users',
@@ -162,10 +158,11 @@ export const appRoutes: Routes = [
   ],
   declarations: [
     AppComponent,
-    LoginComponent,
     AppHeaderComponent,
     AppFooterComponent,
     AppServicesComponent,
+    RegisterComponent,
+    LoginComponent,
     HomeComponent,
     NewsComponent,
     EventsComponent,
@@ -175,12 +172,12 @@ export const appRoutes: Routes = [
     TimeLineComponent,
     SearchComponent,
     NotFoundComponent,
-    UsersComponent,
-    AddUserComponent,
-    AddResearchGroupComponent,
     ManageComponent,
+    UsersComponent,
     ResearchListComponent,
     EventListComponent,
+    AddUserComponent,
+    AddResearchGroupComponent,
     AddEventComponent,
     LeaveCommentsComponent
   ],
@@ -202,14 +199,10 @@ export const appRoutes: Routes = [
     CommentService,
     EventService,
     LoginService,
-<<<<<<< HEAD
-    ResearchGroupService,
-=======
     CareerService,
     DepartmentService,
     FacultyService,
-    ResearchGroupsService,
->>>>>>> feature/profile
+    ResearchGroupService,
     UserService
   ],
   bootstrap: [AppComponent]

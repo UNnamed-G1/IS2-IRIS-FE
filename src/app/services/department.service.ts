@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from '../common.service'
+import { HttpClient } from '@angular/common/http';
+import { CommonService } from './common.service';
 
 @Injectable()
-export class DepartmentService {
+export class DepartmentService extends CommonService {
 
-  constructor(private commonService: CommonService) { }
-
-  public getAll() {
-    return this.commonService.get("departments/")
+  constructor(protected http: HttpClient) {
+    super(http);
+    this.url += "departments/";
   }
 
   public getByFaculty(facId: number) {
-    return this.commonService.get("departments_by_faculty/" + facId)
+    return this.applyRequestPath(this.get, "depts_by_faculty%23fac_id=" + facId)
   }
 
 }

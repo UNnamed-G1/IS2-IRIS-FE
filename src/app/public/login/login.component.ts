@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
-import { LoginService } from 'app/services/login.service'
+import { UserService } from 'app/services/user.service';
+import { LoginService } from 'app/services/login.service';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ISession } from 'app/redux/session';
 import { ADD_SESSION } from 'app/redux/actions';
-import { PermissionManager } from 'app/permission-manager'
+import { PermissionManager } from 'app/permission-manager';
 
 @Component({
   selector: 'app-login',
@@ -15,28 +16,19 @@ import { PermissionManager } from 'app/permission-manager'
 })
 
 export class LoginComponent implements OnInit {
-  userSignUp: { name: string, lastname: string, email: string, password: string, password_confirmation: string };
   userSignIn: { username: string, password: string };
 
   constructor(private socialAuthService: AuthService,
     private loginService: LoginService,
+    private userService: UserService,
     private ngRedux: NgRedux<AppState>,
-    private router: Router,
     private permMan: PermissionManager) { }
 
   ngOnInit() {
     this.permMan.validateNotLogged();
-    this.userSignUp = Object.assign({}, this.userSignUp)
-    this.userSignIn = Object.assign({}, this.userSignIn)
-  }
-
-  register() {
-    if (!this.userSignUp) { return; }
-    this.loginService.registerUser({ "user": this.userSignUp })
-      .subscribe(
-        response => console.log("¡Listo!"),
-        error => console.error(error.message)
-      );
+    console.log(this.userSignIn);
+    this.userSignIn = Object.assign({}, this.userSignIn);
+    console.log(this.userSignIn);
   }
 
   signIn() {
@@ -44,9 +36,10 @@ export class LoginComponent implements OnInit {
   }
 
   googleSignIn() {
-    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(userData => {
-      this.fillSession({ access_token: userData.idToken });
-    });
+    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
+      userData => this.fillSession({ access_token: userData.idToken }),
+      error => console.error(error.message)
+    );
   }
 
   private fillSession(userAuth) {
@@ -54,17 +47,20 @@ export class LoginComponent implements OnInit {
       let session: ISession;
       session = Object.assign({}, session, { token: response['jwt'] });
       this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
-      this.loginService.getCurrentUser().subscribe(response => {
-        let data = response['user'];
-        if (data.photo)
-          data.photo = data.photo.link;
-        Object.assign(session, {
-          name: data.full_name,
-          type: data.user_type,
-          photo: data.photo
-        });
-        this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
-      });
+      this.userService.getCurrentUser().subscribe(
+        response => {
+          let data = response['user'];
+          if (data.photo)
+            data.photo = data.photo.link;
+          Object.assign(session, {
+            name: data.full_name,
+            type: data.user_type,
+            username: data.username,
+            photo: data.photo
+          });
+          this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
+        },
+        error => console.error(error.message));
       this.permMan.validateNotLogged();
     });
   }

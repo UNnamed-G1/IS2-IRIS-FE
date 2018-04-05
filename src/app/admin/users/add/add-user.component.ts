@@ -14,14 +14,13 @@ import { UserService } from 'app/services/user.service';
 
 export class AddUserComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
-  user: User;
+  user: User = new User();
 
   constructor(private userService: UserService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.user = new User();
     this.permMan.validateSession(["admin"]);
   }
 

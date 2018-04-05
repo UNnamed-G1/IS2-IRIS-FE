@@ -1,18 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonService } from './common.service'
-import { UserService } from './user.service'
+import { CommonService } from './common.service';
 
 @Injectable()
 export class LoginService extends CommonService {
 
-  constructor(protected http: HttpClient,
-    private userService: UserService) {
+  constructor(protected http: HttpClient) {
     super(http);
-  }
-
-  public getCurrentUser() {
-    return this.applyRequestPath(this.get, "users/current/");
   }
 
   public getUserToken(body: any) {
@@ -24,10 +18,6 @@ export class LoginService extends CommonService {
     b["auth"]["email"] = body["username"] + "@unal.edu.co";
     delete b["auth"]["username"];
     return this.applyRequestPath(this.create, "user_token", [b]);
-  }
-
-  public registerUser(body: any) {
-    return this.userService.create(body);
   }
 
 }

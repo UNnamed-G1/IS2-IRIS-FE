@@ -28,14 +28,11 @@ export abstract class CommonService {
   }
 
   public applyRequestPath(request, path, params = []) {
-    this.url += path;
+    let temp = this.url;
+    this.url = environment.api_url + path;
     let r = request.apply(this, params);
-    this.resetDefaultURL();
+    this.url = temp;
     return r;
-  }
-
-  private resetDefaultURL() {
-    this.url = environment.api_url;
   }
 
 }
