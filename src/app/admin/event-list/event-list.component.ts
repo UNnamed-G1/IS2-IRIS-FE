@@ -15,7 +15,8 @@ import { Event } from 'app/classes/events';
 export class EventListComponent implements OnInit {
   columns: Array<string> = ['research_group_id', 'topic', 'description', 'date'];
   rows: Array<Event>;
-
+  public elItem:Event;
+  public searchString:string;
   page: number;
 
   constructor(
