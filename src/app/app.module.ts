@@ -60,6 +60,8 @@ import { FacultyService } from './services/faculty.service'
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
+import { RgComponent } from './admin/research-groups/rg/rg.component';
+import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 
 export const appRoutes: Routes = [
   {
@@ -137,6 +139,10 @@ export const appRoutes: Routes = [
   {
     path: 'leave-comments',
     component: LeaveCommentsComponent
+  },
+  {
+    path: 'rg',
+    component: RgComponent
   }/*,
   {
     path: '404',
@@ -179,7 +185,9 @@ export const appRoutes: Routes = [
     AddUserComponent,
     AddResearchGroupComponent,
     AddEventComponent,
-    LeaveCommentsComponent
+    LeaveCommentsComponent,
+    RgComponent,
+    FilterPipe
   ],
   providers: [
     {

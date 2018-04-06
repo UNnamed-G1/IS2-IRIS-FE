@@ -5,8 +5,8 @@
 
   <div class="panel-body" style="position:relative">
     <div class="table-responsive">
-      <button routerLink="/events/add" role="button">Agregar</button>
-      <button routerLink="/admin/manage" role="button">Volver</button>
+      <button class="btn btn-primary btn-sm" routerLink="/events/add" role="button">Agregar</button>
+      <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
 
       <table class="table table-bordered">
         <thead>
@@ -20,17 +20,19 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of rows">
+          <tr *ngFor="let row of rows | filter : 'name' : searchString; let i = index">
             <td *ngFor="let column of columns">
               {{row[column]}}
             </td>
-            <button class="btn btn-danger btn-sm" (click)="delete(row['id'])">Eliminar</button> ||
-            <button class="btn btn-primary btn-sm" (click)="update(row['id'])">Actualizar</button>
+            <button type="button" class="btn btn-primary btn-xs" (click)="delete(row['id'])" data-toggle="modal" data-target="#myModal">
+              <span class="glyphicon glyphicon-trash"></span> Eliminar</button>||
+            <button (click)="update(row['id'])" class="btn btn-primary btn-xs">
+              <span class="glyphicon glyphicon-edit"></span> Editar</button>
 
           </tr>
-          <br>
-          <button routerLink="/admin/manage" role="button">Volver</button>
-
+          <br><br>
+          <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+          <br><br>
         </tbody>
       </table>
     </div>

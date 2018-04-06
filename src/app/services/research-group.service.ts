@@ -10,6 +10,9 @@ export class ResearchGroupService extends CommonService {
     this.url += "research_groups/";
   }
 
+  public getCurrentGroup() {
+    return this.applyRequestPath(this.get, "research_groups/1");
+  }
   public getNews() {
     return this.applyRequestPath(this.get, "research_groups_news");
   }

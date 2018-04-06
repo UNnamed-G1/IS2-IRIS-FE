@@ -37,7 +37,7 @@ export class AddEventComponent implements OnInit, OnDestroy {
     }
 
     public onSubmit() {
-      console.log("Adding an Event: " + this.event.topic);
+      console.log("Adding an Event: " + this.event.id);
       if (this.event.id) {
         this.eventService.update(this.event.id, { user: this.event }).subscribe(r => {
           console.log(r);
