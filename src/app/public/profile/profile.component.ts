@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() { }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
       let getUser;
       if (id) {

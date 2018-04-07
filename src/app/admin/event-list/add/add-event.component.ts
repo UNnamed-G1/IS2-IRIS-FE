@@ -22,7 +22,7 @@ export class AddEventComponent implements OnInit, OnDestroy {
       this.event = new Event();
       this.permMan.validateSession(["profesor"]);
     }
-    ngAfterViewInit() {
+    ngAfterContentInit() {
       this.auxiliarID.subscribe(id => {
         if (id) {
           this.eventService.get(id).subscribe((event: { event: Event }) => {

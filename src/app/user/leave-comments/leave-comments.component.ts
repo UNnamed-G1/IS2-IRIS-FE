@@ -22,7 +22,7 @@ export class LeaveCommentsComponent implements OnInit {
     this.permMan.validateLogged();
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.session.subscribe((session: ISession) => {
       this.comment.email = session.username + "@unal.edu.co";
     });

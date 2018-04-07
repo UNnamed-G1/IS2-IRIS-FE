@@ -17,7 +17,11 @@ export class EventListComponent implements OnInit {
   rows: Array<Event>;
   public elItem:Event;
   public searchString:string;
-  page: number;
+
+  page: {
+    actual: number,
+    total: number
+  };
 
   constructor(
     private eventService: EventService,
@@ -30,12 +34,13 @@ export class EventListComponent implements OnInit {
     this.permMan.validateSession(["profesor"]);
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = +params['page'] || 1;
-      this.eventService.getAll(this.page).subscribe((res: Event[]) => {
-        console.log(res['events'])
-        this.rows = res['events'];
+      this.page = Object.assign({})
+      this.page.actual = +params.page || 1;
+      this.eventService.getAll(this.page.actual).subscribe((res: { events: Event[], total_pages: number }) => {
+        this.rows = res.events;
+        this.page.total = res.total_pages;
       });
     })
   }
@@ -56,17 +61,5 @@ export class EventListComponent implements OnInit {
     console.log(id)
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/events/add');
-  }
-
-  nextPage() {
-    this.router.navigate(['/event-list'], { queryParams: { page: this.page + 1 } });
-  }
-
-  prevPage() {
-    this.router.navigate(['/event-list'], { queryParams: { page: this.page - 1 } });
-  }
-
-  goToPage(page: number) {
-    this.router.navigate(['/event-list'], { queryParams: { page: page } });
   }
 }

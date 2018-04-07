@@ -16,9 +16,13 @@ import { PermissionManager } from 'app/permission-manager';
 export class UsersComponent implements OnInit {
   columns: Array<string> = ['name', 'lastname', 'username', 'email', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
   rows: Array<User>;
-  public userItem:User;
-  public searchString:string;
-  page: number;
+  public userItem: User;
+  public searchString: string;
+
+  page: {
+    actual: number,
+    total: number
+  };
 
   constructor(private userService: UserService,
     private route: ActivatedRoute,
@@ -30,12 +34,15 @@ export class UsersComponent implements OnInit {
     this.permMan.validateSession(["admin"]);
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = +params['page'] || 1;
-      this.userService.getAll(this.page).subscribe((res: User[]) => {
-        this.rows = res['users'];
-      });
+      this.page = Object.assign({})
+      this.page.actual = +params.page || 1;
+      this.userService.getAll(this.page.actual)
+        .subscribe((res: { users: User[], total_pages: number }) => {
+          this.rows = res.users;
+          this.page.total = res.total_pages;
+        });
     })
   }
 
@@ -54,17 +61,5 @@ export class UsersComponent implements OnInit {
   public update(id: string) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/users/add');
-  }
-
-  nextPage() {
-    this.router.navigate(['/users'], { queryParams: { page: this.page + 1 } });
-  }
-
-  prevPage() {
-    this.router.navigate(['/users'], { queryParams: { page: this.page - 1 } });
-  }
-
-  goToPage(page: number) {
-    this.router.navigate(['/users'], { queryParams: { page: page } });
   }
 }

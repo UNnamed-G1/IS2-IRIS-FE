@@ -24,7 +24,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     this.permMan.validateSession(["admin"]);
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
       if (id) {
         this.userService.get(id).subscribe((user: { user: User }) => {

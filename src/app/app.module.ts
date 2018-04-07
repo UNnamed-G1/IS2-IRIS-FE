@@ -63,6 +63,8 @@ import { UserService } from './services/user.service';
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 
+import { PaginationComponent } from './pagination/pagination.component';
+
 export const appRoutes: Routes = [
   {
     path: '',
@@ -187,7 +189,8 @@ export const appRoutes: Routes = [
     AddEventComponent,
     LeaveCommentsComponent,
     RgComponent,
-    FilterPipe
+    FilterPipe,
+    PaginationComponent
   ],
   providers: [
     {

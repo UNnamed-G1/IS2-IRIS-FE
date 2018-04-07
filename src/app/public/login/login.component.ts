@@ -26,9 +26,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.permMan.validateNotLogged();
-    console.log(this.userSignIn);
     this.userSignIn = Object.assign({}, this.userSignIn);
-    console.log(this.userSignIn);
   }
 
   signIn() {

@@ -20,7 +20,7 @@ export class RgComponent implements OnInit {
 
   ngOnInit() { }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
 
 
     this.auxiliarID.subscribe(id => {

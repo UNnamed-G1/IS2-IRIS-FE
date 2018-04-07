@@ -16,7 +16,7 @@ export abstract class CommonService {
   }
 
   public getAll(page: number) {
-    return this.http.post(this.url.substring(0, this.url.length - 1) + "_pag", { page: page });
+    return this.http.get(this.url.substring(0, this.url.length - 1) + "?page=" + page);
   }
 
   public create(body: any) {

@@ -27,7 +27,7 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
     this.permMan.validateSession(["admin"]);
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
       if (id) {
         this.researchGroupService.get(id).subscribe((researchGroup: { research_group: ResearchGroup }) => {

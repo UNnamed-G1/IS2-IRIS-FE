@@ -6,7 +6,7 @@
   <div class="panel-body" style="position:relative">
     <div class="table-responsive">
       <button class="btn btn-primary btn-sm" routerLink="/events/add" role="button">Agregar</button>
-      <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+      <button class="btn btn-primary btn-sm" routerLink="/" role="button">Volver</button>
 
       <table class="table table-bordered">
         <thead>
@@ -28,22 +28,11 @@
               <span class="glyphicon glyphicon-trash"></span> Eliminar</button>||
             <button (click)="update(row['id'])" class="btn btn-primary btn-xs">
               <span class="glyphicon glyphicon-edit"></span> Editar</button>
-
           </tr>
-          <br><br>
-          <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-          <br><br>
         </tbody>
       </table>
+      <app-pagination [page]="page"></app-pagination>
+      <button class="btn btn-primary btn-sm" routerLink="/" role="button">Volver</button>
     </div>
   </div>
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-      <li class="page-item"><a class="page-link" (click)="prevPage()">Previous</a></li>
-      <li class="page-item {{ page == 1 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(1)">1</a></li>
-      <li class="page-item {{ page == 2 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(2)">2</a></li>
-      <li class="page-item {{ page == 3 ? 'active' : '' }}"><a class="page-link" (click)="goToPage(3)">3</a></li>
-      <li class="page-item"><a class="page-link" (click)="nextPage()">Next</a></li>
-    </ul>
-  </nav>
 </div>

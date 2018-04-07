@@ -15,43 +15,31 @@ export class ResearchGroupsComponent implements OnInit {
   item_active: ResearchGroup;
   items: Array<ResearchGroup>;
 
-  page: number;
+  page: {
+    actual: number,
+    total: number
+  };
 
   constructor(private researchGroupService: ResearchGroupService,
-    private route: ActivatedRoute,
-    private router: Router) { }
+    private route: ActivatedRoute) { }
 
-  ngOnInit() { }
-
-  ngAfterViewInit() {
+  ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = +params['page'] || 1;
-      this.researchGroupService.getAll(this.page).subscribe((res: ResearchGroup[]) => {
-        console.log(res);
-        this.rows = res['research_groups'];
-        console.log(this.rows);
-      });
+      this.page = Object.assign({})
+      this.page.actual = +params.page || 1;
+      this.researchGroupService.getAll(this.page.actual)
+        .subscribe((res: { research_groups: ResearchGroup[], total_pages: number }) => {
+          this.rows = res.research_groups;
+          this.page.total = res.total_pages;
+        });
     });
-    this.researchGroupService.getNews().subscribe((res: ResearchGroup[]) => {
-      console.log(res['research_groups']);
-      this.news = res['research_groups'];
+    this.researchGroupService.getNews().subscribe((res: {research_groups: ResearchGroup[]}) => {
+      this.news = res.research_groups;
       this.items = new Array<ResearchGroup>();
       this.item_active = this.news[0];
       for (var i = 1; i < this.news.length; ++i) {
         this.items[i - 1] = this.news[i];
       }
     });
-  }
-
-  nextPage() {
-    this.router.navigate(['/research-groups'], { queryParams: { page: this.page + 1 } });
-  }
-
-  prevPage() {
-    this.router.navigate(['/research-groups'], { queryParams: { page: this.page - 1 } });
-  }
-
-  goToPage(page: number) {
-    this.router.navigate(['/research-groups'], { queryParams: { page: page } });
   }
 }

@@ -16,9 +16,13 @@ import { ResearchGroup } from 'app/classes/research-group';
 export class ResearchListComponent implements OnInit {
   columns: Array<string> = ['name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
   rows: Array<ResearchGroup>;
-  public rgItem:ResearchGroup;
-  public searchString:string;
-  page: number;
+  public rgItem: ResearchGroup;
+  public searchString: string;
+
+  page: {
+    actual: number,
+    total: number
+  };
 
   constructor(
     private researchGroupService: ResearchGroupService,
@@ -31,12 +35,15 @@ export class ResearchListComponent implements OnInit {
     this.permMan.validateSession(["admin"]);
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = +params['page'] || 1;
-      this.researchGroupService.getAll(this.page).subscribe((res: ResearchGroup[]) => {
-        this.rows = res['research_groups'];
-      });
+      this.page = Object.assign({})
+      this.page.actual = +params.page || 1;
+      this.researchGroupService.getAll(this.page.actual)
+        .subscribe((res: { research_groups: ResearchGroup[], total_pages: number }) => {
+          this.rows = res.research_groups;
+          this.page.total = res.total_pages;
+        });
     })
   }
 
@@ -56,17 +63,5 @@ export class ResearchListComponent implements OnInit {
     console.log(id)
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/research-groups/add');
-  }
-
-  nextPage() {
-    this.router.navigate(['/research-list'], { queryParams: { page: this.page + 1 } });
-  }
-
-  prevPage() {
-    this.router.navigate(['/reseach-list'], { queryParams: { page: this.page - 1 } });
-  }
-
-  goToPage(page: number) {
-    this.router.navigate(['/research-list'], { queryParams: { page: page } });
   }
 }
