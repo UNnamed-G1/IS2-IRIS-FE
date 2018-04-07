@@ -22,15 +22,15 @@ import { AppHeaderComponent } from './template/app-header/app-header.component';
 import { AppFooterComponent } from './template/app-footer/app-footer.component';
 import { AppServicesComponent } from './template/app-services/app-services.component';
   // Admin
+import { ManageComponent } from './admin/manage/manage.component';
 import { AddUserComponent } from './admin/users/add/add-user.component';
 import { UsersComponent } from './admin/users/users.component';
 import { AddResearchGroupComponent } from './admin/research-groups/add/add-research-group.component';
-import { ManageComponent } from './admin/manage/manage.component';
 import { ResearchListComponent } from './admin/research-groups/research-list.component';
-import { AddEventComponent } from './admin/event-list/add/add-event.component';
 
   // Professor
-import { EventListComponent } from './admin/event-list/event-list.component';
+import { AddEventComponent } from './professor/event-list/add/add-event.component';
+import { EventListComponent } from './professor/event-list/event-list.component';
 
   // Student
 
