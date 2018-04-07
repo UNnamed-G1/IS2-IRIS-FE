@@ -6,7 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
-import { NgRedux, NgReduxModule } from '@angular-redux/store';
+import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
+import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
 import * as persistState from 'redux-localstorage';
 
 // Redux imports
@@ -21,23 +22,23 @@ import { AppComponent } from './app.component';
 import { AppHeaderComponent } from './template/app-header/app-header.component';
 import { AppFooterComponent } from './template/app-footer/app-footer.component';
 import { AppServicesComponent } from './template/app-services/app-services.component';
-  // Admin
+// Admin
 import { ManageComponent } from './admin/manage/manage.component';
 import { AddUserComponent } from './admin/users/add/add-user.component';
 import { UsersComponent } from './admin/users/users.component';
 import { AddResearchGroupComponent } from './admin/research-groups/add/add-research-group.component';
 import { ResearchListComponent } from './admin/research-groups/research-list.component';
 
-  // Professor
+// Professor
 import { AddEventComponent } from './professor/event-list/add/add-event.component';
 import { EventListComponent } from './professor/event-list/event-list.component';
 
-  // Student
+// Student
 
-  // User
+// User
 import { LeaveCommentsComponent } from './user/leave-comments/leave-comments.component';
 
-  // Public
+// Public
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/login/register/register.component';
 import { AboutComponent } from './public/about/about.component';
@@ -106,7 +107,7 @@ export const appRoutes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    children: [{path:'register', component: RegisterComponent}]
+    children: [{ path: 'register', component: RegisterComponent }]
   },
   {
     path: 'users',
@@ -220,8 +221,39 @@ export const appRoutes: Routes = [
 })
 
 export class AppModule {
-  constructor(ngRedux: NgRedux<AppState>) {
+  @select() isLogged;
+
+  constructor(ngRedux: NgRedux<AppState>,
+    userService: UserService) {
     ngRedux.configureStore(rootReducer, INITIAL_STATE, undefined, persistState());
+    // Remove session if logged and token is not valid
+    this.isLogged.subscribe((logged: boolean) => {
+      if (logged) {
+        userService.getCurrentUser().subscribe(
+          response => {
+            // Update data
+            let data = response.user;
+            if (data.photo)
+              data.photo = data.photo.link;
+            ngRedux.dispatch({
+              type: ADD_SESSION, session:
+                Object.assign({}, {
+                  name: data.full_name,
+                  type: data.user_type,
+                  username: data.username,
+                  photo: data.photo
+                })
+            });
+          },
+          error => {
+            if (error.status == 401) {
+              ngRedux.dispatch({ type: REMOVE_SESSION })
+            }
+          }
+        );
+      }
+    });
+
   }
 }
 
@@ -229,8 +261,8 @@ export class AppModule {
 export function getAuthServiceConfigs() {
   let config = new AuthServiceConfig(
     [{
-        id: GoogleLoginProvider.PROVIDER_ID,
-        provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
+      id: GoogleLoginProvider.PROVIDER_ID,
+      provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
     }]
   );
   return config;

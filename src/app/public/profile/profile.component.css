@@ -86,6 +86,11 @@ small {
 }
 
 .card .avatar {
+  width: 75px;
+  height: 75px;
+  margin: auto;
+  border-radius: 50%;
+  background: #eee;
   position: relative;
   z-index: 100;
 }
