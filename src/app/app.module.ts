@@ -65,6 +65,7 @@ import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 
 import { PaginationComponent } from './pagination/pagination.component';
+import { CrudComponent } from './crud/crud.component';
 
 export const appRoutes: Routes = [
   {
@@ -191,7 +192,8 @@ export const appRoutes: Routes = [
     LeaveCommentsComponent,
     RgComponent,
     FilterPipe,
-    PaginationComponent
+    PaginationComponent,
+    CrudComponent
   ],
   providers: [
     {

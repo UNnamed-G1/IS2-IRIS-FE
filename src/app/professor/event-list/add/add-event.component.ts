@@ -13,15 +13,16 @@ import { EventService } from 'app/services/event.service';
 
 export class AddEventComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
-  event: Event;
+  event: Event = new Event();
 
   constructor(private eventService: EventService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>) { }
+    
     ngOnInit() {
-      this.event = new Event();
       this.permMan.validateSession(["profesor"]);
     }
+
     ngAfterContentInit() {
       this.auxiliarID.subscribe(id => {
         if (id) {

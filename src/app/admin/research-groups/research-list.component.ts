@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -14,22 +14,20 @@ import { ResearchGroup } from 'app/classes/research-group';
 })
 
 export class ResearchListComponent implements OnInit {
-  columns: Array<string> = ['name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
-  rows: Array<ResearchGroup>;
-  public rgItem: ResearchGroup;
-  public searchString: string;
+  headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico', 'Prioridades de investigación', 'Fecha de fundación', 'Clasificación', 'Fecha de clasificación', 'URL'];
+  keys: Array<string> = ['name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'classification_date', 'url'];
+  researchGroups: Array<ResearchGroup>;
 
   page: {
     actual: number,
     total: number
   };
 
-  constructor(
+  constructor(private permMan: PermissionManager,
     private researchGroupService: ResearchGroupService,
+    private ngRedux: NgRedux<AppState>,
     private route: ActivatedRoute,
-    private router: Router,
-    private permMan: PermissionManager,
-    private ngRedux: NgRedux<AppState>) { }
+    private router: Router) { }
 
   ngOnInit() {
     this.permMan.validateSession(["admin"]);
@@ -37,31 +35,29 @@ export class ResearchListComponent implements OnInit {
 
   ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({})
+      this.page = Object.assign({});
       this.page.actual = +params.page || 1;
-      this.researchGroupService.getAll(this.page.actual)
-        .subscribe((res: { research_groups: ResearchGroup[], total_pages: number }) => {
-          this.rows = res.research_groups;
-          this.page.total = res.total_pages;
-        });
+      this.getResearchGroups();
     })
   }
 
-  public delete(id: number) {
-    console.log("delete : " + id);
-    this.researchGroupService.delete(id).subscribe((r) => {
-      this.rows = this.rows.filter((p, i) => {
-        if (Number(id) === p.id) {
-          return false;
-        }
-        return true;
-      }, this.rows)
-    });
-  }
-
-  public update(id: number) {
-    console.log(id)
+  update(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/research-groups/add');
+  }
+
+  delete(id: number) {
+    this.researchGroupService.delete(id)
+      .subscribe(
+        r => this.getResearchGroups(),
+        error => { });
+  }
+
+  getResearchGroups() {
+    this.researchGroupService.getAll(this.page.actual)
+      .subscribe((res: { research_groups: ResearchGroup[], total_pages: number }) => {
+        this.researchGroups = res.research_groups;
+        this.page.total = res.total_pages;
+      }, error => { });
   }
 }

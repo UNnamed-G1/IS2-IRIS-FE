@@ -21,7 +21,7 @@ export class PaginationComponent implements OnInit {
     this.actualRoute = this.router.url.split('?')[0];
   }
 
-  ngAfterContentChecked() {
+  ngAfterContentInit() {
     if (this.page.actual > this.page.total) {
       this.router.navigate([this.actualRoute], { queryParams: { page: 1 } });
     }

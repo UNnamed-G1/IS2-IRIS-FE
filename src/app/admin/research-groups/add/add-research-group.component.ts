@@ -16,24 +16,24 @@ import { ResearchGroupService } from 'app/services/research-group.service';
 
 export class AddResearchGroupComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
-  researchGroup: ResearchGroup;
+  researchGroup: ResearchGroup = new ResearchGroup();
 
-  constructor(private researchGroupService: ResearchGroupService,
-    private permMan: PermissionManager,
+  constructor(private permMan: PermissionManager,
+    private researchGroupService: ResearchGroupService,
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.researchGroup = new ResearchGroup();
     this.permMan.validateSession(["admin"]);
   }
 
   ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
       if (id) {
-        this.researchGroupService.get(id).subscribe((researchGroup: { research_group: ResearchGroup }) => {
-          console.log(researchGroup)
-          this.researchGroup = researchGroup.research_group;
-        });
+        this.researchGroupService.get(id)
+          .subscribe((researchGroup: { research_group: ResearchGroup }) => {
+            this.researchGroup = researchGroup.research_group;
+          }, error => { }
+          );
       }
     });
   }
@@ -42,19 +42,20 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
     this.ngRedux.dispatch({ type: REMOVE_AUXILIAR })
   }
 
-  public onSubmit() {
+  onSubmit() {
     console.log("Adding a Group: " + this.researchGroup.name);
     if (this.researchGroup.id) {
-      this.researchGroupService.update(this.researchGroup.id, this.researchGroup).subscribe((r) => {
-        console.log(r);
-        alert("Research group updated !");
-      })
+      this.researchGroupService.update(this.researchGroup.id, this.researchGroup)
+        .subscribe(res => alert("Research group updated !"),
+          error => { }
+        );
     } else {
-      this.researchGroupService.create(this.researchGroup).subscribe((r) => {
-        console.log(r);
-        this.researchGroup = new ResearchGroup();
-        alert("Research group added !");
-      });
+      this.researchGroupService.create(this.researchGroup)
+        .subscribe(r => {
+          this.researchGroup = new ResearchGroup();
+          alert("Research group added !");
+        }, error => { }
+        );
     }
   }
 }

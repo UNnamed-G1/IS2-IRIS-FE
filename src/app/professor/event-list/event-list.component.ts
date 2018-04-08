@@ -13,22 +13,20 @@ import { Event } from 'app/classes/events';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit {
-  columns: Array<string> = ['research_group_id', 'topic', 'description', 'date'];
-  rows: Array<Event>;
-  public elItem:Event;
-  public searchString:string;
+  headers: Array<string> = ['Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
+  keys: Array<string> = ['topic', 'description', 'date', 'research_group_id']; // 'research_group_name'];
+  events: Array<Event>;
 
   page: {
     actual: number,
     total: number
   };
 
-  constructor(
+  constructor(private permMan: PermissionManager,
     private eventService: EventService,
+    private ngRedux: NgRedux<AppState>,
     private route: ActivatedRoute,
-    private router: Router,
-    private permMan: PermissionManager,
-    private ngRedux: NgRedux<AppState>) { }
+    private router: Router) { }
 
   ngOnInit() {
     this.permMan.validateSession(["profesor"]);
@@ -38,28 +36,27 @@ export class EventListComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.page = Object.assign({})
       this.page.actual = +params.page || 1;
-      this.eventService.getAll(this.page.actual).subscribe((res: { events: Event[], total_pages: number }) => {
-        this.rows = res.events;
-        this.page.total = res.total_pages;
-      });
+      this.getEvents();
     })
   }
 
-  public delete(id: number) {
-    console.log("delete : " + id);
-    this.eventService.delete(id).subscribe((r) => {
-      this.rows = this.rows.filter((p, i) => {
-        if (Number(id) === p.id) {
-          return false;
-        }
-        return true;
-      }, this.rows)
-    });
-  }
-
-  public update(id: number) {
-    console.log(id)
+  update(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/events/add');
+  }
+
+  delete(id: number) {
+    this.eventService.delete(id)
+      .subscribe(
+        r => this.getEvents(),
+        error => { });
+  }
+
+  getEvents() {
+    this.eventService.getAll(this.page.actual)
+      .subscribe((res: { events: Event[], total_pages: number }) => {
+        this.events = res.events;
+        this.page.total = res.total_pages;
+      }, error => { });
   }
 }

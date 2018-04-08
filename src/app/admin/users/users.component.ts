@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from 'app/services/user.service';
-import { User } from 'app/classes/user';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+import { UserService } from 'app/services/user.service';
+import { User } from 'app/classes/user';
 
 @Component({
   selector: 'app-users',
@@ -14,21 +14,21 @@ import { PermissionManager } from 'app/permission-manager';
 })
 
 export class UsersComponent implements OnInit {
-  columns: Array<string> = ['name', 'lastname', 'username', 'email', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
-  rows: Array<User>;
-  public userItem: User;
-  public searchString: string;
+  headers: Array<string> = ['Nombre completo', 'Usuario', 'Perfil profesional',
+    'Tipo', 'Teléfono', 'Oficina', 'URL CvLAC'];
+  keys: Array<string> = ['full_name', 'username', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
+  users: Array<User>;
 
   page: {
     actual: number,
     total: number
   };
 
-  constructor(private userService: UserService,
+  constructor(private permMan: PermissionManager,
+    private userService: UserService,
+    private ngRedux: NgRedux<AppState>,
     private route: ActivatedRoute,
-    private router: Router,
-    private permMan: PermissionManager,
-    private ngRedux: NgRedux<AppState>) { }
+    private router: Router) { }
 
   ngOnInit() {
     this.permMan.validateSession(["admin"]);
@@ -36,30 +36,29 @@ export class UsersComponent implements OnInit {
 
   ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({})
+      this.page = Object.assign({});
       this.page.actual = +params.page || 1;
-      this.userService.getAll(this.page.actual)
-        .subscribe((res: { users: User[], total_pages: number }) => {
-          this.rows = res.users;
-          this.page.total = res.total_pages;
-        });
+      this.getUsers();
     })
   }
 
-  public delete(id: number) {
-    console.log("delete : " + id);
-    this.userService.delete(id).subscribe((r) => {
-      this.rows = this.rows.filter((p, i) => {
-        if (Number(id) === p.id) {
-          return false;
-        }
-        return true;
-      }, this.rows)
-    });
-  }
-
-  public update(id: string) {
+  update(id: string) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/users/add');
+  }
+
+  delete(id: number) {
+    this.userService.delete(id)
+      .subscribe(
+        r => this.getUsers(),
+        error => { });
+  }
+
+  getUsers() {
+    this.userService.getAll(this.page.actual)
+      .subscribe((res: { users: User[], total_pages: number }) => {
+        this.users = res.users.map(u => Object.assign(u, {full_name: u.name + " " + u.lastname}));
+        this.page.total = res.total_pages;
+      }, error => { });
   }
 }

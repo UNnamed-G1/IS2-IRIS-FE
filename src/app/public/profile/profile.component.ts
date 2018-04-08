@@ -68,7 +68,6 @@ export class ProfileComponent implements OnInit {
   setUser(user) {
     user.subscribe((response: { user: User }) => {
       this.user = Object.assign(new User(), response.user);
-      console.log(this.user);
       if (this.user.career) {
         this.setDepartments(this.user.career_id)
         this.setCareers(this.user.career_id)
