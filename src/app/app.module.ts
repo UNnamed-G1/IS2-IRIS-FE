@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
@@ -66,6 +66,7 @@ import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
+import { EqualValidatorDirective } from './helpers/equal-validator.directive';
 
 export const appRoutes: Routes = [
   {
@@ -163,6 +164,7 @@ export const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     SocialLoginModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     NgReduxModule
   ],
@@ -193,7 +195,8 @@ export const appRoutes: Routes = [
     RgComponent,
     FilterPipe,
     PaginationComponent,
-    CrudComponent
+    CrudComponent,
+    EqualValidatorDirective
   ],
   providers: [
     {
