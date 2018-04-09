@@ -78,7 +78,7 @@
                 </ul>
               </div>
               <div id="department-dropdown" class="col-md-4">
-                <button class="btn btn-primary dropdown-toggle {{ departments.length ? '' : 'disabled'}}" type="button" data-toggle="dropdown">
+                <button class="btn btn-primary dropdown-toggle" [ngClass]="{'disabled': !departments.length}" type="button" data-toggle="dropdown">
                   <!--{{ user.department ? user.department.name : "Departamento" }}-->
                   Departamento
                   <span class="caret"></span>
@@ -92,7 +92,7 @@
                 </ul>
               </div>
               <div id="career-dropdown" class=" col-md-4">
-                <button class="btn btn-primary dropdown-toggle {{ careers.length ? '' : 'disabled'}}" type="button" data-toggle="dropdown">
+                <button class="btn btn-primary dropdown-toggle" [ngClass]="{'disabled': !careers.length}" type="button" data-toggle="dropdown">
                   <!--{{ user.career ? user.career.name : "Carrera" }}-->
                   Carrera
                    <span class="caret"></span>
