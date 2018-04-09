@@ -66,7 +66,7 @@ import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
-import { EqualValidatorDirective } from './helpers/equal-validator.directive';
+import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 
 export const appRoutes: Routes = [
   {
@@ -196,7 +196,7 @@ export const appRoutes: Routes = [
     FilterPipe,
     PaginationComponent,
     CrudComponent,
-    EqualValidatorDirective
+    FormControlErrorsComponent
   ],
   providers: [
     {

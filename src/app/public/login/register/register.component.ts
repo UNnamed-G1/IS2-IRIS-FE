@@ -15,10 +15,7 @@ export class RegisterComponent implements OnInit {
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.userSignUp = Object.assign({}, this.userSignUp);
     this.createRegisterForm();
-
-    console.log(this.registerForm)
   }
 
   register() {
@@ -44,7 +41,6 @@ export class RegisterComponent implements OnInit {
       );
   }
 
-  console.log(this.registerForm)
   createRegisterForm() {
     this.registerForm = this.formBuilder.group({
       name: this.formBuilder.group({

@@ -1,7 +1,7 @@
 <div id="modal-sign-up" class="modal fade hidden-print" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form class="form-signup" [formGroup]="registerForm" (ngSubmit)="register(regForm)">
+      <form class="form-signup" [formGroup]="registerForm" (ngSubmit)="register()">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <!--img src="assets/images/IRIS-logo.png" /><br-->
@@ -14,63 +14,50 @@
             <div class="row">
               <div class="form-group col-md-6">
                 <input type="text" class="form-control" formControlName="first" placeholder="Nombres">
-                <!-- Name error block -->
-                <div class="invalid-feedback" *ngIf="(first.touched || first.dirty) && first.invalid"
-                  [ngClass]="{'warning': first.invalid && first.pristine && first.touched, 'error': first.invalid && first.dirty}">
-                  <small *ngIf="first.errors.required">Por favor introduce tus nombres.<br></small>
-                  <small *ngIf="first.errors.pattern">Tus nombres no pueden contener símbolos.<br></small>
-                  <small *ngIf="first.errors.minlength">Por favor introduce tus nombres completos.<br></small>
-                  <small *ngIf="first.errors.maxlength">Tus nombres son muy largos.</small>
-                </div>
+                <form-control-errors  [control]="first"
+                [required]="'Por favor introduce tus nombres.'"
+                [pattern]="'Tus nombres no pueden contener símbolos.'"
+                [minLength]="'Por favor introduce tus nombres completos.'"
+                [maxLength]="'Tus nombres son muy largos.'"></form-control-errors>
               </div>
               <div class="form-group col-md-6">
                 <input type="text" class="form-control" formControlName="last" placeholder="Apellidos">
-                <!-- Lastname error block -->
-                <div class="invalid-feedback" *ngIf="(last.touched || last.dirty) && last.invalid"
-                  [ngClass]="{'warning': last.invalid && last.pristine && last.touched, 'error': last.invalid && last.dirty}">
-                  <small *ngIf="last.errors.required">Por favor introduce tus apellidos.<br></small>
-                  <small *ngIf="last.errors.pattern">Tus apellidos sólo pueden contener letras.<br></small>
-                  <small *ngIf="last.errors.minlength">Por favor introduce tus apellidos completos.<br></small>
-                  <small *ngIf="last.errors.maxlength">Tus apellidos deben tener máximo 100 carácteres.</small>
-                </div>
+                <form-control-errors  [control]="last"
+                [required]="'Por favor introduce tus apellidos.'"
+                [pattern]="'Tus apellidos no pueden contener símbolos.'"
+                [minLength]="'Por favor introduce tus apellidos completos.'"
+                [maxLength]="'Tus apellidos son muy largos.'"></form-control-errors>
               </div>
             </div>
           </div>
+
           <!-- Email -->
           <div class="form-group">
             <label class="form-label">Correo</label>
             <input type="email" class="form-control" formControlName="email" placeholder="Correo institucional">
-            <!-- Email error block -->
-            <div class="invalid-feedback" *ngIf="(email.touched || email.dirty) && email.invalid"
-            [ngClass]="{'warning': email.invalid && email.pristine && email.touched, 'error': email.invalid && email.dirty}">
-              <small *ngIf="email.errors.required">Por favor introduce tu email.<br></small>
-              <small *ngIf="email.errors.pattern">Recuerda que el correo debe ser usuario@unal.edu.co.</small>
-            </div>
+            <form-control-errors  [control]="email"
+            [required]="'Por favor introduce tu email.'"
+            [pattern]="'Recuerda que el correo debe ser usuario@unal.edu.co.'"></form-control-errors>
           </div>
+
           <!-- Password and confirmation-->
           <div class="form-group" formGroupName="passwords">
             <label class="form-label">Contraseña</label>
             <div class="row">
               <div class="form-group col-md-6">
                 <input type="password" class="form-control" formControlName="password" placeholder="Contraseña">
-                <!-- Password error block -->
-                <div class="invalid-feedback" *ngIf="(password.touched || password.dirty) && password.invalid"
-                  [ngClass]="{'warning': password.invalid && password.pristine && password.touched, 'error': password.invalid && password.dirty}">
-                  <small *ngIf="password.errors.required">Por favor digita tu contraseña.<br></small>
-                  <small *ngIf="password.errors.minlength">Escribe al menos 8 carácteres, te faltan {{password.errors.minlength.requiredLength - password.errors.minlength.actualLength}}.</small>
-                </div>
+                <form-control-errors  [control]="password"
+                [required]="'Por favor digita tu contraseña.'"></form-control-errors>
+                <!-- Block validation for password matches -->
                 <div class="invalid-feedback" *ngIf="password.valid && passwordConf.invalid && !(passwordConf.errors.required || passwordConf.errors.minlength) && passwords.errors">
                   <small *ngIf="passwords.errors.mismatch">Las contraseñas no coinciden</small>
                 </div>
               </div>
               <div class="form-group col-md-6">
                 <input type="password" class="form-control" formControlName="password_confirmation" placeholder="Confirmar contraseña">
-                <!-- Password confirmation error block -->
-                <div class="invalid-feedback" *ngIf="(passwordConf.touched || passwordConf.dirty) && passwordConf.invalid"
-                  [ngClass]="{'warning': passwordConf.invalid && passwordConf.pristine && passwordConf.touched, 'error': passwordConf.invalid && passwordConf.dirty}">
-                  <small *ngIf="passwordConf.errors.required">Escribe tu contraseña de nuevo.<br></small>
-                  <small *ngIf="passwordConf.errors.minlength">Completa tu contraseña.<br></small>
-                </div>
+                <form-control-errors  [control]="passwordConf"
+                [required]="'Escribe tu contraseña de nuevo.'"
+                [minLength]="'Completa tu contraseña.'"></form-control-errors>
               </div>
             </div>
           </div>
