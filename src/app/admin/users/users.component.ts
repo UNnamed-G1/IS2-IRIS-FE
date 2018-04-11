@@ -15,7 +15,7 @@ import { User } from 'app/classes/user';
 
 export class UsersComponent implements OnInit {
   headers: Array<string> = ['Nombre completo', 'Usuario', 'Perfil profesional',
-    'Tipo', 'Teléfono', 'Oficina', 'URL CvLAC'];
+     'Teléfono', 'Oficina','URL CvLAC','Tipo'];
   keys: Array<string> = ['full_name', 'username', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
   users: Array<User>;
 

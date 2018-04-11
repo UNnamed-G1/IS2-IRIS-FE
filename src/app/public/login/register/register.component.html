@@ -8,9 +8,19 @@
           <h2 class="form-signup-heading">Registro de usuario</h2>
         </div>
         <div class="modal-body">
-          <input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="userSignUp.name" name="name"><br>
+          <div class="control-group">
+            <div class="controls">
+              <input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="userSignUp.name" name="name"><br>
+              <p class="help-block">Username can contain any letters or numbers, without spaces</p>
+            </div>
+          </div>
           <input id="inputLastName" class="form-control" placeholder="Apellido" required [(ngModel)]="userSignUp.lastname" name="lastname"><br>
-          <input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="userSignUp.email" name="email"><br>
+          <div class="control-group">
+            <div class="controls">
+              <input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="userSignUp.email" name="email"><br>
+              <p class="help-block">Please provide your E-mail</p>
+            </div>
+          </div>
           <input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userSignUp.password" name="password"><br>
           <input type="password" id="inputPasswordConfirm" class="form-control" placeholder="Confirmar contraseña" required [(ngModel)]="userSignUp.password_confirmation" name="password_confirmation"><br>
           <!-- Unsused labels

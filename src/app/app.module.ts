@@ -66,6 +66,7 @@ import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
+import { DocumentsComponent } from './documents/documents.component';
 
 export const appRoutes: Routes = [
   {
@@ -147,6 +148,10 @@ export const appRoutes: Routes = [
   {
     path: 'rg',
     component: RgComponent
+  },
+  {
+    path: 'documents',
+    component: DocumentsComponent
   }/*,
   {
     path: '404',
@@ -193,7 +198,8 @@ export const appRoutes: Routes = [
     RgComponent,
     FilterPipe,
     PaginationComponent,
-    CrudComponent
+    CrudComponent,
+    DocumentsComponent
   ],
   providers: [
     {
