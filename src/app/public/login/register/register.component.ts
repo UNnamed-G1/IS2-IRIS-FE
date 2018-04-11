@@ -41,7 +41,7 @@ export class RegisterComponent implements OnInit {
       );
   }
 
-  createRegisterForm() {
+  private createRegisterForm() {
     this.registerForm = this.formBuilder.group({
       name: this.formBuilder.group({
         first: ['', [Validators.required, Validators.pattern("[a-zA-Z ]*"), Validators.minLength(3), Validators.maxLength(100)]],
@@ -55,7 +55,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  passwordMatchValidator(g: FormGroup) {
+  private passwordMatchValidator(g: FormGroup) {
     let pass = g.get('password'),
       passConf = g.get('password_confirmation');
     if (pass.invalid || (passConf.invalid && (passConf.errors.required || passConf.errors.minlength)))

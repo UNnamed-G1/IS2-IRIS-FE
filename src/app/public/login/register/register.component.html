@@ -14,7 +14,7 @@
             <div class="row">
               <div class="form-group col-md-6">
                 <input type="text" class="form-control" formControlName="first" placeholder="Nombres">
-                <form-control-errors  [control]="first"
+                <form-control-errors [control]="first"
                 [required]="'Por favor introduce tus nombres.'"
                 [pattern]="'Tus nombres no pueden contener símbolos.'"
                 [minLength]="'Por favor introduce tus nombres completos.'"
@@ -22,7 +22,7 @@
               </div>
               <div class="form-group col-md-6">
                 <input type="text" class="form-control" formControlName="last" placeholder="Apellidos">
-                <form-control-errors  [control]="last"
+                <form-control-errors [control]="last"
                 [required]="'Por favor introduce tus apellidos.'"
                 [pattern]="'Tus apellidos no pueden contener símbolos.'"
                 [minLength]="'Por favor introduce tus apellidos completos.'"
@@ -35,7 +35,7 @@
           <div class="form-group">
             <label class="form-label">Correo</label>
             <input type="email" class="form-control" formControlName="email" placeholder="Correo institucional">
-            <form-control-errors  [control]="email"
+            <form-control-errors [control]="email"
             [required]="'Por favor introduce tu email.'"
             [pattern]="'Recuerda que el correo debe ser usuario@unal.edu.co.'"></form-control-errors>
           </div>
@@ -46,7 +46,7 @@
             <div class="row">
               <div class="form-group col-md-6">
                 <input type="password" class="form-control" formControlName="password" placeholder="Contraseña">
-                <form-control-errors  [control]="password"
+                <form-control-errors [control]="password"
                 [required]="'Por favor digita tu contraseña.'"></form-control-errors>
                 <!-- Block validation for password matches -->
                 <div class="invalid-feedback" *ngIf="password.valid && passwordConf.invalid && !(passwordConf.errors.required || passwordConf.errors.minlength) && passwords.errors">
@@ -55,7 +55,7 @@
               </div>
               <div class="form-group col-md-6">
                 <input type="password" class="form-control" formControlName="password_confirmation" placeholder="Confirmar contraseña">
-                <form-control-errors  [control]="passwordConf"
+                <form-control-errors [control]="passwordConf"
                 [required]="'Escribe tu contraseña de nuevo.'"
                 [minLength]="'Completa tu contraseña.'"></form-control-errors>
               </div>
@@ -65,7 +65,7 @@
         <div class="modal-footer">
           <div class="row" style="text-align: center">
             <div class="col-xs-6">
-              <button class="btn btn-primary" type="submit" [disabled]="registerForm.invalid">Registrarse</button><br><br>
+              <button class="btn btn-primary" type="submit" [disabled]="registerForm.invalid">Registrarse</button>
             </div>
             <div class="col-xs-6">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>

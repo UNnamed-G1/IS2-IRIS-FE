@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
 import { UserService } from 'app/services/user.service';
 import { LoginService } from 'app/services/login.service';
@@ -16,21 +17,22 @@ import { PermissionManager } from 'app/permission-manager';
 })
 
 export class LoginComponent implements OnInit {
-  userSignIn: { username: string, password: string };
+  signInForm: FormGroup;
 
   constructor(private socialAuthService: AuthService,
     private loginService: LoginService,
     private userService: UserService,
     private ngRedux: NgRedux<AppState>,
-    private permMan: PermissionManager) { }
+    private permMan: PermissionManager,
+    private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.permMan.validateNotLogged();
-    this.userSignIn = Object.assign({}, this.userSignIn);
+    this.createSignInForm();
   }
 
   signIn() {
-    this.fillSession(this.userSignIn);
+    this.fillSession(this.signInForm.value);
   }
 
   googleSignIn() {
@@ -63,4 +65,13 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  private createSignInForm() {
+    this.signInForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.pattern("[a-z]+@unal.edu.co")]],
+      password: ['', [Validators.required]]
+    });
+  }
+
+  get email() { return this.signInForm.get('email') }
+  get password() { return this.signInForm.get('password') }
 }
