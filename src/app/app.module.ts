@@ -9,6 +9,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
 import * as persistState from 'redux-localstorage';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -159,8 +160,9 @@ export const appRoutes: Routes = [
 
 @NgModule({
   imports: [
-    BrowserModule,
     RouterModule.forRoot(appRoutes),
+    SweetAlert2Module.forRoot(),
+    BrowserModule,
     SocialLoginModule,
     FormsModule,
     HttpClientModule,
