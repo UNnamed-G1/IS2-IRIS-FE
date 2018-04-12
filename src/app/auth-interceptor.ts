@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { PermissionManager } from 'app/permission-manager';
-import { ISession } from './redux/session';
 import { Observable } from "rxjs";
 import { select } from '@angular-redux/store';
-import { AppState } from './redux/store';
-
+import { ISession } from 'app/redux/session';
+import { AppState } from 'app/redux/store';
+import { PermissionManager } from 'app/permission-manager';
+import swal from 'sweetalert2';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -23,6 +23,20 @@ export class AuthInterceptor implements HttpInterceptor {
         }
       });
     }
-    return next.handle(req);
+    let handled = next.handle(req);
+    handled.subscribe(() => {} ,
+      error => {
+        /*if (error.status != 0) {
+          swal({
+            title: 'Falló la conexión',
+            text: 'Código de error: ' + error.status,
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary'
+          })
+        }*/
+      }
+    )
+    return handled;
   }
 }

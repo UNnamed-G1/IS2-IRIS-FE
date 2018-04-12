@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
@@ -13,6 +15,10 @@ import { Event } from 'app/classes/events';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit {
+  @ViewChild('sucDelSwal') private sucDelSwal: SwalComponent;
+  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;  
+  @ViewChild('errEventsSwal') private errEventsSwal: SwalComponent;
+
   headers: Array<string> = ['Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
   keys: Array<string> = ['topic', 'description', 'date', 'research_group_id']; // 'research_group_name'];
   events: Array<Event>;
@@ -48,15 +54,28 @@ export class EventListComponent implements OnInit {
   delete(id: number) {
     this.eventService.delete(id)
       .subscribe(
-        r => this.getEvents(),
-        error => { });
+        (response: {event: Event}) => {
+          this.getEvents();
+          this.sucDelSwal.show();
+        },
+        (error: HttpErrorResponse) => {
+          this.errDelSwal.text += error.message;
+          this.errDelSwal.show();
+        }
+      );
   }
 
   getEvents() {
     this.eventService.getAll(this.page.actual)
-      .subscribe((res: { events: Event[], total_pages: number }) => {
-        this.events = res.events;
-        this.page.total = res.total_pages;
-      }, error => { });
+      .subscribe(
+        (res: { events: Event[], total_pages: number }) => {
+          this.events = res.events;
+          this.page.total = res.total_pages;
+        },
+        (error: HttpErrorResponse) => {
+          this.errEventsSwal.text += error.message;
+          this.errEventsSwal.show();
+        }
+      );
   }
 }
