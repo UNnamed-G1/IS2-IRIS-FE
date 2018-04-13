@@ -12,7 +12,7 @@ export class DocumentsComponent implements OnInit {
   totalPages: number;
   isLoaded: boolean = false;
   stickToPage: boolean = false;
-  showAll: boolean = true;
+  showAll: boolean = false;
 
   constructor() { }
 
@@ -31,20 +31,21 @@ export class DocumentsComponent implements OnInit {
 
   prevPage() {
     this.page--;
-}
-onAfterLoad(event: any){
-}
+  }
+  onAfterLoad(event: any){
+  }
 
-switchSticky(){
-  this.stickToPage = !this.stickToPage;
-}
+  switchSticky(){
+    this.stickToPage = !this.stickToPage;
+  }
 
-switchShowAll(){
-  this.showAll = !this.showAll;
-}
+  switchShowAll(){
 
-setPage(num: number){
-  this.page += num;
-  console.log(this.page);
-}
+    this.showAll = !this.showAll;
+  }
+
+  setPage(num: number){
+    this.page += num;
+    console.log(this.page);
+  }
 }
