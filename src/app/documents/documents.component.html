@@ -1,8 +1,39 @@
 <!--h1>
    test
-   <pdf-viewer [src]="'assets/pdf-sample.pdf'"
+   <pdf-viewer [src]="'assets/1.pdf'"
               [page]="1"
               [original-size]="true"
               style="display: block;"
   ></pdf-viewer>
 </h1-->
+<div class="jumbotron">
+
+<div class="panel panel-default" style="margin-top:10px;">
+
+<div>
+      <input (change)="onFileSelected()" type="file" id="file">
+      <label>PDF src</label>
+      <input type="text" placeholder="PDF src" [(ngModel)]="pdfSrc">
+      <button (click)="switchShowAll()">showAll</button>
+      <button (click)="switchSticky()">sticky</button>
+  </div>
+  <!--pdf-viewer [src]="pdfSrc"
+              [render-text]="true"
+              style="display: block;"
+  ></pdf-viewer-->
+  <div *ngIf="isLoaded" style="text-align: center;">
+  <button (click)="prevPage()" [disabled]="page === 1">Prev</button>
+  <span>{{ page }} / {{ totalPages }}</span>
+  <button (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+</div>
+  <pdf-viewer [src]="'assets/1.pdf'"
+             [original-size]="true"
+             [show-all]="showAll"
+             [stick-to-page]="stickToPage"
+             [render-text]="false"
+             [page]="page"
+             (after-load-complete)="afterLoadComplete($event)"
+             style="display: block;"
+ ></pdf-viewer>
+</div>
+</div>

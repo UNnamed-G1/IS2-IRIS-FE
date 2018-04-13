@@ -27,6 +27,9 @@
           <div class="field">
             <h4>{{ researchGroup.url }}</h4>
           </div>
+          <div *ngFor="let member of researchGroup.members" class="field">
+            <h4>{{member.user.full_name}}</h4>
+          </div>
         </div>
       </div>
       <button class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
