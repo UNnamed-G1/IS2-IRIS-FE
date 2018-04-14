@@ -45,6 +45,11 @@ export class ResearchListComponent implements OnInit {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/research-groups/add');
   }
+  
+  details(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/rg');
+  }
 
   delete(id: number) {
     this.researchGroupService.delete(id)

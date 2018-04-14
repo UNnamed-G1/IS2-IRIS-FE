@@ -5,6 +5,7 @@
       <div class="row" [hidden]="showInput">
         <h2>Grupo de Investigación {{researchGroup.name}} </h2><br>
         <div class="col-sm-5 col-md-5">
+          <label for="description">Descripción</label>
           <div class="field">
             <h4>{{ researchGroup.description }}</h4>
           </div>
@@ -26,14 +27,16 @@
           <div class="field">
             <h4>{{ researchGroup.url }}</h4>
           </div>
-        </div>
-        <div *ngIf="!( auxiliarID | async )" class="btn-group">
-            <button type="button" class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
-        </div>
+          <div *ngFor="let member of researchGroup.members" class="field">
+            <h4>{{member.user.full_name}}</h4>
+          </div>
         </div>
       </div>
+      <button class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
+      </div>
       <div class="row" [hidden]="!showInput">
-        <form (ngSubmit)="updateGroup()">
+        <form (ngSubmit)="onSubmit()">
           <div class="col-sm-5 col-md-5">
             <div class="row">
               <div class="col-md-6">

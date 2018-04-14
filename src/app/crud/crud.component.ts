@@ -11,6 +11,7 @@ export class CrudComponent {
   @Input() rows: {};
   @Output() onUpdate = new EventEmitter<number>();
   @Output() onDelete = new EventEmitter<number>();
+  @Output() onDetails = new EventEmitter<number>();
 
   searchStr: string;
 
@@ -23,5 +24,7 @@ export class CrudComponent {
   delete(id: number) {
     this.onDelete.emit(id);
   }
-
+  details(id: number) {
+    this.onDetails.emit(id);
+  }
 }
