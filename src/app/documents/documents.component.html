@@ -1,22 +1,47 @@
 <div class="jumbotron">
 
   <div class="panel panel-default" style="margin-top:10px;">
-
-      <button (click)="switchShowAll()">showAll</button>
-      <button (click)="switchSticky()">sticky</button>
+    <br><br>
+    <div class="form-group">
       <div *ngIf="isLoaded" style="text-align: center;">
-        <button (click)="prevPage()" [disabled]="page === 1">Prev</button>
+        <!--button (click)="switchShowAll()">show All</button-->
+        <button (click)="prevPage()" data-toggle="tooltip" title="Página anterior"  [disabled]="page === 1">
+          <span class="glyphicon glyphicon-arrow-left"></span>
+        </button>
+        <span  class="{{ totalPages }}"></span>
         <input type="number" placeholder="page" [(ngModel)]="page">
-        <span>/ {{ totalPages }}</span>
-        <button (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+        <button (click)="nextPage()" data-toggle="tooltip" title="Página siguiente" [disabled]="page === totalPages">
+          <span class="glyphicon glyphicon-arrow-right"></span>
+        </button>
+        <a class="button" href="assets/1.pdf" target="_blank" download="1.pdf" data-toggle="tooltip" title="Descargar" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-download-alt"></span>
+        </a>
+        <button (click)="incrementZoom(-0.1)" data-toggle="tooltip" title="Alejar" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        </button>
+        <button (click)="incrementZoom(+0.1)" data-toggle="tooltip" title="Acercar" class="btn btn-default btn-sm">
+           <span class="glyphicon glyphicon-zoom-in"></span>
+        </button>
+        <button (click)="originalZoom()" data-toggle="tooltip" title="Tamaño automático" class="btn btn-default btn-sm">
+           <span class="glyphicon glyphicon-screenshot"></span>
+        </button>
+        <button (click)="rotatePdf()" data-toggle="tooltip" title="Girar 90°" class="btn btn-default btn-sm">
+           <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+        <!--input type="text" class="form-control" placeholder="Escribe para buscar...">
+        <button (click)="search()" data-toggle="tooltip" title="buscar" class="btn btn-default btn-sm">
+           <span class="glyphicon glyphicon-search"></span>
+        </button-->
       </div>
-
+    </div>
       <pdf-viewer [src]="'assets/1.pdf'"
              [original-size]="true"
              [show-all]="showAll"
              [stick-to-page]="stickToPage"
              [render-text]="false"
              [page]="page"
+             [zoom]="zoom"
+             [rotation]="rotate"
              (after-load-complete)="afterLoadComplete($event)"
              style="display: block;"
       ></pdf-viewer>
