@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { select } from '@angular-redux/store';
-import { PermissionManager } from 'app/permission-manager';
-import { ResearchGroupService } from 'app/services/research-group.service';
-import { ResearchGroup} from 'app/classes/research-group';
+import { PermissionManager } from '../../../permission-manager';
+import { ResearchGroupService } from '../../../services/research-group.service';
+import { ResearchGroup} from '../../../classes/research-group';
 
 @Component({
   selector: 'app-rg',
