@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -15,9 +15,9 @@ import { Event } from 'app/classes/events';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit, AfterContentInit {
-  @ViewChild('sucDelSwal') private sucDelSwal: SwalComponent;
-  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;
-  @ViewChild('errEventsSwal') private errEventsSwal: SwalComponent;
+  @ViewChild('sucDel') private sucDel: SwalComponent;
+  @ViewChild('errDel') private errDel: SwalComponent;
+  @ViewChild('errEvents') private errEvents: SwalComponent;
 
   headers: Array<string> = ['Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
   keys: Array<string> = ['topic', 'description', 'date', 'research_group_id']; // 'research_group_name'];
@@ -56,25 +56,25 @@ export class EventListComponent implements OnInit, AfterContentInit {
       .subscribe(
         (response: { event: Event }) => {
           this.getEvents();
-          this.sucDelSwal.show();
+          this.sucDel.show();
         },
         (error: HttpErrorResponse) => {
-          this.errDelSwal.text += error.message;
-          this.errDelSwal.show();
+          this.errDel.text += error.message;
+          this.errDel.show();
         }
       );
   }
 
   getEvents() {
-    this.eventService.getAllEditable(this.page.actual)
+    this.eventService.getAll(this.page.actual)
       .subscribe(
         (res: { events: Event[], total_pages: number }) => {
           this.events = res.events;
           this.page.total = res.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errEventsSwal.text += error.message;
-          this.errEventsSwal.show();
+          this.errEvents.text += error.message;
+          this.errEvents.show();
         }
       );
   }

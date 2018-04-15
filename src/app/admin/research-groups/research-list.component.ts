@@ -15,9 +15,9 @@ import { ResearchGroup } from 'app/classes/research-group';
   styleUrls: ['./research-list.component.css']
 })
 export class ResearchListComponent implements OnInit, AfterContentInit {
-  @ViewChild('sucDelSwal') private sucDelSwal: SwalComponent;
-  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;
-  @ViewChild('errRGsSwal') private errRGsSwal: SwalComponent;
+  @ViewChild('sucDel') private sucDel: SwalComponent;
+  @ViewChild('errDel') private errDel: SwalComponent;
+  @ViewChild('errRGs') private errRGs: SwalComponent;
 
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
     'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
@@ -60,11 +60,11 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
       .subscribe(
         (response: { research_group: ResearchGroup }) => {
           this.getResearchGroups();
-          this.sucDelSwal.show();
+          this.sucDel.show();
         },
         (error: HttpErrorResponse) => {
-          this.errDelSwal.text += error.message;
-          this.errDelSwal.show();
+          this.errDel.text += error.message;
+          this.errDel.show();
         }
       );
   }
@@ -77,8 +77,8 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
           this.page.total = res.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errRGsSwal.text += error.message;
-          this.errRGsSwal.show();
+          this.errRGs.text += error.message;
+          this.errRGs.show();
         }
       );
   }

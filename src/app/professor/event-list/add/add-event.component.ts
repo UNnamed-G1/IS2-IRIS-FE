@@ -14,11 +14,11 @@ import { EventService } from 'app/services/event.service';
 })
 
 export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('errLoadSwal') private errLoadSwal: SwalComponent;
-  @ViewChild('sucAddSwal') private sucAddSwal: SwalComponent;
-  @ViewChild('errAddSwal') private errAddSwal: SwalComponent;
-  @ViewChild('sucUpdSwal') private sucUpdSwal: SwalComponent;
-  @ViewChild('errUpdSwal') private errUpdSwal: SwalComponent;
+  @ViewChild('errLoad') private errLoad: SwalComponent;
+  @ViewChild('sucAdd') private sucAdd: SwalComponent;
+  @ViewChild('errAdd') private errAdd: SwalComponent;
+  @ViewChild('sucUpd') private sucUpd: SwalComponent;
+  @ViewChild('errUpd') private errUpd: SwalComponent;
 
   @select() auxiliarID;
 
@@ -52,11 +52,11 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
         update(this.event.id, { event: this.event }).
         subscribe(
           (response: { event: Event }) => {
-            this.sucUpdSwal.show();
+            this.sucUpd.show();
           },
           (error: HttpErrorResponse) => {
-            this.errUpdSwal.text += error.message;
-            this.errUpdSwal.show();
+            this.errUpd.text += error.message;
+            this.errUpd.show();
           }
         );
     } else {
@@ -64,12 +64,12 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
         .create({ event: this.event })
         .subscribe(
           (response: { event: Event }) => {
-            this.sucAddSwal.show();
+            this.sucAdd.show();
             this.event = new Event();
           },
           (error: HttpErrorResponse) => {
-            this.errAddSwal.text += error.message;
-            this.errAddSwal.show();
+            this.errAdd.text += error.message;
+            this.errAdd.show();
           }
         );
     }

@@ -15,11 +15,11 @@ import { UserService } from 'app/services/user.service';
 })
 
 export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('errLoadSwal') private errLoadSwal: SwalComponent;
-  @ViewChild('sucAddSwal') private sucAddSwal: SwalComponent;
-  @ViewChild('errAddSwal') private errAddSwal: SwalComponent;
-  @ViewChild('sucUpdSwal') private sucUpdSwal: SwalComponent;
-  @ViewChild('errUpdSwal') private errUpdSwal: SwalComponent;
+  @ViewChild('errLoad') private errLoad: SwalComponent;
+  @ViewChild('sucAdd') private sucAdd: SwalComponent;
+  @ViewChild('errAdd') private errAdd: SwalComponent;
+  @ViewChild('sucUpd') private sucUpd: SwalComponent;
+  @ViewChild('errUpd') private errUpd: SwalComponent;
 
   @select() auxiliarID;
 
@@ -53,11 +53,11 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
         .update(this.user.id, { user: this.user })
         .subscribe(
           (response: { user: User }) => {
-            this.sucUpdSwal.show();
+            this.sucUpd.show();
           },
           (error: HttpErrorResponse) => {
-            this.errUpdSwal.text += error.message;
-            this.errUpdSwal.show();
+            this.errUpd.text += error.message;
+            this.errUpd.show();
           }
         );
     } else {
@@ -65,12 +65,12 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
         .create({ user: this.user })
         .subscribe(
           (response: { user: User }) => {
-            this.sucAddSwal.show();
+            this.sucAdd.show();
             this.user = new User();
           },
           (error: HttpErrorResponse) => {
-            this.errAddSwal.text += error.message;
-            this.errAddSwal.show();
+            this.errAdd.text += error.message;
+            this.errAdd.show();
           }
         );
     }

@@ -17,11 +17,11 @@ import { ResearchGroupService } from 'app/services/research-group.service';
 
 
 export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('errLoadSwal') private errLoadSwal: SwalComponent;
-  @ViewChild('sucAddSwal') private sucAddSwal: SwalComponent;
-  @ViewChild('errAddSwal') private errAddSwal: SwalComponent;
-  @ViewChild('sucUpdSwal') private sucUpdSwal: SwalComponent;
-  @ViewChild('errUpdSwal') private errUpdSwal: SwalComponent;
+  @ViewChild('errLoad') private errLoad: SwalComponent;
+  @ViewChild('sucAdd') private sucAdd: SwalComponent;
+  @ViewChild('errAdd') private errAdd: SwalComponent;
+  @ViewChild('sucUpd') private sucUpd: SwalComponent;
+  @ViewChild('errUpd') private errUpd: SwalComponent;
 
   @select() auxiliarID;
 
@@ -44,8 +44,8 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
               this.researchGroup = researchGroup.research_group;
             },
             (error: HttpErrorResponse) => {
-              this.errLoadSwal.text += error.message;
-              this.errLoadSwal.show();
+              this.errLoad.text += error.message;
+              this.errLoad.show();
             }
           );
       }
@@ -62,11 +62,11 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
         .update(this.researchGroup.id, { research_group: this.researchGroup })
         .subscribe(
           (response: { research_group: ResearchGroup }) => {
-            this.sucUpdSwal.show();
+            this.sucUpd.show();
           },
           (error: HttpErrorResponse) => {
-            this.errUpdSwal.text += error.message;
-            this.errUpdSwal.show();
+            this.errUpd.text += error.message;
+            this.errUpd.show();
           }
         );
     } else {
@@ -74,12 +74,12 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
         .create({ research_group: this.researchGroup })
         .subscribe(
           (response: { research_group: ResearchGroup }) => {
-            this.sucAddSwal.show();
+            this.sucAdd.show();
             this.researchGroup = new ResearchGroup();
           },
           (error: HttpErrorResponse) => {
-            this.errAddSwal.text += error.message;
-            this.errAddSwal.show();
+            this.errAdd.text += error.message;
+            this.errAdd.show();
           }
         );
     }
