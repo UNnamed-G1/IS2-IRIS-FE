@@ -16,6 +16,7 @@ import { ResearchGroupService } from '../../../services/research-group.service';
 export class RgComponent implements OnInit {
   @select() auxiliarID;
   researchGroup:ResearchGroup;
+  events: Array<Event>;
   showInput: boolean = false;
 
   constructor(private researchGroupService: ResearchGroupService,
@@ -29,9 +30,15 @@ export class RgComponent implements OnInit {
         this.researchGroupService.get(id)
           .subscribe((researchGroup: { research_group: ResearchGroup }) => {
             this.researchGroup = researchGroup.research_group;
+            this.researchGroupService.getEvents(this.researchGroup.id).subscribe((res: {events: Event[]}) => {
+              this.events = res.events;
+            });
           }, error => { }
           );
       }
+    });
+    this.researchGroupService.getEvents(2).subscribe((res: {events: Event[]}) => {
+      this.events = res.events;
     });
   }
 
@@ -50,6 +57,8 @@ export class RgComponent implements OnInit {
   toggleShowInput() {
     this.showInput = !this.showInput
   }
+
+
 
   onSubmit() {
     console.log("Adding a Group: " + this.researchGroup.name);

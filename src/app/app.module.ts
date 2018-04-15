@@ -7,7 +7,7 @@ import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angul
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
-import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
+import { ADD_SESSION, REMOVE_SESSION } from '../app/redux/actions';
 import * as persistState from 'redux-localstorage';
 
 // Redux imports
@@ -15,7 +15,7 @@ import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
 // Requests interceptor
 import { AuthInterceptor } from './auth-interceptor'
 // Permission manager
-import { PermissionManager } from 'app/permission-manager'
+import { PermissionManager } from '../app/permission-manager'
 
 // Components
 import { AppComponent } from './app.component';

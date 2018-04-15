@@ -16,5 +16,12 @@ export class ResearchGroupService extends CommonService {
   public getNews() {
     return this.applyRequestPath(this.get, "research_groups_news");
   }
+  public getEvents(id: number){
+    return this.applyRequestPath(this.get, "events_by_rg%23rg_id="+id);
+  }
+
+  public getSubjects(id: number){
+    return this.applyRequestPath(this.get, "rs_by_rg%23rg_id="+id)
+  }
 
 }
