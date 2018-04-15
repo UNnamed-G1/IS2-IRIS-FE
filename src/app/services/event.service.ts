@@ -7,11 +7,15 @@ export class EventService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "events/";
+    this.url += 'events/';
   }
 
   public getNews() {
-    return this.applyRequestPath(this.get, "events_news");
+    return this.applyRequestPath(this.get, 'events_news');
+  }
+
+  public getAllEditable(page: number) {
+    return this.applyRequestPath(this.get, 'events_by_editable?page=' + page);
   }
 
 }
