@@ -66,7 +66,7 @@ export class EventListComponent implements OnInit, AfterContentInit {
   }
 
   getEvents() {
-    this.eventService.getAll(this.page.actual)
+    this.eventService.getAllEditable(this.page.actual)
       .subscribe(
         (res: { events: Event[], total_pages: number }) => {
           this.events = res.events;
