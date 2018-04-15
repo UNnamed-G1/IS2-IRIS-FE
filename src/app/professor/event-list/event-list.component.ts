@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -14,9 +14,9 @@ import { Event } from 'app/classes/events';
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.css']
 })
-export class EventListComponent implements OnInit {
+export class EventListComponent implements OnInit, AfterContentInit {
   @ViewChild('sucDelSwal') private sucDelSwal: SwalComponent;
-  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;  
+  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;
   @ViewChild('errEventsSwal') private errEventsSwal: SwalComponent;
 
   headers: Array<string> = ['Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
@@ -35,15 +35,15 @@ export class EventListComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["profesor"]);
+    this.permMan.validateSession(['profesor']);
   }
 
   ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({})
+      this.page = Object.assign({});
       this.page.actual = +params.page || 1;
       this.getEvents();
-    })
+    });
   }
 
   update(id: number) {
@@ -54,7 +54,7 @@ export class EventListComponent implements OnInit {
   delete(id: number) {
     this.eventService.delete(id)
       .subscribe(
-        (response: {event: Event}) => {
+        (response: { event: Event }) => {
           this.getEvents();
           this.sucDelSwal.show();
         },
@@ -66,7 +66,7 @@ export class EventListComponent implements OnInit {
   }
 
   getEvents() {
-    this.eventService.getAll(this.page.actual)
+    this.eventService.getAllEditable(this.page.actual)
       .subscribe(
         (res: { events: Event[], total_pages: number }) => {
           this.events = res.events;
