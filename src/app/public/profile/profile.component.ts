@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentInit, OnDestroy } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
-import { select } from '@angular-redux/store';
+import { select, NgRedux } from '@angular-redux/store';
+import { AppState } from 'app/redux/store';
+import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 
 import { FacultyService } from 'app/services/faculty.service';
@@ -18,46 +22,67 @@ import { Career } from 'app/classes/career';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
+  @ViewChild('errLoad') private errLoad: SwalComponent;
+  @ViewChild('sucEdit') private sucEdit: SwalComponent;
+  @ViewChild('errEdit') private errEdit: SwalComponent;
+
   @select() auxiliarID;
   user: User;
   faculties: Faculty[] = new Array<Faculty>();
   departments: Department[] = new Array<Department>();
   careers: Career[] = new Array<Career>();
-  showInput: boolean = false;
+  showInput = false;
 
   constructor(private userService: UserService,
     private facultyService: FacultyService,
     private departmentService: DepartmentService,
     private careerService: CareerService,
+    private ngRedux: NgRedux<AppState>,
     private permMan: PermissionManager) { }
 
-  ngOnInit() { }
+  ngOnInit() { // Validate existent id if not logged
+  }
 
   ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
-      let getUser;
       if (id) {
         this.setUser(this.userService.get(id));
       } else if (this.permMan.validateLogged()) {
-        this.userService.getCurrentUser().subscribe((response: { user: User }) => {
-          this.setUser(this.userService.get(response.user.id));
-        });
+        this.userService.getCurrentUser().subscribe(
+          (response: { user: User }) => {
+            this.setUser(this.userService.get(response.user.id));
+          },
+          (error: HttpErrorResponse) => {
+            this.errLoad.title += 'el perfil.';
+            this.errLoad.text += error.message;
+            this.errLoad.show();
+          }
+        );
       }
     });
     this.setFaculties();
   }
 
+  ngOnDestroy() {
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
+  }
+
   updateProfile() {
     this.userService.update(this.user.id, { user: this.user }).subscribe(
-      response => console.log(response),
-      error => console.error(error)
+      (response: { event: Event }) => {
+        this.sucEdit.show();
+        this.toggleShowInput();
+      },
+      (error: HttpErrorResponse) => {
+        this.errEdit.text += error.message;
+        this.errEdit.show();
+      }
     );
-    this.toggleShowInput();
   }
 
   toggleShowInput() {
-    this.showInput = !this.showInput
+    this.showInput = !this.showInput;
   }
 
   careerClicked(career: Career) {
@@ -66,23 +91,33 @@ export class ProfileComponent implements OnInit {
   }
 
   setUser(user) {
-    user.subscribe((response: { user: User }) => {
-      this.user = Object.assign(new User(), response.user);
-      if (this.user.career) {
-        this.setDepartments(this.user.career_id)
-        this.setCareers(this.user.career_id)
+    user.subscribe(
+      (response: { user: User }) => {
+        this.user = Object.assign(new User(), response.user);
+        if (this.user.career) {
+          this.setDepartments(this.user.career_id);
+          this.setCareers(this.user.career_id);
+        }
+      },
+      (error: HttpErrorResponse) => {
+        this.errLoad.text += error.message;
+        this.errLoad.show();
       }
-    });
+    );
   }
 
   setFaculties() {
     this.facultyService.get().subscribe(
       (response: { faculties: Array<Faculty> }) => {
-        response.faculties.forEach(function(faculty) {
-          this.faculties.push(Object.assign(new Faculty(), faculty))
+        response.faculties.forEach(function (faculty) {
+          this.faculties.push(Object.assign(new Faculty(), faculty));
         }, this);
       },
-      error => console.log(error)
+      (error: HttpErrorResponse) => {
+        this.errLoad.title += 'las facultades.';
+        this.errLoad.text += error.message;
+        this.errLoad.show();
+      }
     );
     this.faculties = new Array<Faculty>();
   }
@@ -90,11 +125,15 @@ export class ProfileComponent implements OnInit {
   setDepartments(idFaculty: number) {
     this.departmentService.getByFaculty(idFaculty).subscribe(
       (response: { departments: Array<Department> }) => {
-        response.departments.forEach(function(department) {
-          this.departments.push(Object.assign(new Department(), department))
+        response.departments.forEach(function (department) {
+          this.departments.push(Object.assign(new Department(), department));
         }, this);
       },
-      error => console.log(error)
+      (error: HttpErrorResponse) => {
+        this.errLoad.title += 'los departamentos.';
+        this.errLoad.text += error.message;
+        this.errLoad.show();
+      }
     );
     this.departments = new Array<Department>();
     this.careers = new Array<Career>();
@@ -103,11 +142,15 @@ export class ProfileComponent implements OnInit {
   setCareers(idDepartment: number) {
     this.careerService.getByDepartment(idDepartment).subscribe(
       (response: { careers: Array<Career> }) => {
-        response.careers.forEach(function(career) {
-          this.careers.push(Object.assign(new Career(), career))
+        response.careers.forEach(function (career) {
+          this.careers.push(Object.assign(new Career(), career));
         }, this);
       },
-      error => console.log(error)
+      (error: HttpErrorResponse) => {
+        this.errLoad.title += 'las carreras.';
+        this.errLoad.text += error.message;
+        this.errLoad.show();
+      }
     );
     this.careers = new Array<Career>();
   }

@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
@@ -14,8 +16,15 @@ import { ResearchGroupService } from 'app/services/research-group.service';
 })
 
 
-export class AddResearchGroupComponent implements OnInit, OnDestroy {
+export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDestroy {
+  @ViewChild('errLoad') private errLoad: SwalComponent;
+  @ViewChild('sucAdd') private sucAdd: SwalComponent;
+  @ViewChild('errAdd') private errAdd: SwalComponent;
+  @ViewChild('sucUpd') private sucUpd: SwalComponent;
+  @ViewChild('errUpd') private errUpd: SwalComponent;
+
   @select() auxiliarID;
+
   researchGroup: ResearchGroup = new ResearchGroup();
 
   constructor(private permMan: PermissionManager,
@@ -23,38 +32,55 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["admin"]);
+    this.permMan.validateSession(['admin']);
   }
 
   ngAfterContentInit() {
-    this.auxiliarID.subscribe(id => {
+    this.auxiliarID.subscribe((id: number) => {
       if (id) {
         this.researchGroupService.get(id)
-          .subscribe((researchGroup: { research_group: ResearchGroup }) => {
-            this.researchGroup = researchGroup.research_group;
-          }, error => { }
+          .subscribe(
+            (researchGroup: { research_group: ResearchGroup }) => {
+              this.researchGroup = researchGroup.research_group;
+            },
+            (error: HttpErrorResponse) => {
+              this.errLoad.text += error.message;
+              this.errLoad.show();
+            }
           );
       }
     });
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR })
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
   }
 
   onSubmit() {
-    console.log("Adding a Group: " + this.researchGroup.name);
     if (this.researchGroup.id) {
-      this.researchGroupService.update(this.researchGroup.id, this.researchGroup)
-        .subscribe(res => alert("Research group updated !"),
-          error => { }
+      this.researchGroupService
+        .update(this.researchGroup.id, { research_group: this.researchGroup })
+        .subscribe(
+          (response: { research_group: ResearchGroup }) => {
+            this.sucUpd.show();
+          },
+          (error: HttpErrorResponse) => {
+            this.errUpd.text += error.message;
+            this.errUpd.show();
+          }
         );
     } else {
-      this.researchGroupService.create(this.researchGroup)
-        .subscribe(r => {
-          this.researchGroup = new ResearchGroup();
-          alert("Research group added !");
-        }, error => { }
+      this.researchGroupService
+        .create({ research_group: this.researchGroup })
+        .subscribe(
+          (response: { research_group: ResearchGroup }) => {
+            this.sucAdd.show();
+            this.researchGroup = new ResearchGroup();
+          },
+          (error: HttpErrorResponse) => {
+            this.errAdd.text += error.message;
+            this.errAdd.show();
+          }
         );
     }
   }

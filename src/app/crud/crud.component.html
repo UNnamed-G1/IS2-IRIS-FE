@@ -17,11 +17,18 @@
         <td *ngFor="let value of keys">
           {{row[value]}}
         </td>
-        <!-- URL should be moved to an anchor or button for free up space -->
-        <button type="button" class="btn btn-primary btn-xs" (click)="delete(row.id)">
+        <swal #deleteSwal
+          title="¿Eliminar {{ row[keys[0]] }}?"
+          text="Esta acción no se puede deshacer."
+          type="warning"
+          [showCancelButton]="true"
+          (confirm)="delete(row.id)">
+        </swal>
+        <button type="button" class="btn btn-primary btn-xs" [swal]="deleteSwal">
           <span class="glyphicon glyphicon-trash"></span>Eliminar</button>
         <button class="btn btn-primary btn-xs" (click)="update(row.id)">
           <span class="glyphicon glyphicon-edit"></span>Editar</button>
       </tr>
     </tbody>
   </table>
+</div>

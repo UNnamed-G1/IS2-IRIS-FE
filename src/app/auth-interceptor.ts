@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { PermissionManager } from 'app/permission-manager';
-import { ISession } from './redux/session';
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs/Observable';
 import { select } from '@angular-redux/store';
-import { AppState } from './redux/store';
-
+import { ISession } from 'app/redux/session';
+import { AppState } from 'app/redux/store';
+import { PermissionManager } from 'app/permission-manager';
+import swal from 'sweetalert2';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
@@ -12,7 +14,11 @@ import { Event } from 'app/classes/events';
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.css']
 })
-export class EventListComponent implements OnInit {
+export class EventListComponent implements OnInit, AfterContentInit {
+  @ViewChild('sucDel') private sucDel: SwalComponent;
+  @ViewChild('errDel') private errDel: SwalComponent;
+  @ViewChild('errEvents') private errEvents: SwalComponent;
+
   headers: Array<string> = ['Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
   keys: Array<string> = ['topic', 'description', 'date', 'research_group_id']; // 'research_group_name'];
   events: Array<Event>;
@@ -29,15 +35,15 @@ export class EventListComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["profesor"]);
+    this.permMan.validateSession(['profesor']);
   }
 
   ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({})
+      this.page = Object.assign({});
       this.page.actual = +params.page || 1;
       this.getEvents();
-    })
+    });
   }
 
   update(id: number) {
@@ -48,15 +54,28 @@ export class EventListComponent implements OnInit {
   delete(id: number) {
     this.eventService.delete(id)
       .subscribe(
-        r => this.getEvents(),
-        error => { });
+        (response: { event: Event }) => {
+          this.getEvents();
+          this.sucDel.show();
+        },
+        (error: HttpErrorResponse) => {
+          this.errDel.text += error.message;
+          this.errDel.show();
+        }
+      );
   }
 
   getEvents() {
     this.eventService.getAll(this.page.actual)
-      .subscribe((res: { events: Event[], total_pages: number }) => {
-        this.events = res.events;
-        this.page.total = res.total_pages;
-      }, error => { });
+      .subscribe(
+        (res: { events: Event[], total_pages: number }) => {
+          this.events = res.events;
+          this.page.total = res.total_pages;
+        },
+        (error: HttpErrorResponse) => {
+          this.errEvents.text += error.message;
+          this.errEvents.show();
+        }
+      );
   }
 }
