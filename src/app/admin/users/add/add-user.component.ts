@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterContentInit, ViewChild } from '@angular/core';
 import { NgRedux, select } from '@angular-redux/store';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
@@ -12,8 +14,15 @@ import { UserService } from 'app/services/user.service';
   styleUrls: ['./add-user.component.css']
 })
 
-export class AddUserComponent implements OnInit, OnDestroy {
+export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
+  @ViewChild('errLoadSwal') private errLoadSwal: SwalComponent;
+  @ViewChild('sucAddSwal') private sucAddSwal: SwalComponent;
+  @ViewChild('errAddSwal') private errAddSwal: SwalComponent;
+  @ViewChild('sucUpdSwal') private sucUpdSwal: SwalComponent;
+  @ViewChild('errUpdSwal') private errUpdSwal: SwalComponent;
+
   @select() auxiliarID;
+
   user: User = new User();
 
   constructor(private userService: UserService,
@@ -21,7 +30,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["admin"]);
+    this.permMan.validateSession(['admin']);
   }
 
   ngAfterContentInit() {
@@ -35,21 +44,35 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR })
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
   }
 
   public onSubmit() {
-    console.log("Adding a Group: " + this.user.name);
     if (this.user.id) {
-      this.userService.update(this.user.id, { user: this.user }).subscribe(r => {
-        console.log(r);
-        alert("User Updated !");
-      })
+      this.userService
+        .update(this.user.id, { user: this.user })
+        .subscribe(
+          (response: { user: User }) => {
+            this.sucUpdSwal.show();
+          },
+          (error: HttpErrorResponse) => {
+            this.errUpdSwal.text += error.message;
+            this.errUpdSwal.show();
+          }
+        );
     } else {
-      this.userService.create({ user: this.user }).subscribe(r => {
-        console.log(r);
-        alert("User Added !");
-      });
+      this.userService
+        .create({ user: this.user })
+        .subscribe(
+          (response: { user: User }) => {
+            this.sucAddSwal.show();
+            this.user = new User();
+          },
+          (error: HttpErrorResponse) => {
+            this.errAddSwal.text += error.message;
+            this.errAddSwal.show();
+          }
+        );
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -14,13 +14,17 @@ import { ResearchGroup } from 'app/classes/research-group';
   templateUrl: './research-list.component.html',
   styleUrls: ['./research-list.component.css']
 })
-export class ResearchListComponent implements OnInit {
+export class ResearchListComponent implements OnInit, AfterContentInit {
   @ViewChild('sucDelSwal') private sucDelSwal: SwalComponent;
-  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;  
+  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;
   @ViewChild('errRGsSwal') private errRGsSwal: SwalComponent;
 
-  headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico', 'Prioridades de investigación', 'Fecha de fundación', 'Clasificación', 'Fecha de clasificación', 'URL'];
-  keys: Array<string> = ['name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'classification_date', 'url'];
+  headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
+    'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
+    'Fecha de clasificación', 'URL'];
+  keys: Array<string> = ['name', 'description', 'strategic_focus',
+    'research_priorities', 'foundation_date', 'classification',
+    'classification_date', 'url'];
   researchGroups: Array<ResearchGroup>;
 
   page: {
@@ -35,7 +39,7 @@ export class ResearchListComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["admin"]);
+    this.permMan.validateSession(['admin']);
   }
 
   ngAfterContentInit() {
@@ -43,7 +47,7 @@ export class ResearchListComponent implements OnInit {
       this.page = Object.assign({});
       this.page.actual = +params.page || 1;
       this.getResearchGroups();
-    })
+    });
   }
 
   update(id: number) {
@@ -54,9 +58,9 @@ export class ResearchListComponent implements OnInit {
   delete(id: number) {
     this.researchGroupService.delete(id)
       .subscribe(
-        (response: {research_group: ResearchGroup}) => {
+        (response: { research_group: ResearchGroup }) => {
           this.getResearchGroups();
-          this.sucDelSwal.show();          
+          this.sucDelSwal.show();
         },
         (error: HttpErrorResponse) => {
           this.errDelSwal.text += error.message;
