@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs/Observable';
 import { select } from '@angular-redux/store';
 import { ISession } from 'app/redux/session';
 import { AppState } from 'app/redux/store';
@@ -23,20 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
         }
       });
     }
-    let handled = next.handle(req);
-    handled.subscribe(() => {} ,
-      error => {
-        /*if (error.status != 0) {
-          swal({
-            title: 'Falló la conexión',
-            text: 'Código de error: ' + error.status,
-            type: 'error',
-            buttonsStyling: false,
-            confirmButtonClass: 'btn btn-primary'
-          })
-        }*/
-      }
-    )
-    return handled;
+    return next.handle(req);
   }
 }
