@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
 import { UserService } from 'app/services/user.service';
 import { LoginService } from 'app/services/login.service';
@@ -16,6 +18,9 @@ import { PermissionManager } from 'app/permission-manager';
 })
 
 export class LoginComponent implements OnInit {
+  @ViewChild('errGoogle') private errGoogle: SwalComponent;
+  @ViewChild('errLogin') private errLogin: SwalComponent;
+
   userSignIn: { username: string, password: string };
 
   constructor(private socialAuthService: AuthService,
@@ -36,31 +41,45 @@ export class LoginComponent implements OnInit {
   googleSignIn() {
     this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       userData => this.fillSession({ access_token: userData.idToken }),
-      error => console.error(error.message)
+      (error: HttpErrorResponse) => {
+        this.errGoogle.text += error.message;
+        this.errGoogle.show();
+      }
     );
   }
-
+  
   private fillSession(userAuth) {
-    this.loginService.getUserToken(userAuth).subscribe(response => {
-      let session: ISession;
-      session = Object.assign({}, session, { token: response['jwt'] });
-      this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
-      this.userService.getCurrentUser().subscribe(
+    this.loginService.getUserToken(userAuth)
+      .subscribe(
         response => {
-          let data = response['user'];
-          if (data.photo)
-            data.photo = data.photo.link;
-          Object.assign(session, {
-            name: data.full_name,
-            type: data.user_type,
-            username: data.username,
-            photo: data.photo
-          });
+          let session: ISession;
+          session = Object.assign({}, session, { token: response['jwt'] });
           this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
+          this.userService.getCurrentUser().subscribe(
+            user => {
+              const data = user.user;
+              if (data.photo) {
+                data.photo = data.photo.link;
+              }
+              Object.assign(session, {
+                name: data.full_name,
+                type: data.user_type,
+                username: data.username,
+                photo: data.photo
+              });
+              this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
+            },
+            (error: HttpErrorResponse) => {
+              this.errLogin.text += error.message;
+              this.errLogin.show();
+            });
+          this.permMan.validateNotLogged();
         },
-        error => console.error(error.message));
-      this.permMan.validateNotLogged();
-    });
+        (error: HttpErrorResponse) => {
+          this.errLogin.text += error.message;
+          this.errLogin.show();
+        }
+      );
   }
 
 }
