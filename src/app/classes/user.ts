@@ -14,7 +14,7 @@ export class User {
   public office: string;
   public cvlac_link: string;
   public full_name: string;
-  public user_type: number;
+  public user_type: string;
   public career_id: number;
   public research_subjects: ResearchSubject[];
   public career: Career;

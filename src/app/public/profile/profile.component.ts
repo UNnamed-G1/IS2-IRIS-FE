@@ -13,7 +13,6 @@ import { User } from 'app/classes/user';
 import { Faculty } from 'app/classes/faculty';
 import { Department } from 'app/classes/department';
 import { Career } from 'app/classes/career';
-import { Z_SYNC_FLUSH } from 'zlib';
 
 @Component({
   selector: 'app-profile',
@@ -77,7 +76,7 @@ export class ProfileComponent implements OnInit {
     }
     
     this.userService.update(this.user.id, { user: u }).subscribe(
-      response => {
+      (response: { user: User }) => {
         Object.assign(this.user, response.user);
         if (this.user.career) {
           this.setDepartments(this.user.career_id);
