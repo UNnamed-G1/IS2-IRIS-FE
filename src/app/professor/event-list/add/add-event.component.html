@@ -1,32 +1,71 @@
-<div class="jumbotron">
-	<div class="container">
-		<form (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label class="col-xs-4 control-label" for="">id: </label>
-				<div class="col-xs-8">
-					<input type="number" style="width: 300px" class="form-control" required [(ngModel)]="event.id" name="id">
-   	    </div>
-        <label class="col-xs-4 control-label" for="">research_group_id: </label>
-				<div class="col-xs-8">
-					<input type="number" style="width: 300px" class="form-control" required [(ngModel)]="event.research_group_id" name="research_group_id">
-   	    </div>
-				<label class="col-xs-4 control-label" for="">topic: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="event.topic" name="topic">
-				</div>
-				<label class="col-xs-4 control-label" for="">description: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="event.description" name="description">
-				</div>
-				<label class="col-xs-4 control-label" for="">date: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="event.date" name="date">
-				</div>
-				<div>
-					<button type="submit" class="btn btn-default">Enviar</button>
-					<button type="button" routerLink="/event-list" role="button">Volver</button>
+<main class="detalle">
+	<div class="breadcrumb-class">Está en:
+		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+		<a routerLink="/event-list" target="_self" title="Inicio">Lista de eventos</a>/
+		<span>{{ (auxiliarID | async) ? 'Añadir evento' : 'Editar evento' }}</span>
+	</div>
+	<div class="container-fluid">
+		<div class="container-fluid main-container">
+			<div class="row">
+				<div class="col-md-6">
+					<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+
+						<!-- Topic -->
+						<div class="form-group">
+							<label class="form-label">Tema</label>
+							<input type="text" class="form-control" formControlName="topic" placeholder="Tema">
+							<form-control-errors [control]="topic"></form-control-errors>
+						</div>
+
+						<!-- Description -->
+						<div class="form-group">
+							<label class="form-label">Descripción</label>
+							<input type="text" class="form-control" formControlName="description" placeholder="Descripción">
+							<form-control-errors [control]="description"></form-control-errors>
+						</div>
+
+						<!-- Event type -->
+						<div class="form-group">
+							<label class="form-label">Tipo de evento</label>
+							<input type="text" class="form-control" formControlName="type_ev" placeholder="Tipo de evento">
+							<form-control-errors [control]="type_ev"></form-control-errors>
+						</div>
+
+						<!-- Date -->
+						<div class="form-group">
+							<label class="form-label">Fecha</label>
+							<input type="text" class="form-control" formControlName="date" placeholder="Fecha">
+							<form-control-errors [control]="date"></form-control-errors>
+						</div>
+
+						<!-- Frequence -->
+						<div class="form-group">
+							<label class="form-label">Frecuencia</label>
+							<input type="text" class="form-control" formControlName="frequence" placeholder="Frecuencia">
+							<form-control-errors [control]="frequence"></form-control-errors>
+						</div>
+
+						<!-- Duration -->
+						<div class="form-group">
+							<label class="form-label">Duración</label>
+							<input type="text" class="form-control" formControlName="duration" placeholder="Duración">
+							<form-control-errors [control]="duration"></form-control-errors>
+						</div>
+
+						<!-- State -->
+						<div class="form-group">
+							<label class="form-label">Estado</label>
+							<input type="text" class="form-control" formControlName="state" placeholder="Estado">
+							<form-control-errors [control]="state"></form-control-errors>
+						</div>
+
+						<div>
+							<button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Submit</button>
+							<button type="button" class="btn btn-danger" routerLink="/event-list">Volver</button>
+						</div>
+					</form>
 				</div>
 			</div>
-		</form>
+		</div>
 	</div>
-</div>
+</main>
