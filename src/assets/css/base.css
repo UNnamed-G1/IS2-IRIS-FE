@@ -42,3 +42,7 @@ app-footer {
   background-color: #eee;
   border-radius: 6px;
 }
+
+.btn-swal {
+  margin: 0 .3125em;
+}

@@ -2,9 +2,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module';
 import { FormsModule } from '@angular/forms';
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
@@ -61,9 +63,9 @@ import { FacultyService } from './services/faculty.service'
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
+
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
-
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { DocumentsComponent } from './documents/documents.component';
@@ -161,14 +163,19 @@ export const appRoutes: Routes = [
     redirectTo: 'NotFound' }*/
 ];
 
-
 @NgModule({
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
+    SweetAlert2Module.forRoot({
+      buttonsStyling: false,
+      confirmButtonClass: 'btn btn-primary btn-swal',
+      cancelButtonClass: 'btn btn-danger btn-swal'
+    }),
     SocialLoginModule,
     FormsModule,
     HttpClientModule,
+    NgHttpLoaderModule,
     NgReduxModule
   ],
   declarations: [
