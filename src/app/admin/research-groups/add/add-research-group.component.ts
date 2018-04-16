@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -17,10 +18,12 @@ import { ResearchGroupService } from 'app/services/research-group.service';
 export class AddResearchGroupComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
   researchGroup: ResearchGroup = new ResearchGroup();
+  rgForm: FormGroup;
 
   constructor(private permMan: PermissionManager,
     private researchGroupService: ResearchGroupService,
-    private ngRedux: NgRedux<AppState>) { }
+    private ngRedux: NgRedux<AppState>,
+    private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.permMan.validateSession(["admin"]);
@@ -32,10 +35,12 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
         this.researchGroupService.get(id)
           .subscribe((researchGroup: { research_group: ResearchGroup }) => {
             this.researchGroup = researchGroup.research_group;
+            this.createRGForm();
           }, error => { }
           );
       }
     });
+    this.createRGForm();
   }
 
   ngOnDestroy() {
@@ -43,19 +48,52 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log("Adding a Group: " + this.researchGroup.name);
+    if (this.rgForm.pristine) {
+      return;
+    }
+    const rg = new ResearchGroup();
+    for (const k in this.rgForm.controls) {
+      if (this.rgForm.get(k).dirty) {
+        rg[k] = this.rgForm.get(k).value;
+      }
+    }
     if (this.researchGroup.id) {
-      this.researchGroupService.update(this.researchGroup.id, this.researchGroup)
-        .subscribe(res => alert("Research group updated !"),
+      this.researchGroupService.update(this.researchGroup.id, rg)
+        .subscribe(
+          (response: { research_group: ResearchGroup }) => {
+            Object.assign(this.researchGroup, response.research_group);
+            this.createRGForm();
+          },
           error => { }
         );
     } else {
-      this.researchGroupService.create(this.researchGroup)
+      this.researchGroupService.create(rg)
         .subscribe(r => {
-          this.researchGroup = new ResearchGroup();
-          alert("Research group added !");
+          this.rgForm.reset();
         }, error => { }
         );
     }
   }
+
+  private createRGForm() {
+    this.rgForm = this.formBuilder.group({
+      name: [this.researchGroup.name, [Validators.required, Validators.maxLength(100)]],
+      description: [this.researchGroup.description, [Validators.required, Validators.maxLength(1000)]],
+      strategic_focus: [this.researchGroup.strategic_focus, [Validators.required, Validators.maxLength(1000)]],
+      research_priorities: [this.researchGroup.research_priorities, [Validators.required, Validators.maxLength(1000)]],
+      foundation_date: [this.researchGroup.foundation_date, [Validators.required]],
+      classification: [this.researchGroup.classification, [Validators.required]],
+      date_classification: [this.researchGroup.date_classification, [Validators.required]],
+      url: [this.researchGroup.url]
+    });
+  }
+
+  get name() { return this.rgForm.get('name'); }
+  get description() { return this.rgForm.get('description'); }
+  get strategic_focus() { return this.rgForm.get('strategic_focus'); }
+  get research_priorities() { return this.rgForm.get('research_priorities'); }
+  get foundation_date() { return this.rgForm.get('foundation_date'); }
+  get classification() { return this.rgForm.get('classification'); }
+  get date_classification() { return this.rgForm.get('date_classification'); }
+  get url() { return this.rgForm.get('url'); }
 }

@@ -69,7 +69,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
     if (u.email) {
       u.username = u.email.split("@")[0];
     }
-    console.log(u)
     if (this.user.id) {
       this.userService.update(this.user.id, { user: u }).subscribe((response: { user: User }) => {
         Object.assign(this.user, response.user);
