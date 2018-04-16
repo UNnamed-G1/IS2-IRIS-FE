@@ -66,6 +66,11 @@ export class UsersComponent implements OnInit {
       );
   }
 
+  details(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/profile');
+  }
+
   getUsers() {
     this.userService.getAll(this.page.actual)
       .subscribe(
