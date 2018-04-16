@@ -9,32 +9,47 @@
           <div class="field">
             <h4>{{ researchGroup.description }}</h4>
           </div>
+          <label for="strategic_focus">Enfoque estratégico</label>
           <div class="field">
             <h4>{{ researchGroup.strategic_focus }}</h4>
           </div>
+          <label for="research_priorities">Prioridades de investigación</label>
           <div class="field">
             <h4>{{ researchGroup.research_priorities }}</h4>
           </div>
+        </div>
+        <div class="col-sm-5 col-md-5">
+          <label for="foundation_date">Fecha de fundación</label>
           <div class="field">
             <h4>{{ researchGroup.foundation_date }}</h4>
           </div>
+          <label for="classification">Clasificación</label>
           <div class="field">
             <h4>{{ researchGroup.classification }}</h4>
           </div>
+          <label for="date_classification">Fecha de clasificación</label>
           <div class="field">
             <h4>{{ researchGroup.date_classification }}</h4>
           </div>
+          <label for="Url">url</label>
           <div class="field">
             <h4>{{ researchGroup.url }}</h4>
           </div>
-          <div *ngFor="let member of researchGroup.members" class="field">
-            <h4>{{member.user.full_name}}</h4>
-          </div>
         </div>
+          <label for="researchGroup.members">Miembros</label>
+          <div *ngFor="let member of researchGroup.members" class="field">
+            <a href="details(member.user.id)">{{member.user.full_name}}</a>
+            <h4>{{member.user.id}}</h4>
+            <app-crud [columns]="headers" [keys]="keys" [rows]="users" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
+            <button class="btn btn-primary btn-xs" (click)="details(30)" (onDetails)="details($event)">
+              <span class="glyphicon glyphicon-search"></span> Details</button>
+            <button class="btn btn-primary btn-xs" (click)="update(30)">
+                <span class="glyphicon glyphicon-edit"></span>Editar</button>
+          </div>
       </div>
+    </div>
       <button class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
-      </div>
       <div class="row" [hidden]="!showInput">
         <form (ngSubmit)="onSubmit()">
           <div class="col-sm-5 col-md-5">
