@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
             data.photo = data.photo.link;
           Object.assign(session, {
             name: data.full_name,
-            type: data.user_type,
+            type: data.user_type.toLowerCase(),
             username: data.username,
             photo: data.photo
           });

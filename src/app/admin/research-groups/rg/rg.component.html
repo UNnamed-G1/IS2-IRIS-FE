@@ -67,14 +67,14 @@
             </div>
             <div class="panel-body">
               <div class="research-group">
-                <div>
+                <div *ngFor="let subject of subjects">
                   <div class="media">
                     <div class="media-left media-middle">
                         <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
                       </div>
 
                       <div class="media-body">
-                        <h4 class="media-heading">subject name</h4>
+                        <h4 class="media-heading">{{subject.name}}</h4>
                         <a href="#">Mas informacion</a>
                       </div>
                   </div>

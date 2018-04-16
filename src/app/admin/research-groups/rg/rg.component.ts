@@ -5,6 +5,7 @@ import { AppState } from '../../../redux/store';
 import { REMOVE_AUXILIAR } from '../../../redux/actions';
 import { PermissionManager } from '../../../permission-manager';
 import { ResearchGroup } from '../../../classes/research-group';
+import { ResearchSubject } from '../../../classes/research-subject';
 import { ResearchGroupService } from '../../../services/research-group.service';
 
 @Component({
@@ -15,8 +16,9 @@ import { ResearchGroupService } from '../../../services/research-group.service';
 
 export class RgComponent implements OnInit {
   @select() auxiliarID;
-  researchGroup:ResearchGroup;
+  researchGroup: ResearchGroup;
   events: Array<Event>;
+  subjects: Array<ResearchSubject>;
   showInput: boolean = false;
 
   constructor(private researchGroupService: ResearchGroupService,
@@ -33,12 +35,12 @@ export class RgComponent implements OnInit {
             this.researchGroupService.getEvents(this.researchGroup.id).subscribe((res: {events: Event[]}) => {
               this.events = res.events;
             });
+            this.researchGroupService.getSubjects(this.researchGroup.id).subscribe((res: {subjects: ResearchSubject[]}) => {
+              this.subjects = res.subjects;
+            });
           }, error => { }
           );
       }
-    });
-    this.researchGroupService.getEvents(2).subscribe((res: {events: Event[]}) => {
-      this.events = res.events;
     });
   }
 

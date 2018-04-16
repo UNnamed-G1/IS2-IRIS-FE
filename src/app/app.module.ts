@@ -50,6 +50,8 @@ import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
+import { ReportsComponent } from './public/reports/reports.component';
+import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -63,11 +65,13 @@ import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
-
+import { ReportService } from './services/report.service';
+import { ResearchSubjectService } from './services/research-subject.service';
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+
 
 export const appRoutes: Routes = [
   {
@@ -151,6 +155,14 @@ export const appRoutes: Routes = [
     component: RgComponent
   },
   {
+    path: 'reports',
+    component: ReportsComponent
+  },
+  {
+    path: 'research-subjects',
+    component: ResearchSubjectsComponent
+  },
+  {
     path: 'documents',
     component: DocumentsComponent
   }/*,
@@ -201,7 +213,9 @@ export const appRoutes: Routes = [
     FilterPipe,
     PaginationComponent,
     CrudComponent,
-    DocumentsComponent
+    DocumentsComponent,
+    ReportsComponent,
+    ResearchSubjectsComponent
   ],
   providers: [
     {
@@ -225,7 +239,9 @@ export const appRoutes: Routes = [
     DepartmentService,
     FacultyService,
     ResearchGroupService,
-    UserService
+    UserService,
+    ReportService,
+    ResearchSubjectService
   ],
   bootstrap: [AppComponent]
 })
@@ -249,7 +265,7 @@ export class AppModule {
               type: ADD_SESSION, session:
                 Object.assign({}, {
                   name: data.full_name,
-                  type: data.user_type,
+                  type: data.user_type.toLowerCase(),
                   username: data.username,
                   photo: data.photo
                 })
