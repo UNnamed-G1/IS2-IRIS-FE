@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgRedux, select } from '@angular-redux/store';
-import { AppState } from '../../../redux/store';
-import { REMOVE_AUXILIAR } from '../../../redux/actions';
-import { PermissionManager } from '../../../permission-manager';
-import { ResearchGroup } from '../../../classes/research-group';
-import { ResearchSubject } from '../../../classes/research-subject';
-import { ResearchGroupService } from '../../../services/research-group.service';
+import { AppState } from 'app/redux/store';
+import { REMOVE_AUXILIAR } from 'app/redux/actions';
+import { PermissionManager } from 'app/permission-manager';
+import { ResearchGroup } from 'app/classes/research-group';
+import { ResearchSubject } from 'app/classes/research-subject';
+import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
   selector: 'app-rg',
@@ -35,8 +35,8 @@ export class RgComponent implements OnInit {
             this.researchGroupService.getEvents(this.researchGroup.id).subscribe((res: {events: Event[]}) => {
               this.events = res.events;
             });
-            this.researchGroupService.getSubjects(this.researchGroup.id).subscribe((res: {subjects: ResearchSubject[]}) => {
-              this.subjects = res.subjects;
+            this.researchGroupService.getSubjects(this.researchGroup.id).subscribe((res: {research_subjects: ResearchSubject[]}) => {
+              this.subjects = res.research_subjects;
             });
           }, error => { }
           );

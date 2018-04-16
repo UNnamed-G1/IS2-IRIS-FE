@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ResearchGroup } from '../../classes/research-group';
-import { ResearchGroupService } from '../../services/research-group.service';
+import { NgRedux } from '@angular-redux/store';
+import { AppState } from 'app/redux/store';
+import { ADD_AUXILIAR } from 'app/redux/actions';
+import { ResearchGroup } from 'app/classes/research-group';
+import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
   selector: 'app-research-groups',
@@ -9,7 +12,7 @@ import { ResearchGroupService } from '../../services/research-group.service';
   styleUrls: ['./research-groups.component.css']
 })
 export class ResearchGroupsComponent implements OnInit {
-  columns = ['id', 'name', 'description', 'strategic_focus', 'reasearch_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
+  columns = ['id', 'name', 'description', 'strategic_focus', 'reasearch_priorities', 'foundation_date', 'classification', 'date_classification', 'url', 'photo'];
   rows: Array<ResearchGroup>;
   news: Array<ResearchGroup>;
 
@@ -19,7 +22,7 @@ export class ResearchGroupsComponent implements OnInit {
   };
 
   constructor(private researchGroupService: ResearchGroupService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute, private router: Router, private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -36,7 +39,8 @@ export class ResearchGroupsComponent implements OnInit {
     });
   }
 
-  details(id: number) {
-    
+  openRG(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/rg');
   }
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppState } from 'app/redux/store';
+import { ADD_AUXILIAR } from 'app/redux/actions';
 import { Event } from 'app/classes/events';
 import { EventService } from 'app/services/event.service';
 

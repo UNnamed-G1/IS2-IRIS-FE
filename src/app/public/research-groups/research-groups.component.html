@@ -53,26 +53,27 @@
 		  	</a>
 		</div>
 	</div>
-
+ 
+ 	<!-- {{row.photo.picture.url}} -->
 	<div class="row" id="research_groups_view">
 		<div class="research-group" *ngFor="let row of rows">
 			<div class="col-xs-6 col-md-3 col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel panel-heading">
-						<h5 class="text-center">{{row.name}}</h5>
+						<h4 class="text-center">{{row.name}}</h4>
 					</div>
 
-					<div class="panel panel-body">
+					<div class="panel panel-body" style="background-image: url(http://localhost:3000/uploads/pictures/research_group/2bed1f34-1d81-48d4-9319-de5f34bf4923.png);">
 						<div class="screen">
 							<div class="row">
 								<div class="col-sm-12 center-block">
 									<div class="box">
 										<p class="white-text ">{{row.description}}</p>
-									</div>
-									<div class="glyphicon pull-right pull-down" align="bottom">
-										<a>
-	          					<span class="glyphicon glyphicon-eye-open align-index"></span>
-	        					</a>
+										<div class="glyphicon pull-right pull-down">
+											<a (click)="openRG(row.id)">
+	          						<span class="glyphicon glyphicon-eye-open"></span>
+	        						</a>
+										</div>
 									</div>
 								</div>
 							</div>
