@@ -11,7 +11,7 @@ export class ManageComponent implements OnInit {
   constructor(private permMan: PermissionManager) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["admin"]);
+    this.permMan.validateSession(["Admin"]);
   }
 
 }

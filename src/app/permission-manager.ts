@@ -13,7 +13,7 @@ export class PermissionManager {
     private router: Router) { }
 
 
-  public validateSession(userTypes = ['estudiante', 'profesor', 'admin'], route = '/'): boolean {
+  public validateSession(userTypes = ['Estudiante', 'Profesor', 'Admin'], route = '/'): boolean {
     return this.validate(!this.loggedUser() || !this.authorizedUser(userTypes), route);
   }
 

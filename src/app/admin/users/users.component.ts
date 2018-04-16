@@ -36,7 +36,7 @@ export class UsersComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["admin"]);
+    this.permMan.validateSession(["Admin"]);
   }
 
   ngAfterContentInit() {

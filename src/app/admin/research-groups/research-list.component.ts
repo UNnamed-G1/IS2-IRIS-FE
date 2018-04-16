@@ -39,7 +39,7 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['admin']);
+    this.permMan.validateSession(['Admin']);
   }
 
   ngAfterContentInit() {

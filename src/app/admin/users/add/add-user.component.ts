@@ -30,7 +30,7 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['admin']);
+    this.permMan.validateSession(['Admin']);
   }
 
   ngAfterContentInit() {

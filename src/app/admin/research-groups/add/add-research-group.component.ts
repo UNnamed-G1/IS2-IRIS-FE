@@ -32,7 +32,7 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['admin']);
+    this.permMan.validateSession(['Admin']);
   }
 
   ngAfterContentInit() {

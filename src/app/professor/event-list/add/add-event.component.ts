@@ -29,7 +29,7 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['profesor']);
+    this.permMan.validateSession(['Profesor']);
   }
 
   ngAfterContentInit() {

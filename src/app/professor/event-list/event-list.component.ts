@@ -35,7 +35,7 @@ export class EventListComponent implements OnInit, AfterContentInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['profesor']);
+    this.permMan.validateSession(['Profesor']);
   }
 
   ngAfterContentInit() {
