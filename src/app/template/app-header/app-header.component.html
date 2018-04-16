@@ -42,7 +42,7 @@
 						<a *ngIf="!(isLogged | async)" routerLink="/login">Iniciar sesión</a>
 						<a *ngIf="(isLogged | async)" routerLink="/profile">
 							<img src="{{(session | async).photo ? (session | async).photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';"/>
-							{{(session | async).name}}
+							{{(session | async).name + " - " + (session | async).type}}
 						</a>
 					</li>
 					<li class="item_NavBar #" *ngIf="(isLogged | async)">

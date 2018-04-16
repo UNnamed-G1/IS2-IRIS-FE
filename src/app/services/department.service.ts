@@ -11,7 +11,7 @@ export class DepartmentService extends CommonService {
   }
 
   public getByFaculty(facId: number) {
-    return this.applyRequestPath(this.get, "depts_by_faculty%23fac_id=" + facId)
+    return this.applyRequestPath(this.get, "depts_by_faculty&fac_id=" + facId)
   }
 
 }
