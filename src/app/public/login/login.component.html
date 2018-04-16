@@ -10,13 +10,13 @@
 			<div class="col-md-6 col-item left-item">
 				<h2 class="form-signin-header">Inicia sesión</h2><br>
 				<form class="signin-form" [formGroup]="signInForm" (ngSubmit)="signIn()">
-          <!-- Email -->
+          <!-- Username -->
           <div class="form-group">
-            <label class="form-label">Correo</label>
-            <input type="email" class="form-control" formControlName="email" placeholder="Correo institucional">
-            <form-control-errors [control]="email"
-            [required]="'Por favor introduce tu email.'"
-            [pattern]="'Recuerda que el correo debe ser usuario@unal.edu.co.'"></form-control-errors>
+            <label class="form-label">Usuario</label>
+            <input type="text" class="form-control" formControlName="username" placeholder="Usuario UNAL">
+            <form-control-errors [control]="username"
+            [required]="'Por favor introduce tu usuario.'"
+            [pattern]="'Recuerda que el usuario sólo puede tener letras.'"></form-control-errors>
           </div>
           <!-- Password -->
           <div class="form-group">

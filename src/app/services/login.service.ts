@@ -10,11 +10,14 @@ export class LoginService extends CommonService {
   }
 
   public getUserToken(body: any) {
-    let googleSession: boolean = ("access_token" in body);
-    let b = { auth: Object.assign({}, body) };
-    if (googleSession)
-      return this.applyRequestPath(this.create, "google_user_token", [b]);
-    return this.applyRequestPath(this.create, "user_token", [b]);
+    let path = '', b = body;
+    if ('access_token' in body) {
+      path = 'google_';
+    } else {
+      b = { email: body.username + '@unal.edu.co', password: body.password };
+    }
+    b = { auth: Object.assign({}, b) };
+    return this.applyRequestPath(this.create, path + 'user_token', [b]);
   }
 
 }

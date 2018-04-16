@@ -67,11 +67,11 @@ export class LoginComponent implements OnInit {
 
   private createSignInForm() {
     this.signInForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.pattern("[a-z]+@unal.edu.co")]],
+      username: ['', [Validators.required, Validators.pattern("[a-z]+")]],
       password: ['', [Validators.required]]
     });
   }
 
-  get email() { return this.signInForm.get('email') }
-  get password() { return this.signInForm.get('password') }
+  get username() { return this.signInForm.get('username'); }
+  get password() { return this.signInForm.get('password'); }
 }
