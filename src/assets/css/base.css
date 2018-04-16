@@ -76,17 +76,17 @@ app-footer {
   font-size: 1.15rem;
 }
 
-.invalid-feedback.warning {
+.invalid-feedback.warning small {
   color: #f0ad4e;
 }
 
-.invalid-feedback.error {
+.invalid-feedback.error small {
   color: #d9534f;
 }
 
 /* Success */
 
-.form-control.ng-valid, .form-control.ng-valid:focus {
+.form-control.ng-valid.ng-dirty, .form-control.ng-valid.ng-dirty:focus {
   padding-right: 2.25rem;
   border-left: 5px solid;
   border-color: #3c763d;

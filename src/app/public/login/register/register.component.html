@@ -49,7 +49,7 @@
                 <form-control-errors [control]="password"
                 [required]="'Por favor digita tu contraseña.'"></form-control-errors>
                 <!-- Block validation for password matches -->
-                <div class="invalid-feedback" *ngIf="password.valid && passwordConf.invalid && !(passwordConf.errors.required || passwordConf.errors.minlength) && passwords.errors">
+                <div class="invalid-feedback error" *ngIf="password.valid && passwordConf.invalid && !(passwordConf.errors.required || passwordConf.errors.minlength) && passwords.errors">
                   <small *ngIf="passwords.errors.mismatch">Las contraseñas no coinciden</small>
                 </div>
               </div>

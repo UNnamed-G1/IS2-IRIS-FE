@@ -36,7 +36,7 @@ export class RegisterComponent implements OnInit {
     };*/
     this.userService.create({ "user": user })
       .subscribe(
-        response => console.log("¡Usuario registrado!"),
+        response => this.registerForm.reset(),
         error => console.error(error.message)
       );
   }
@@ -58,6 +58,10 @@ export class RegisterComponent implements OnInit {
   private passwordMatchValidator(g: FormGroup) {
     let pass = g.get('password'),
       passConf = g.get('password_confirmation');
+    if (pass.dirty)
+      passConf.markAsTouched();
+    if (passConf.dirty)
+      pass.markAsTouched();
     if (pass.invalid || (passConf.invalid && (passConf.errors.required || passConf.errors.minlength)))
       return { 'mismatch': true };
     let ans = pass.value === passConf.value ? null : { 'mismatch': true };

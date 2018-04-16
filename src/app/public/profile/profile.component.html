@@ -37,31 +37,89 @@
         </div>
       </div>
       <div class="row" [hidden]="!showInput">
-        <form (ngSubmit)="updateProfile()">
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
             <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image" />
           </div>
           <div class="col-sm-5 col-md-5">
-            <div class="row">
-              <div class="col-md-6">
-                <label for="inputName">Nombres</label>
-                <input id="inputName" type="text" class="form-control" required [(ngModel)]="user.name" name="Name" />
-              </div>
-              <div class="col-md-6">
-                <label for="inputLastName">Apellidos</label>
-                <input id="inputLastName" type="text" class="form-control" required [(ngModel)]="user.lastname" name="lastname" />
+
+            <!-- Name-->
+            <div class="form-group" formGroupName="name">
+              <label class="form-label">Nombres y apellidos</label>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" formControlName="first" placeholder="Nombres">
+                  <form-control-errors [control]="first"
+                  [required]="'Por favor introduce tus nombres.'"
+                  [pattern]="'Tus nombres no pueden contener símbolos.'"
+                  [minLength]="'Por favor introduce tus nombres completos.'"
+                  [maxLength]="'Tus nombres son muy largos.'"></form-control-errors>
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="text" class="form-control" formControlName="last" placeholder="Apellidos">
+                  <form-control-errors [control]="last"
+                  [required]="'Por favor introduce tus apellidos.'"
+                  [pattern]="'Tus apellidos no pueden contener símbolos.'"
+                  [minLength]="'Por favor introduce tus apellidos completos.'"
+                  [maxLength]="'Tus apellidos son muy largos.'"></form-control-errors>
+                </div>
               </div>
             </div>
-            <label for="inputProfessionalProfile">Perfil profesional</label>
-            <textarea id="inputProfessionalProfile" type="text" class="form-control" required [(ngModel)]="user.professional_profile" name="professional_profile" rows="3"></textarea>
+            
+            <!-- Password and confirmation-->
+            <div class="form-group" formGroupName="passwords">
+              <label class="form-label">Contraseña</label>
+              <div class="row">
+                <div class="form-group col-md-6">
+                  <input type="password" class="form-control" formControlName="password" placeholder="Contraseña">
+                  <form-control-errors [control]="password"></form-control-errors>
+                  <!-- Block validation for password matches -->
+                  <div class="invalid-feedback error" *ngIf="(password.dirty && password.valid) && (passwordConf.pristine || (passwordConf.dirty && passwordConf.invalid && !passwordConf.errors.minlength)) && passwords.errors">
+                    <small *ngIf="passwords.errors.mismatch">Las contraseñas no coinciden</small>
+                  </div>
+                </div>
+                <div class="form-group col-md-6">
+                  <input type="password" class="form-control" formControlName="password_confirmation" placeholder="Confirmar contraseña">
+                  <form-control-errors [control]="passwordConf"
+                  [minLength]="'Completa tu contraseña.'"></form-control-errors>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Professional profile -->
+            <div class="form-group">
+              <label class="form-label">Perfil profesional</label>
+              <textarea  type="text" class="form-control" formControlName="professional_profile" placeholder="Perfil profesional" rows="3"></textarea>
+              <form-control-errors [control]="professional_profile"
+              [required]="'Por favor introduce tu perfil profesional.'"
+              [maxLength]="'Tu perfil profesional es muy largo, resúmelo un poco.'"></form-control-errors>
+            </div>
           </div>
+          
           <div class="col-sm-5 col-md-5">
-            <label for="inputPhone">Teléfono</label>
-            <input id="inputPhone" type="text" class="form-control" placeholder="Teléfono" required [(ngModel)]="user.phone" name="phone" />
-            <label *ngIf="user.user_type == 'profesor'" for="inputOffice">Oficina</label>
-            <input *ngIf="user.user_type == 'profesor'" id="inputOffice" type="text" class="form-control" placeholder="Oficina" required [(ngModel)]="user.office" name="office" />
-            <label for="inputCvLAC">CvLAC link</label>
-            <input id="inputCvLAC" type="text" class="form-control" placeholder="CvLAC" required [(ngModel)]="user.cvlac_link" name="cvlac_link" />
+            <div [ngClass]="{ 'row': user.user_type != 'estudiante' } ">
+              <!-- Phone -->
+              <div class="form-group" [ngClass]="{ 'col-md-6': user.user_type != 'estudiante' } ">
+                <label class="form-label">Teléfono</label>
+                <input type="text" class="form-control" formControlName="phone" placeholder="Teléfono">
+                <form-control-errors [control]="phone"
+                [pattern]="'Tu teléfono sólo debe contener números.'"></form-control-errors>
+              </div>
+              <!-- Office -->
+              <div class="form-group col-md-6" *ngIf="user.user_type != 'estudiante'">
+                <label class="form-label">Oficina</label>
+                <input type="text" class="form-control" formControlName="office" placeholder="Oficina">
+                <form-control-errors [control]="office"></form-control-errors>
+              </div>
+            </div>
+            
+            <!-- CvLAC -->
+            <div class="form-group">
+              <label class="form-label">CvLAC</label>
+              <input type="text" class="form-control" formControlName="cvlac_link" placeholder="URL de CvLAC">
+              <form-control-errors [control]="cvlac_link"></form-control-errors>
+            </div>
+            
             <div id="dependencies-dropdowns" class="row">
               <div id="faculty-dropdown" class="col-md-4">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
@@ -108,7 +166,7 @@
             </div>
             <br>
             <div class="btn-group">
-              <button type="submit" class="btn btn-primary">Guardar</button>
+                <button class="btn btn-primary" type="submit" [disabled]="profileForm.invalid">Registrarse</button>
               <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
             </div>
           </div>
@@ -164,11 +222,11 @@
         </div>
       </div>
     </div>
-    <div *ngIf="user.research_subjects">
+    <div *ngIf="user.events">
       <div *ngIf="user.events.length" class="container-fluid main-container">
         <h2>Eventos</h2><br>
         <div class="row items-row">
-          <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-3">
+          <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-2">
             <div class="card" routerLink="/">
               <div class="header">
                 <b>{{ ev.topic }}</b>
