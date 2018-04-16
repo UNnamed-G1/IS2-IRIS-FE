@@ -17,6 +17,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
   user: User = new User();
   userForm: FormGroup;
+  type: string[] = ['Estudiante', 'Profesor', 'Admin'];
 
   constructor(private userService: UserService,
     private permMan: PermissionManager,
@@ -66,8 +67,11 @@ export class AddUserComponent implements OnInit, OnDestroy {
       });
       delete u['passwords'];
     }
-    if (u.email) {
-      u.username = u.email.split("@")[0];
+    if (u.username) {
+      u.email = u.username + '@unal.edu.co';
+    }
+    if (u.user_type) {
+      u.user_type = u.user_type.toLowerCase();
     }
     if (this.user.id) {
       this.userService.update(this.user.id, { user: u }).subscribe((response: { user: User }) => {
@@ -103,7 +107,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
         [Validators.required, Validators.pattern("[a-zA-Z ]*"),
         Validators.minLength(3), Validators.maxLength(100)]]
       }),
-      email: [this.user.email, [Validators.required, Validators.pattern("[a-z]+@unal.edu.co")]],
+      username: [this.user.username, [Validators.required, Validators.pattern("[a-z]+")]],
+      user_type: [this.user.user_type],
       professional_profile: [this.user.professional_profile],
       phone: [this.user.phone,
       [Validators.pattern("[0-9 +-]*"), Validators.minLength(7), Validators.maxLength(20)]],
@@ -129,8 +134,9 @@ export class AddUserComponent implements OnInit, OnDestroy {
   get name() { return this.userForm.get('name'); }
   get first() { return this.userForm.get('name.first'); }
   get last() { return this.userForm.get('name.last'); }
+  get user_type() { return this.userForm.get('user_type'); }
   get professional_profile() { return this.userForm.get('professional_profile'); }
-  get email() { return this.userForm.get('email'); }
+  get username() { return this.userForm.get('username'); }
   get phone() { return this.userForm.get('phone'); }
   get office() { return this.userForm.get('office'); }
   get cvlac_link() { return this.userForm.get('cvlac_link'); }

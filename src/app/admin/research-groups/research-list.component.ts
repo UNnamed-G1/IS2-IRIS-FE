@@ -15,7 +15,7 @@ import { ResearchGroup } from 'app/classes/research-group';
 
 export class ResearchListComponent implements OnInit {
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico', 'Prioridades de investigación', 'Fecha de fundación', 'Clasificación', 'Fecha de clasificación', 'URL'];
-  keys: Array<string> = ['name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'classification_date', 'url'];
+  keys: Array<string> = ['name', 'description', 'strategic_focus', 'research_priorities', 'foundation_date', 'classification', 'date_classification', 'url'];
   researchGroups: Array<ResearchGroup>;
 
   page: {

@@ -19,6 +19,7 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
   researchGroup: ResearchGroup = new ResearchGroup();
   rgForm: FormGroup;
+  classifications: string[] = ['A', 'B', 'C', 'D'];
 
   constructor(private permMan: PermissionManager,
     private researchGroupService: ResearchGroupService,
@@ -82,7 +83,7 @@ export class AddResearchGroupComponent implements OnInit, OnDestroy {
       strategic_focus: [this.researchGroup.strategic_focus, [Validators.required, Validators.maxLength(1000)]],
       research_priorities: [this.researchGroup.research_priorities, [Validators.required, Validators.maxLength(1000)]],
       foundation_date: [this.researchGroup.foundation_date, [Validators.required]],
-      classification: [this.researchGroup.classification, [Validators.required]],
+      classification: [this.researchGroup.classification],
       date_classification: [this.researchGroup.date_classification, [Validators.required]],
       url: [this.researchGroup.url]
     });

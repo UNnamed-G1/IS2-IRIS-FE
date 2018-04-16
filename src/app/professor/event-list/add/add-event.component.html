@@ -27,8 +27,10 @@
 						<!-- Event type -->
 						<div class="form-group">
 							<label class="form-label">Tipo de evento</label>
-							<input type="text" class="form-control" formControlName="type_ev" placeholder="Tipo de evento">
-							<form-control-errors [control]="type_ev"></form-control-errors>
+							<select class="form-control" formControlName="event_type">
+								<option *ngFor="let et of event_types" [ngValue]="et">{{ et }}</option>
+							</select>
+							<form-control-errors [control]="event_type"></form-control-errors>
 						</div>
 
 						<!-- Date -->
@@ -41,7 +43,9 @@
 						<!-- Frequence -->
 						<div class="form-group">
 							<label class="form-label">Frecuencia</label>
-							<input type="text" class="form-control" formControlName="frequence" placeholder="Frecuencia">
+							<select class="form-control" formControlName="frequence">
+								<option *ngFor="let ft of frequence_types" [ngValue]="ft">{{ ft }}</option>
+							</select>
 							<form-control-errors [control]="frequence"></form-control-errors>
 						</div>
 
@@ -55,7 +59,9 @@
 						<!-- State -->
 						<div class="form-group">
 							<label class="form-label">Estado</label>
-							<input type="text" class="form-control" formControlName="state" placeholder="Estado">
+							<select class="form-control" formControlName="state">
+								<option *ngFor="let st of state_types" [ngValue]="st">{{ st }}</option>
+							</select>
 							<form-control-errors [control]="state"></form-control-errors>
 						</div>
 

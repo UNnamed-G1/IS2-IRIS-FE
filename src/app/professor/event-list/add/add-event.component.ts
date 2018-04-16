@@ -15,6 +15,9 @@ export class AddEventComponent implements OnInit, OnDestroy {
   @select() auxiliarID;
   event: Event = new Event();
   eventForm: FormGroup;
+  event_types: string[] = ['Publico', 'Privado'];
+  frequence_types: string[] = ['Unico', 'Repetitivo'];
+  state_types: string[] = ['Activo', 'Inactivo'];
 
   constructor(private eventService: EventService,
     private permMan: PermissionManager,
@@ -30,6 +33,7 @@ export class AddEventComponent implements OnInit, OnDestroy {
       if (id) {
         this.eventService.get(id).subscribe((event: { event: Event }) => {
           this.event = event.event;
+          console.log(event)
           this.createEventForm();
         });
       }
@@ -51,8 +55,18 @@ export class AddEventComponent implements OnInit, OnDestroy {
         e[k] = this.eventForm.get(k).value;
       }
     }
+    if (e.event_type) {
+      e['type_ev'] = e.event_type.toLowerCase();
+      delete e.event_type;
+    }
+    if (e.frequence) {
+      e.frequence = e.frequence.toLowerCase();
+    }
+    if (e.state) {
+      e.state = e.state.toLowerCase();
+    }
     if (this.event.id) {
-      this.eventService.update(this.event.id, { user: e })
+      this.eventService.update(this.event.id, { event: e })
         .subscribe(
           (response: { event: Event }) => {
             Object.assign(this.event, response.event);
@@ -69,7 +83,7 @@ export class AddEventComponent implements OnInit, OnDestroy {
     this.eventForm = this.formBuilder.group({
       topic: [this.event.topic, Validators.required],
       description: [this.event.description, Validators.required],
-      type_ev: [this.event.type_ev, Validators.required],
+      event_type: [this.event.event_type, Validators.required],
       date: [this.event.date, Validators.required],
       frequence: [this.event.frequence, Validators.required],
       duration: [this.event.duration, Validators.required],
@@ -79,7 +93,7 @@ export class AddEventComponent implements OnInit, OnDestroy {
 
   get topic() { return this.eventForm.get('topic'); }
   get description() { return this.eventForm.get('description'); }
-  get type_ev() { return this.eventForm.get('type_ev'); }
+  get event_type() { return this.eventForm.get('event_type'); }
   get date() { return this.eventForm.get('date'); }
   get frequence() { return this.eventForm.get('frequence'); }
   get duration() { return this.eventForm.get('duration'); }

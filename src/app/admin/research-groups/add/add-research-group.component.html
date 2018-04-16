@@ -47,7 +47,9 @@
 						<!-- Classification -->
 						<div class="form-group">
 							<label class="form-label">Clasificación</label>
-							<input type="text" class="form-control" formControlName="classification" placeholder="Clasificación">
+							<select class="form-control" formControlName="classification">
+								<option *ngFor="let c of classifications" [ngValue]="c">{{ c }}</option>
+							</select>
 							<form-control-errors [control]="classification"></form-control-errors>
 						</div>
 
