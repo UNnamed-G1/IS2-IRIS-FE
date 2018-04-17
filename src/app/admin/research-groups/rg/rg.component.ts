@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { select } from '@angular-redux/store';
+import { Component, OnInit, OnDestroy, Output,EventEmitter } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgRedux, select } from '@angular-redux/store';
+import { AppState } from 'app/redux/store';
+import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+import { ResearchGroup } from 'app/classes/research-group';
 import { ResearchGroupService } from 'app/services/research-group.service';
-import { ResearchGroup} from 'app/classes/research-group';
+import { ADD_AUXILIAR } from 'app/redux/actions';
 
 @Component({
   selector: 'app-rg',
@@ -12,30 +16,31 @@ import { ResearchGroup} from 'app/classes/research-group';
 
 export class RgComponent implements OnInit {
   @select() auxiliarID;
+  @Output() onDetails = new EventEmitter<number>();
   researchGroup:ResearchGroup;
   showInput: boolean = false;
 
   constructor(private researchGroupService: ResearchGroupService,
-    private permMan: PermissionManager) { }
+    private permMan: PermissionManager,
+    private ngRedux: NgRedux<AppState>,
+    private router: Router )  { }
 
   ngOnInit() { }
 
   ngAfterContentInit() {
-
-
     this.auxiliarID.subscribe(id => {
-      let getResearchGroup;
       if (id) {
-        this.setResearchGroup(this.researchGroupService.get(id));
-        console.log(id)
-      } else if (this.permMan.validateLogged()) {
-        this.researchGroupService.getCurrentGroup().subscribe((response: { research_group: ResearchGroup }) => {
-          this.setResearchGroup(this.researchGroupService.get(response.research_group.id));
-
-        });
+        this.researchGroupService.get(id)
+          .subscribe((researchGroup: { research_group: ResearchGroup }) => {
+            this.researchGroup = researchGroup.research_group;
+          }, error => { }
+          );
       }
     });
+  }
 
+  ngOnDestroy() {
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR })
   }
 
   updateGroup() {
@@ -50,11 +55,24 @@ export class RgComponent implements OnInit {
     this.showInput = !this.showInput
   }
 
-  setResearchGroup(researchGroup) {
-    researchGroup.subscribe((response: { researchGroup: ResearchGroup }) => {
-      this.researchGroup = Object.assign(new ResearchGroup(), response.researchGroup);
-      console.log(this.researchGroup);
-      });
+  onSubmit() {
+    console.log("Adding a Group: " + this.researchGroup.name);
+    if (this.researchGroup.id) {
+      this.researchGroupService.update(this.researchGroup.id, this.researchGroup)
+        .subscribe(res => alert("Research group updated !"),
+          error => { }
+        );
+    } else {
+      console.log("something is going wrong")}
+  }
+  details(id: number) {
+    this.onDetails.emit(id);
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/profile');
+  }
+  update(id: string) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/users/add');
   }
 
 

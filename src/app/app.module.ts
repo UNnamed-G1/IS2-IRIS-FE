@@ -69,6 +69,8 @@ import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
+import { DocumentsComponent } from './documents/documents.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 export const appRoutes: Routes = [
   {
@@ -150,6 +152,10 @@ export const appRoutes: Routes = [
   {
     path: 'rg',
     component: RgComponent
+  },
+  {
+    path: 'documents',
+    component: DocumentsComponent
   }/*,
   {
     path: '404',
@@ -173,8 +179,9 @@ export const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     NgHttpLoaderModule,
-    NgReduxModule
-  ],
+    NgReduxModule,
+    PdfViewerModule
+],
   declarations: [
     AppComponent,
     AppHeaderComponent,
@@ -203,7 +210,8 @@ export const appRoutes: Routes = [
     FilterPipe,
     PaginationComponent,
     CrudComponent,
-    FormControlErrorsComponent
+    FormControlErrorsComponent,
+    DocumentsComponent
   ],
   providers: [
     {

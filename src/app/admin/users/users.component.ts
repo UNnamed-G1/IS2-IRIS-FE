@@ -19,7 +19,7 @@ export class UsersComponent implements OnInit, AfterContentInit {
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre completo', 'Usuario', 'Perfil profesional',
-    'Tipo', 'Teléfono', 'Oficina', 'URL CvLAC'];
+     'Teléfono', 'Oficina','URL CvLAC','Tipo'];
   keys: Array<string> = ['full_name', 'username', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
   users: Array<User>;
 
@@ -65,6 +65,11 @@ export class UsersComponent implements OnInit, AfterContentInit {
           this.errSwal.show();
         }
       );
+  }
+
+  details(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/profile');
   }
 
   getUsers() {
