@@ -7,7 +7,7 @@ export class CommentService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "comments/";
+    this.url += 'comments/';
   }
 
 }

@@ -7,7 +7,7 @@ export class FacultyService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "faculties/";
+    this.url += 'faculties/';
   }
 
 }

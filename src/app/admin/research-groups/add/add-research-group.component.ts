@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -17,19 +18,19 @@ import { ResearchGroupService } from 'app/services/research-group.service';
 
 
 export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('errLoad') private errLoad: SwalComponent;
-  @ViewChild('sucAdd') private sucAdd: SwalComponent;
-  @ViewChild('errAdd') private errAdd: SwalComponent;
-  @ViewChild('sucUpd') private sucUpd: SwalComponent;
-  @ViewChild('errUpd') private errUpd: SwalComponent;
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   @select() auxiliarID;
 
   researchGroup: ResearchGroup = new ResearchGroup();
+  rgForm: FormGroup;
+  classifications: string[] = ['A', 'B', 'C', 'D'];
 
   constructor(private permMan: PermissionManager,
     private researchGroupService: ResearchGroupService,
-    private ngRedux: NgRedux<AppState>) { }
+    private ngRedux: NgRedux<AppState>,
+    private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.permMan.validateSession(['Admin']);
@@ -42,14 +43,17 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
           .subscribe(
             (researchGroup: { research_group: ResearchGroup }) => {
               this.researchGroup = researchGroup.research_group;
+              this.createRGForm();
             },
             (error: HttpErrorResponse) => {
-              this.errLoad.text += error.message;
-              this.errLoad.show();
+              this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
+              this.errSwal.text = 'Mensaje de error: ' + error.message;
+              this.errSwal.show();
             }
           );
       }
     });
+    this.createRGForm();
   }
 
   ngOnDestroy() {
@@ -57,31 +61,67 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
   }
 
   onSubmit() {
+    if (this.rgForm.pristine) {
+      return;
+    }
+    const rg = new ResearchGroup();
+    for (const k in this.rgForm.controls) {
+      if (this.rgForm.get(k).dirty) {
+        rg[k] = this.rgForm.get(k).value;
+      }
+    }
     if (this.researchGroup.id) {
       this.researchGroupService
-        .update(this.researchGroup.id, { research_group: this.researchGroup })
+        .update(this.researchGroup.id, rg)
         .subscribe(
           (response: { research_group: ResearchGroup }) => {
-            this.sucUpd.show();
+            Object.assign(this.researchGroup, response.research_group);
+            this.sucSwal.title = 'El grupo de investigación ha sido actualizado';
+            this.sucSwal.show();
+            this.createRGForm();
           },
           (error: HttpErrorResponse) => {
-            this.errUpd.text += error.message;
-            this.errUpd.show();
+            this.errSwal.title = 'Grupo de investigación no actualizado';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
           }
         );
     } else {
-      this.researchGroupService
-        .create({ research_group: this.researchGroup })
+      this.researchGroupService.create(rg)
         .subscribe(
           (response: { research_group: ResearchGroup }) => {
-            this.sucAdd.show();
-            this.researchGroup = new ResearchGroup();
+            this.sucSwal.title = 'El grupo de investigación ha sido añadido';
+            this.sucSwal.show();
+            this.rgForm.reset();
           },
           (error: HttpErrorResponse) => {
-            this.errAdd.text += error.message;
-            this.errAdd.show();
+            this.errSwal.title = 'Grupo de investigación no añadido';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
           }
         );
     }
   }
+
+  private createRGForm() {
+    this.rgForm = this.formBuilder.group({
+      name: [this.researchGroup.name, [Validators.required, Validators.maxLength(100)]],
+      description: [this.researchGroup.description, [Validators.required, Validators.maxLength(1000)]],
+      strategic_focus: [this.researchGroup.strategic_focus, [Validators.required, Validators.maxLength(1000)]],
+      research_priorities: [this.researchGroup.research_priorities, [Validators.required, Validators.maxLength(1000)]],
+      foundation_date: [this.researchGroup.foundation_date, [Validators.required]],
+      classification: [this.researchGroup.classification],
+      date_classification: [this.researchGroup.date_classification, [Validators.required]],
+      url: [this.researchGroup.url]
+    });
+  }
+
+  get name() { return this.rgForm.get('name'); }
+  get description() { return this.rgForm.get('description'); }
+  get strategic_focus() { return this.rgForm.get('strategic_focus'); }
+  get research_priorities() { return this.rgForm.get('research_priorities'); }
+  get foundation_date() { return this.rgForm.get('foundation_date'); }
+  get classification() { return this.rgForm.get('classification'); }
+  get date_classification() { return this.rgForm.get('date_classification'); }
+  get url() { return this.rgForm.get('url'); }
 }

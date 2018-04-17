@@ -11,8 +11,7 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   styleUrls: ['./research-groups.component.css']
 })
 export class ResearchGroupsComponent implements OnInit {
-  @ViewChild('errLoadRGs') private errLoadRGs: SwalComponent;
-  @ViewChild('errLoadNews') private errLoadNews: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   columns = ['id', 'name', 'description', 'strategic_focus', 'reasearch_priorities',
     'foundation_date', 'classification', 'date_classification', 'url'];
@@ -40,8 +39,9 @@ export class ResearchGroupsComponent implements OnInit {
             this.page.total = response.total_pages;
           },
           (error: HttpErrorResponse) => {
-            this.errLoadRGs.text += error.message;
-            this.errLoadRGs.show();
+            this.errSwal.title = 'No se ha podido obtener los grupos de investigación';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
           }
         );
     });
@@ -56,8 +56,9 @@ export class ResearchGroupsComponent implements OnInit {
           }
         },
         (error: HttpErrorResponse) => {
-          this.errLoadNews.text += error.message;
-          this.errLoadNews.show();
+          this.errSwal.title = 'No se han podido obtener las noticias';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }

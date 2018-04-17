@@ -1,30 +1,71 @@
 <div id="modal-sign-up" class="modal fade hidden-print" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form class="form-signup" (ngSubmit)="register()">
+      <form class="form-signup" [formGroup]="registerForm" (ngSubmit)="register()">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <!--img src="assets/images/IRIS-logo.png" /><br-->
           <h2 class="form-signup-heading">Registro de usuario</h2>
         </div>
         <div class="modal-body">
-          <input id="inputName" class="form-control" placeholder="Nombre" required [(ngModel)]="userSignUp.name" name="name"><br>
-          <input id="inputLastName" class="form-control" placeholder="Apellido" required [(ngModel)]="userSignUp.lastname" name="lastname"><br>
-          <input type="email" id="inputSignUpEmail" class="form-control" placeholder="Correo" required [(ngModel)]="userSignUp.email" name="email"><br>
-          <input type="password" id="inputSignUpPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userSignUp.password" name="password"><br>
-          <input type="password" id="inputPasswordConfirm" class="form-control" placeholder="Confirmar contraseña" required [(ngModel)]="userSignUp.password_confirmation" name="password_confirmation"><br>
-          <!-- Unsused labels
-          <label for="inputName" class="sr-only">Nombre</label>
-          <label for="inputLastName" class="sr-only">Apellido</label>
-          <label for="inputSignUpEmail" class="sr-only">Correo</label>
-          <label for="inputSignUpPassword" class="sr-only">Contraseña</label>
-          <label for="inputPasswordValidate" class="sr-only">Confirmar contaseña</label>
-          -->
+          <!-- Name -->
+          <div class="form-group" formGroupName="name">
+            <label class="form-label">Nombres y apellidos</label>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <input type="text" class="form-control" formControlName="first" placeholder="Nombres">
+                <app-form-control-errors [control]="first"
+                [required]="'Por favor introduce tus nombres.'"
+                [pattern]="'Tus nombres no pueden contener símbolos.'"
+                [minLength]="'Por favor introduce tus nombres completos.'"
+                [maxLength]="'Tus nombres son muy largos.'"></app-form-control-errors>
+              </div>
+              <div class="form-group col-md-6">
+                <input type="text" class="form-control" formControlName="last" placeholder="Apellidos">
+                <app-form-control-errors [control]="last"
+                [required]="'Por favor introduce tus apellidos.'"
+                [pattern]="'Tus apellidos no pueden contener símbolos.'"
+                [minLength]="'Por favor introduce tus apellidos completos.'"
+                [maxLength]="'Tus apellidos son muy largos.'"></app-form-control-errors>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label">Correo</label>
+            <input type="email" class="form-control" formControlName="email" placeholder="Correo institucional">
+            <app-form-control-errors [control]="email"
+            [required]="'Por favor introduce tu email.'"
+            [pattern]="'Recuerda que el correo debe ser usuario@unal.edu.co.'"></app-form-control-errors>
+          </div>
+
+          <!-- Password and confirmation-->
+          <div class="form-group" formGroupName="passwords">
+            <label class="form-label">Contraseña</label>
+            <div class="row">
+              <div class="form-group col-md-6">
+                <input type="password" class="form-control" formControlName="password" placeholder="Contraseña">
+                <app-form-control-errors [control]="password"
+                [required]="'Por favor digita tu contraseña.'"></app-form-control-errors>
+                <!-- Block validation for password matches -->
+                <div class="invalid-feedback error" *ngIf="password.valid && passwordConf.invalid && !(passwordConf.errors.required || passwordConf.errors.minlength) && passwords.errors">
+                  <small *ngIf="passwords.errors.mismatch">Las contraseñas no coinciden</small>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <input type="password" class="form-control" formControlName="password_confirmation" placeholder="Confirmar contraseña">
+                <app-form-control-errors [control]="passwordConf"
+                [required]="'Escribe tu contraseña de nuevo.'"
+                [minLength]="'Completa tu contraseña.'"></app-form-control-errors>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <div class="row" style="text-align: center">
             <div class="col-xs-6">
-              <button class="btn btn-primary" type="submit">Registrarse</button><br><br>
+              <button class="btn btn-primary" type="submit" [disabled]="registerForm.invalid">Registrarse</button>
             </div>
             <div class="col-xs-6">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>

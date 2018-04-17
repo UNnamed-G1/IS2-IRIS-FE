@@ -15,9 +15,8 @@ import { ResearchGroup } from 'app/classes/research-group';
   styleUrls: ['./research-list.component.css']
 })
 export class ResearchListComponent implements OnInit, AfterContentInit {
-  @ViewChild('sucDel') private sucDel: SwalComponent;
-  @ViewChild('errDel') private errDel: SwalComponent;
-  @ViewChild('errRGs') private errRGs: SwalComponent;
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
     'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
@@ -60,11 +59,13 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
       .subscribe(
         (response: { research_group: ResearchGroup }) => {
           this.getResearchGroups();
-          this.sucDel.show();
+          this.sucSwal.title = 'El grupo de investigación ha sido eliminado';
+          this.sucSwal.show();
         },
         (error: HttpErrorResponse) => {
-          this.errDel.text += error.message;
-          this.errDel.show();
+          this.errSwal.title = 'Grupo de investigación no eliminado';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }
@@ -77,8 +78,9 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
           this.page.total = res.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errRGs.text += error.message;
-          this.errRGs.show();
+          this.errSwal.title = 'No se han podido obtener los grupos de investigación';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }

@@ -11,8 +11,7 @@ import { EventService } from 'app/services/event.service';
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
-  @ViewChild('errLoadEvents') private errLoadEvents: SwalComponent;
-  @ViewChild('errLoadNews') private errLoadNews: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   columns = ['research_group_id', 'topic', 'description', 'date'];
   rows: Array<Event>;
@@ -30,7 +29,7 @@ export class EventsComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({})
+      this.page = Object.assign({});
       this.page.actual = +params.page || 1;
       this.eventService.getAll(this.page.actual)
         .subscribe(
@@ -39,8 +38,9 @@ export class EventsComponent implements OnInit {
             this.page.total = res.total_pages;
           },
           (error: HttpErrorResponse) => {
-            this.errLoadEvents.text += error.message;
-            this.errLoadEvents.show();
+            this.errSwal.title = 'No se han podido obtener los eventos';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
           }
         );
     });
@@ -55,8 +55,9 @@ export class EventsComponent implements OnInit {
           }
         },
         (error: HttpErrorResponse) => {
-          this.errLoadNews.text += error.message;
-          this.errLoadNews.show();
+          this.errSwal.title = 'No se han podido obtener las noticias';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }
