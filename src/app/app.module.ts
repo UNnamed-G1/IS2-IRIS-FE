@@ -63,6 +63,7 @@ import { FacultyService } from './services/faculty.service'
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
+import { PublicationService } from './services/publication.service';
 
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
@@ -70,6 +71,8 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PublicationComponent } from './public/publication/publication.component';
+import { AddPublicationComponent } from './public/publication/add/add-publication.component';
 
 export const appRoutes: Routes = [
   {
@@ -124,6 +127,10 @@ export const appRoutes: Routes = [
     component: AddUserComponent
   },
   {
+    path: 'publications/add',
+    component: AddPublicationComponent
+  },
+  {
     path: 'research-groups/add',
     component: AddResearchGroupComponent
   },
@@ -155,6 +162,10 @@ export const appRoutes: Routes = [
   {
     path: 'documents',
     component: DocumentsComponent
+  },
+  {
+    path: 'publications',
+    component: PublicationComponent
   }/*,
   {
     path: '404',
@@ -208,7 +219,9 @@ export const appRoutes: Routes = [
     FilterPipe,
     PaginationComponent,
     CrudComponent,
-    DocumentsComponent
+    DocumentsComponent,
+    PublicationComponent,
+    AddPublicationComponent
   ],
   providers: [
     {
@@ -232,7 +245,8 @@ export const appRoutes: Routes = [
     DepartmentService,
     FacultyService,
     ResearchGroupService,
-    UserService
+    UserService,
+    PublicationService
   ],
   bootstrap: [AppComponent]
 })
