@@ -1,68 +1,82 @@
-<div class="jumbotron">
-	<div class="container">
-		<form (ngSubmit)="onSubmit()">
-			<div class="form-group" *ngIf="researchGroup">
-				<label class="col-xs-4 control-label" for="">Nombre: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.name" name="Name">
-				</div>
-				<label class="col-xs-4 control-label" for="">Descripción: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.description" name="description">
-				</div>
-				<label class="col-xs-4 control-label" for="">Enfoque estratégico: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.strategic_focus" name="strategic_focus">
-				</div>
-				<label class="col-xs-4 control-label" for="">Prioridades de investigación: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.research_priorities" name="research_priorities">
-				</div>
-				<label class="col-xs-4 control-label" for="">Fecha de fundación: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.foundation_date" name="foundation_date">
-				</div>
-				<label class="col-xs-4 control-label" for="">Clasificación: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.classification" name="classification">
-				</div>
-				<label class="col-xs-4 control-label" for="">Fecha de clasificación: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.date_classification" name="date_classification">
-				</div>
-				<label class="col-xs-4 control-label" for="">Url: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="researchGroup.url" name="url">
-				</div>
-				<div>
-					<button type="submit" class="btn btn-default">Enviar</button>
-					<button type="button" routerLink="/research-list" role="button">Volver</button>
+<main class="detalle">
+	<div class="breadcrumb-class">Está en:
+		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+		<a routerLink="/research-list" target="_self" title="Inicio">Lista de grupos de investigación</a>/
+		<span>{{ (auxiliarID | async) ? 'Añadir grupo de investigación' : 'Editar grupo de investigación' }}</span>
+	</div>
+	<div class="container-fluid">
+		<div class="container-fluid main-container">
+			<div class="row">
+				<div class="col-md-6">
+					<form [formGroup]="rgForm" (ngSubmit)="onSubmit()">
+						<!-- Name -->
+						<div class="form-group">
+							<label class="form-label">Nombre</label>
+							<input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+							<app-form-control-errors [control]="name"></app-form-control-errors>
+						</div>
+
+						<!-- Description -->
+						<div class="form-group">
+							<label class="form-label">Descripción</label>
+							<input type="text" class="form-control" formControlName="description" placeholder="Descripción">
+							<app-form-control-errors [control]="description"></app-form-control-errors>
+						</div>
+
+						<!-- Strategic Focus -->
+						<div class="form-group">
+							<label class="form-label">Enfoque estratégico</label>
+							<input type="text" class="form-control" formControlName="strategic_focus" placeholder="Enfoque estratégico">
+							<app-form-control-errors [control]="strategic_focus"></app-form-control-errors>
+						</div>
+
+						<!-- Research priorities -->
+						<div class="form-group">
+							<label class="form-label">Prioridades de investigación</label>
+							<input type="text" class="form-control" formControlName="research_priorities" placeholder="Prioridades de investigación">
+							<app-form-control-errors [control]="research_priorities"></app-form-control-errors>
+						</div>
+
+						<!-- Foundation date -->
+						<div class="form-group">
+							<label class="form-label">Fecha de fundación</label>
+							<input type="text" class="form-control" formControlName="foundation_date" placeholder="Fecha de fundación">
+							<app-form-control-errors [control]="foundation_date"></app-form-control-errors>
+						</div>
+
+						<!-- Classification -->
+						<div class="form-group">
+							<label class="form-label">Clasificación</label>
+							<select class="form-control" formControlName="classification">
+								<option *ngFor="let c of classifications" [ngValue]="c">{{ c }}</option>
+							</select>
+							<app-form-control-errors [control]="classification"></app-form-control-errors>
+						</div>
+
+						<!-- Classification date -->
+						<div class="form-group">
+							<label class="form-label">Fecha de clasificación</label>
+							<input type="text" class="form-control" formControlName="date_classification" placeholder="Fecha de clasificación">
+							<app-form-control-errors [control]="date_classification"></app-form-control-errors>
+						</div>
+
+						<!-- URL -->
+						<div class="form-group">
+							<label class="form-label">URL</label>
+							<input type="text" class="form-control" formControlName="url" placeholder="URL">
+							<app-form-control-errors [control]="url"></app-form-control-errors>
+						</div>
+
+						<div>
+							<button type="submit" class="btn btn-primary" [disabled]="rgForm.invalid">Submit</button>
+							<button type="button" class="btn btn-danger" routerLink="/research-list">Volver</button>
+						</div>
+					</form>
 				</div>
 			</div>
-		</form>
+		</div>
 	</div>
-</div>
+</main>
 
-<swal #errLoad
-  title="No se ha podido obtener el grupo de investigación."
-  text="Mensaje de error: "
-  type="error">
-</swal>
-<swal #sucAdd
-  title="El grupo de investigación ha sido añadido."
-  type="success">
-</swal>
-<swal #errAdd
-  title="Grupo de investigación no añadido."
-  text="Mensaje de error: "
-  type="error">
-</swal>
-<swal #sucUpd
-  title="El grupo de investigación ha sido actualizado."
-  type="success">
-</swal>
-<swal #errUpd
-  title="Grupo de investigación no actualizado."
-  text="Mensaje de error: "
-  type="error">
-</swal>
+<swal #errSwal title text type="error"></swal>
+<swal #sucSwal title type="success"></swal>

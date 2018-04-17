@@ -1,0 +1,12 @@
+<!-- Control error block -->
+<div class="invalid-feedback" *ngIf="(control.touched || control.dirty) && control.invalid"
+  [ngClass]="{'warning': control.invalid && control.pristine && control.touched, 'error': control.invalid && control.dirty}">
+  <small *ngIf="control.errors.required && required">{{ required }}<br></small>
+  <small *ngIf="control.errors.required && !required">Por favor completa el campo.<br></small>
+  <small *ngIf="control.errors.pattern && pattern">{{ pattern }}<br></small>
+  <small *ngIf="control.errors.pattern && !pattern">El valor que ingresaste no es válido<br></small>
+  <small *ngIf="control.errors.minlength && minLength">{{ minLength }}<br></small>
+  <small *ngIf="control.errors.minlength && !minLength">Escribe al menos {{control.errors.minlength.requiredLength}} carácteres, te faltan {{control.errors.minlength.requiredLength - control.errors.minlength.actualLength}}.<br></small>
+  <small *ngIf="control.errors.maxlength && maxLength">{{ maxLength }}<br></small>
+  <small *ngIf="control.errors.maxlength && !maxLength">El máximo permitido son {{control.errors.maxlength.requiredLength}} carácteres, elimina {{control.errors.maxlength.actualLength - control.errors.maxlength.requiredLength}}.<br></small>
+</div>

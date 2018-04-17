@@ -67,7 +67,7 @@
 			<div class="btn-group"><a routerLink="/research-groups" class="btn btn-default">Grupos de investigación</a></div>
 			<div class="btn-group"><a routerLink="/events" class="btn btn-default">Eventos</a></div>
 			<div class="btn-group"><a routerLink="/about" class="btn btn-default">Acerca de IRIS</a></div>
-			<div class="btn-group"><a routerLink="/leave-comments" class="btn btn-default">Déjanos un comentario</a></div>
+			<div *ngIf="isLogged | async" class="btn-group"><a routerLink="/leave-comments" class="btn btn-default">Déjanos un comentario</a></div>
 			<!--div class="btn-group">
 				<div class="btn btn-default dropdown-toggle" data-toggle="dropdown">Sedes<span class="caret"></span></div>
 				<ul class="dropdown-menu dropItem-16">

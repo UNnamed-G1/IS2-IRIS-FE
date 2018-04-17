@@ -7,11 +7,11 @@ export class DepartmentService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "departments/";
+    this.url += 'departments/';
   }
 
   public getByFaculty(facId: number) {
-    return this.applyRequestPath(this.get, "depts_by_faculty&fac_id=" + facId)
+    return this.applyRequestPath(this.get, 'depts_by_faculty?fac_id=' + facId);
   }
 
 }

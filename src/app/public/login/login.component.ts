@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
@@ -8,7 +9,7 @@ import { LoginService } from 'app/services/login.service';
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ISession } from 'app/redux/session';
-import { ADD_SESSION } from 'app/redux/actions';
+import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 
 @Component({
@@ -18,36 +19,37 @@ import { PermissionManager } from 'app/permission-manager';
 })
 
 export class LoginComponent implements OnInit {
-  @ViewChild('errGoogle') private errGoogle: SwalComponent;
-  @ViewChild('errLogin') private errLogin: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
-  userSignIn: { username: string, password: string };
+  signInForm: FormGroup;
 
   constructor(private socialAuthService: AuthService,
     private loginService: LoginService,
     private userService: UserService,
     private ngRedux: NgRedux<AppState>,
-    private permMan: PermissionManager) { }
+    private permMan: PermissionManager,
+    private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.permMan.validateNotLogged();
-    this.userSignIn = Object.assign({}, this.userSignIn);
+    this.createSignInForm();
   }
 
   signIn() {
-    this.fillSession(this.userSignIn);
+    this.fillSession(this.signInForm.value);
   }
 
   googleSignIn() {
     this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       userData => this.fillSession({ access_token: userData.idToken }),
       (error: HttpErrorResponse) => {
-        this.errGoogle.text += error.message;
-        this.errGoogle.show();
+        this.errSwal.title = 'Error de conexión con Google';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
       }
     );
   }
-  
+
   private fillSession(userAuth) {
     this.loginService.getUserToken(userAuth)
       .subscribe(
@@ -70,16 +72,30 @@ export class LoginComponent implements OnInit {
               this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
             },
             (error: HttpErrorResponse) => {
-              this.errLogin.text += error.message;
-              this.errLogin.show();
+              this.errSwal.title = 'Inicio de sesión fallido';
+              this.errSwal.text = 'Mensaje de error: Datos incorrectos';
+              this.errSwal.show();
+              this.ngRedux.dispatch({ type: REMOVE_SESSION, session: session });
+              this.createSignInForm();
             });
           this.permMan.validateNotLogged();
         },
         (error: HttpErrorResponse) => {
-          this.errLogin.text += error.message;
-          this.errLogin.show();
+          this.errSwal.title = 'Inicio de sesión fallido';
+          this.errSwal.text = 'Mensaje de error: Datos incorrectos';
+          this.errSwal.show();
+          this.createSignInForm();
         }
       );
   }
 
+  private createSignInForm() {
+    this.signInForm = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.pattern('[a-z]+')]],
+      password: ['', [Validators.required]]
+    });
+  }
+
+  get username() { return this.signInForm.get('username'); }
+  get password() { return this.signInForm.get('password'); }
 }

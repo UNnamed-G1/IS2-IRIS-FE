@@ -22,9 +22,10 @@ export const INITIAL_STATE: AppState = {
 export function rootReducer(state: AppState, action): AppState {
   switch (action.type) {
     case ADD_SESSION:
-      let newState = Object.assign({}, state, { session: action.session, isLogged: true });
-      if (!action.session.token)
+      const newState = Object.assign({}, state, { session: action.session, isLogged: true });
+      if (!action.session.token) {
         newState.session.token = state.session.token;
+      }
       return newState;
     case ADD_AUXILIAR:
       return Object.assign({}, state, { auxiliarID: action.auxiliarID });

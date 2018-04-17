@@ -6,13 +6,23 @@
         <img src="assets/images/IRIS-logo.png" />
       </div>
       <div class="col-md-5">
-        <form class="comments" (ngSubmit)="sendComments()">
-          <h2>Déjanos un comentario</h2><br>
-          <label for="inputSubject">Asunto</label>
-          <input type="text" id="inputSubject" class="form-control" placeholder="Asunto" required [(ngModel)]="comment.subject" name="subject">
-          <label for="inputComment">Comentarios</label>
-          <textarea type="text" id="inputComment" class="form-control" placeholder="Comentarios" required [(ngModel)]="comment.comments" name="comments" rows="5"></textarea><br>
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Enviar</button><br><br>
+        <h2>Déjanos un comentario</h2><br>
+        <form class="comments-form" [formGroup]="commentForm" (ngSubmit)="sendComments()">
+          <!-- Subject -->
+          <div class="form-group">
+            <label class="form-label">Asunto</label>
+            <input type="text" class="form-control" formControlName="subject" placeholder="Asunto">
+            <app-form-control-errors [control]="subject"
+            [required]="'Por favor introduce un asunto.'"></app-form-control-errors>
+          </div>
+          <!-- Subject -->
+          <div class="form-group">
+            <label class="form-label">Comentarios</label>
+            <textarea type="text" class="form-control" formControlName="comments" placeholder="Comentarios" rows="5"></textarea>
+            <app-form-control-errors [control]="comments"
+            [required]="'Por favor introduce tus comentarios.'"></app-form-control-errors>
+          </div>
+          <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="commentForm.invalid">Enviar comentarios</button>
         </form>
       </div>
     </div>

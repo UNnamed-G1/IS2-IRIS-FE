@@ -31,7 +31,7 @@ export abstract class CommonService {
     return this.http.delete(this.url + id);
   }
 
-  public applyRequestPath(request, path, params = []) {
+  public applyRequestPath(request, path, params?: any[]) {
     const temp = this.url;
     this.url = environment.api_url + path;
     const response = request.apply(this, params);

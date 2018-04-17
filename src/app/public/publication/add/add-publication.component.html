@@ -28,11 +28,11 @@
 				</div>
 				<label class="col-xs-4 control-label" for="">Fecha de actualización: </label>
 				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.update_at" name="update_at">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.updated_at" name="update_at">
 				</div>
 				<label class="col-xs-4 control-label" for="">document: </label>
 				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.document" name="document">
+					<input type="file" ng2FileSelect [uploader]="uploader" />
 				</div>
 
 				<div>

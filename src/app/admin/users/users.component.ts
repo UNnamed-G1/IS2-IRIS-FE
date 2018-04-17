@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -14,10 +14,9 @@ import { User } from 'app/classes/user';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
-  @ViewChild('sucDelSwal') private sucDelSwal: SwalComponent;
-  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;  
-  @ViewChild('errUsersSwal') private errUsersSwal: SwalComponent;
+export class UsersComponent implements OnInit, AfterContentInit {
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre completo', 'Usuario', 'Perfil profesional',
      'Teléfono', 'Oficina','URL CvLAC','Tipo'];
@@ -36,7 +35,7 @@ export class UsersComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["Admin"]);
+    this.permMan.validateSession(['Admin']);
   }
 
   ngAfterContentInit() {
@@ -44,7 +43,7 @@ export class UsersComponent implements OnInit {
       this.page = Object.assign({});
       this.page.actual = +params.page || 1;
       this.getUsers();
-    })
+    });
   }
 
   update(id: string) {
@@ -56,12 +55,14 @@ export class UsersComponent implements OnInit {
     this.userService.delete(id)
       .subscribe(
         (response: {user: User}) => {
+          this.sucSwal.title = 'El usuario ha sido eliminado';
+          this.sucSwal.show();
           this.getUsers();
-          this.sucDelSwal.show();
         },
         (error: HttpErrorResponse) => {
-          this.errDelSwal.text += error.message;
-          this.errDelSwal.show();
+          this.errSwal.title = 'Usuario no eliminado';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }
@@ -75,12 +76,13 @@ export class UsersComponent implements OnInit {
     this.userService.getAll(this.page.actual)
       .subscribe(
         (res: { users: User[], total_pages: number }) => {
-          this.users = res.users.map(u => Object.assign(u, {full_name: u.name + " " + u.lastname}));
+          this.users = res.users.map(u => Object.assign(u, {full_name: u.name + ' ' + u.lastname}));
           this.page.total = res.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errUsersSwal.text += error.message;
-          this.errUsersSwal.show();
+          this.errSwal.title = 'No se han podido obtener los usuarios';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }

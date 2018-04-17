@@ -1,4 +1,4 @@
-import { Faculty } from './faculty'
+import { Faculty } from './faculty';
 
 export class Department {
   public id: number;

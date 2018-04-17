@@ -15,9 +15,8 @@ import { Event } from 'app/classes/events';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit, AfterContentInit {
-  @ViewChild('sucDel') private sucDel: SwalComponent;
-  @ViewChild('errDel') private errDel: SwalComponent;
-  @ViewChild('errEvents') private errEvents: SwalComponent;
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
   keys: Array<string> = ['topic', 'description', 'date', 'research_group_id']; // 'research_group_name'];
@@ -55,12 +54,14 @@ export class EventListComponent implements OnInit, AfterContentInit {
     this.eventService.delete(id)
       .subscribe(
         (response: { event: Event }) => {
+          this.sucSwal.title = 'El evento ha sido eliminado';
+          this.sucSwal.show();
           this.getEvents();
-          this.sucDel.show();
         },
         (error: HttpErrorResponse) => {
-          this.errDel.text += error.message;
-          this.errDel.show();
+          this.errSwal.title = 'Evento no eliminado';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }
@@ -73,8 +74,9 @@ export class EventListComponent implements OnInit, AfterContentInit {
           this.page.total = res.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errEvents.text += error.message;
-          this.errEvents.show();
+          this.errSwal.title = 'No se han podido obtener los eventos';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }

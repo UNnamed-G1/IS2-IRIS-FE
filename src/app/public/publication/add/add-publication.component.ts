@@ -7,7 +7,10 @@ import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { PublicationService } from 'app/services/publication.service';
 import { Publication } from 'app/classes/publication';
+import { FileUploader } from 'ng2-file-upload';
 
+// const URL = '/api/';
+const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
 @Component({
   selector: 'app-add-publication',
   templateUrl: './add-publication.component.html',
@@ -23,7 +26,15 @@ export class AddPublicationComponent implements OnInit, AfterContentInit, OnDest
   @select() auxiliarID;
 
   publication: Publication = new Publication();
-
+  public uploader:FileUploader = new FileUploader({url: URL});
+  public hasBaseDropZoneOver:boolean = false;
+  public hasAnotherDropZoneOver:boolean = false;
+  public fileOverBase(e:any):void {
+    this.hasBaseDropZoneOver = e;
+  }
+  public fileOverAnother(e:any):void {
+    this.hasAnotherDropZoneOver = e;
+  }
   constructor(private publicationService: PublicationService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>) { }

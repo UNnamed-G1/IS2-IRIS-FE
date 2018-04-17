@@ -7,11 +7,11 @@ export class UserService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "users/";
+    this.url += 'users/';
   }
 
   public getCurrentUser() {
-    return this.applyRequestPath(this.get, "users/current/");
+    return this.applyRequestPath(this.get, 'users/current/');
   }
 
 }
