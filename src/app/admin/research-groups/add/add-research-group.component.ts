@@ -13,8 +13,8 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   styleUrls: ['./add-research-group.component.css']
 })
 
-
 export class AddResearchGroupComponent implements OnInit, OnDestroy {
+
   @select() auxiliarID;
   researchGroup: ResearchGroup = new ResearchGroup();
 

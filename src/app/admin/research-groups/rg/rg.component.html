@@ -2,63 +2,64 @@
   <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Grupos de Investigación</span></div>
   <div *ngIf="researchGroup" class="container-fluid main-container">
     <div class="container-fluid">
-      <div class="row" [hidden]="showInput">
-        <h2>Grupo de Investigación {{researchGroup.name}} </h2><br>
-        <div class="col-sm-8 col-md-8">
+      <div class="row container-fluid" [hidden]="showInput">
+        <br><h2>Grupo de Investigación {{researchGroup.name}} </h2><br>
+        <div class="container-fluid">
+          <div class="col-sm-8 col-md-8">
+            <div class="media">
+              <div class="media-left media-middle">
+                  <img src="http://localhost:3000{{ researchGroup.photo.picture }}" class="media-object" style="width:250px; height:250px;">
+              </div>
 
-          <div class="media">
-            <div class="media-left media-middle">
-                <img src="http://localhost:3000{{ researchGroup.photo.picture }}" class="media-object" style="width:250px; height:250px;">
+              <div class="media-body">
+                <h4><b>Strategic Focus:</b></h4>
+                {{ researchGroup.strategic_focus }}
+                <h4><b>Priorities:</b></h4>
+                {{ researchGroup.research_priorities }}
+                <h4><b>Foundation date:</b></h4>
+                {{ researchGroup.foundation_date }}
+                <h4><b>Classification:</b></h4>
+                {{ researchGroup.classification }}
+                <h4><b>Classification date:</b></h4>
+                {{ researchGroup.date_classification }}
+                <h4><b>URL:</b></h4>
+                <a href="{{ researchGroup.url }}">{{ researchGroup.url }}</a>
+              </div>
+            </div><br>
+
+            <h3><b>Descripción</b></h3>
+            <div class="field">
+              <h4>{{ researchGroup.description }}</h4>
             </div>
-
-            <div class="media-body">
-              <h4><b>Strategic Focus:</b></h4>
-              {{ researchGroup.strategic_focus }}
-              <h4><b>Priorities:</b></h4>
-              {{ researchGroup.research_priorities }}
-              <h4><b>Foundation date:</b></h4>
-              {{ researchGroup.foundation_date }}
-              <h4><b>Classification:</b></h4>
-              {{ researchGroup.classification }}
-              <h4><b>Classification date:</b></h4>
-              {{ researchGroup.date_classification }}
-              <h4><b>URL:</b></h4>
-              {{ researchGroup.url }}
-            </div>
-          </div><br>
-
-          <h3><b>Descripción</b></h3>
-          <div class="field">
-            <h4>{{ researchGroup.description }}</h4>
           </div>
-        </div>
 
-        <div class="col-sm-4 col-md-4">
-          <div class="panel panel-default">
-            <div class="panel-heading" style="background: #2196F3;">
-              <h3 class="glyphicon glyphicon-user"> Usuarios</h3>
-            </div>
-            <div class="panel-body" style="overflow-y: auto; height: 200px; ">
-              <div class="research-group">
-                <div *ngFor="let member of researchGroup.members" class="field">
-                  <div class=" media">
-                    <div class="media-left media-middle">
-                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                    </div>
+          <div class="col-sm-4 col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #2196F3;">
+                <h3 class="glyphicon glyphicon-user"> Usuarios</h3>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 200px; ">
+                <div class="research-group">
+                  <div *ngFor="let member of researchGroup.members" class="field">
+                    <div class=" media">
+                      <div class="media-left media-middle">
+                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                      </div>
 
-                    <div class="media-body">
-                      <h4>{{member.user.full_name}}</h4>
-                      <a href="#">Ver perfil</a>
+                      <div class="media-body">
+                        <h4>{{member.user.full_name}}</h4>
+                        <a href="#">Ver perfil</a>
+                      </div>
                     </div>
+                    <hr style="border:1px dotted black;">
                   </div>
-                  <br>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <hr>
+        <hr style="border:1px dotted black;">
 
         <div class="col-sm-6 col-md-6">
           <div class="panel panel-default">
@@ -70,15 +71,15 @@
                 <div *ngFor="let event of events">
                   <div class=" media">
                     <div class="media-left media-middle">
-                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                      </div>
+                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                    </div>
 
-                      <div class="media-body">
-                        <h4 class="media-heading">{{event.topic}}</h4>
-                        <a href="#">Mas informacion</a>
-                      </div>
+                    <div class="media-body">
+                      <h4 class="media-heading">{{event.topic}}</h4>
+                      <a href="#">Mas informacion</a>
+                    </div>
                   </div>
-                  <br>
+                  <hr style="border:1px dotted black;">
                 </div>
               </div>
             </div>
@@ -93,7 +94,7 @@
             <div class="panel-body" style="overflow-y: auto; height: 300px;">
               <div class="research-group">
                 <div *ngFor="let subject of subjects">
-                  <ul class="media">
+                  <div class="media">
                     <div class="media-left media-middle">
                         <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
                     </div>
@@ -102,8 +103,8 @@
                       <h4 class="media-heading">{{subject.name}}</h4>
                       <a href="#">Mas informacion</a>
                     </div>
-                  </ul>
-                  <br>
+                  </div>
+                  <hr style="border:1px dotted black;">
                 </div>
               </div>
             </div>

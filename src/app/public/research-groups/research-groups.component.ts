@@ -5,6 +5,7 @@ import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 import { ResearchGroup } from 'app/classes/research-group';
 import { ResearchGroupService } from 'app/services/research-group.service';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-research-groups',
@@ -15,16 +16,18 @@ export class ResearchGroupsComponent implements OnInit {
   columns = ['id', 'name', 'description', 'strategic_focus', 'reasearch_priorities', 'foundation_date', 'classification', 'date_classification', 'url', 'photo'];
   rows: Array<ResearchGroup>;
   news: Array<ResearchGroup>;
-
+  url: string;
   page: {
     actual: number,
     total: number
   };
 
   constructor(private researchGroupService: ResearchGroupService,
-    private route: ActivatedRoute, private router: Router, private ngRedux: NgRedux<AppState>) { }
+    private route: ActivatedRoute, private router: Router, private ngRedux: NgRedux<AppState>) {
+  }
 
   ngOnInit() {
+    this.url = environment.api_url;
     this.route.queryParams.subscribe(params => {
       this.page = Object.assign({})
       this.page.actual = +params.page || 1;

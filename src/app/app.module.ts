@@ -9,6 +9,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import { ADD_SESSION, REMOVE_SESSION } from '../app/redux/actions';
 import * as persistState from 'redux-localstorage';
+import {  FileUploadModule } from 'ng2-file-upload';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -71,6 +72,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { AddPictureComponent } from './add-picture/add-picture.component';
 
 
 export const appRoutes: Routes = [
@@ -165,6 +167,10 @@ export const appRoutes: Routes = [
   {
     path: 'documents',
     component: DocumentsComponent
+  },
+  {
+    path: 'add-pictures',
+    component: AddPictureComponent
   }/*,
   {
     path: '404',
@@ -183,7 +189,8 @@ export const appRoutes: Routes = [
     FormsModule,
     HttpClientModule,
     NgReduxModule,
-    PdfViewerModule
+    PdfViewerModule,
+    FileUploadModule
   ],
   declarations: [
     AppComponent,
@@ -215,7 +222,8 @@ export const appRoutes: Routes = [
     CrudComponent,
     DocumentsComponent,
     ReportsComponent,
-    ResearchSubjectsComponent
+    ResearchSubjectsComponent,
+    AddPictureComponent
   ],
   providers: [
     {
