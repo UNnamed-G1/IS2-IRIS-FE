@@ -20,12 +20,14 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
 })
 
 export class RgComponent implements OnInit {
+  @select() session;
+  @select() isLogged;
   @select() auxiliarID;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
   @Output() onDetails = new EventEmitter<number>();
-  researchGroup:ResearchGroup;
+  researchGroup:ResearchGroup=new ResearchGroup();
   showInput: boolean = false;
   rgForm: FormGroup;
 
@@ -104,26 +106,48 @@ export class RgComponent implements OnInit {
     this.showInput = !this.showInput
   }
 
-  onSubmit() {
-    console.log("Adding a Group: " + this.researchGroup.name);
+  onSubmit(){
+    if (this.rgForm.pristine) {
+      return;
+    }
+    const rg = new ResearchGroup();
+    for (const k in this.rgForm.controls) {
+      if (this.rgForm.get(k).dirty) {
+        rg[k] = this.rgForm.get(k).value;
+      }
+    }
     if (this.researchGroup.id) {
-      this.researchGroupService.update(this.researchGroup.id, this.researchGroup)
-        .subscribe(res => alert("Research group updated !"),
-          error => { this.errSwal.title = 'No se ha podido obtener el perfil';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();}
+      this.researchGroupService
+        .update(this.researchGroup.id, rg)
+        .subscribe(
+          (response: { rg: ResearchGroup }) => {
+            Object.assign(this.researchGroup, response.rg);
+            this.sucSwal.title = 'El grupo ha sido actualizado';
+            this.sucSwal.show();
+            this.createRGForm();
+          },
+          (error: HttpErrorResponse) => {
+            this.errSwal.title = 'Grupo no actualizado';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
         );
     } else {
-      console.log("something is going wrong")}
-  }
-  details(id: number) {
-    this.onDetails.emit(id);
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
-    this.router.navigateByUrl('/profile');
-  }
-  update(id: string) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
-    this.router.navigateByUrl('/researchGroups/add');
+      this.researchGroupService
+        .create({ researchGroup: rg })
+        .subscribe(
+          (response: { researchGroup: ResearchGroup }) => {
+            this.sucSwal.title = 'El grupo ha sido añadido';
+            this.sucSwal.show();
+            this.rgForm.reset();
+          },
+          (error: HttpErrorResponse) => {
+            this.errSwal.title = 'grupo no añadido';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          })
+        ;
+    }
   }
 
 

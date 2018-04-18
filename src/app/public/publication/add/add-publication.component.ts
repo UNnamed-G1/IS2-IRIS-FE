@@ -80,7 +80,6 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
     uploadRequested = false;
 
     onSubmit(){
-
       if (this.uploadForm.pristine) {
         return;
       }

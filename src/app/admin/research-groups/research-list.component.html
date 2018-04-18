@@ -1,17 +1,20 @@
-<div class="panel panel-default" style="margin-top:10px;">
-  <div class="panel-heading">
-    <h1>Grupos de Investigación</h1>
-  </div>
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Grupos de Investigación</span></div>
+    <div class="panel panel-default" style="margin-top:10px;">
+      <div class="panel-heading">
+        <h1>Grupos de Investigación</h1>
+      </div>
 
-  <div class="panel-body" style="position:relative">
-    <button class="btn btn-primary btn-sm" routerLink="/research-groups/add" role="button">Agregar</button>
-    <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-    <br><br>
-    <app-crud [columns]="headers" [keys]="keys" [rows]="researchGroups" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
-    <app-pagination [page]="page"></app-pagination>
-    <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-  </div>
-</div>
+      <div class="panel-body" style="position:relative">
+        <button class="btn btn-primary btn-sm" routerLink="/research-groups/add" role="button">Agregar</button>
+        <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+        <br><br>
+        <app-crud [columns]="headers" [keys]="keys" [rows]="researchGroups" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
+        <app-pagination [page]="page"></app-pagination>
+        <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+      </div>
+    </div>
+</main>
 
 <swal #errSwal title text type="error"></swal>
 <swal #sucSwal title type="success"></swal>
