@@ -2,9 +2,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from "angular5-social-login";
+import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angular5-social-login';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import { ADD_SESSION, REMOVE_SESSION } from '../app/redux/actions';
@@ -14,9 +16,9 @@ import {  FileUploadModule } from 'ng2-file-upload';
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
 // Requests interceptor
-import { AuthInterceptor } from './auth-interceptor'
+import { AuthInterceptor } from './auth-interceptor';
 // Permission manager
-import { PermissionManager } from '../app/permission-manager'
+import { PermissionManager } from 'app/permission-manager';
 
 // Components
 import { AppComponent } from './app.component';
@@ -56,23 +58,30 @@ import { ResearchSubjectsComponent } from './public/research-subjects/research-s
 
 // Services
 import { CommonService } from './services/common.service';
-import { CareerService } from './services/career.service'
+import { CareerService } from './services/career.service';
 import { CommentService } from './services/comment.service';
-import { DepartmentService } from './services/department.service'
+import { DepartmentService } from './services/department.service';
 import { EventService } from './services/event.service';
-import { FacultyService } from './services/faculty.service'
+import { FacultyService } from './services/faculty.service';
 import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
+import { PublicationService } from './services/publication.service';
+
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 import { ReportService } from './services/report.service';
 import { ResearchSubjectService } from './services/research-subject.service';
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
+import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { AddPictureComponent } from './add-picture/add-picture.component';
+
+import { PublicationComponent } from './public/publication/publication.component';
+import { AddPublicationComponent } from './public/publication/add/add-publication.component';
+import { FollowsComponent } from './public/profile/follows/follows.component';
 
 
 export const appRoutes: Routes = [
@@ -86,7 +95,11 @@ export const appRoutes: Routes = [
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    children: [{
+      path: 'follows',
+      component: FollowsComponent
+    }]
   },
   {
     path: 'search',
@@ -111,7 +124,7 @@ export const appRoutes: Routes = [
   {
     path: 'research-groups',
     component: ResearchGroupsComponent,
-    //children: [{path: 'add', component: AddResearchGroupComponent}]
+    // children: [{path: 'add', component: AddResearchGroupComponent}]
   },
   {
     path: 'login',
@@ -121,11 +134,15 @@ export const appRoutes: Routes = [
   {
     path: 'users',
     component: UsersComponent,
-    //children: [{path: 'add', component: AddUserComponent}]
+    // children: [{path: 'add', component: AddUserComponent}]
   },
   {
     path: 'users/add',
     component: AddUserComponent
+  },
+  {
+    path: 'publications/add',
+    component: AddPublicationComponent
   },
   {
     path: 'research-groups/add',
@@ -171,6 +188,10 @@ export const appRoutes: Routes = [
   {
     path: 'add-pictures',
     component: AddPictureComponent
+  },
+  {
+    path: 'publications',
+    component: PublicationComponent
   }/*,
   {
     path: '404',
@@ -180,14 +201,20 @@ export const appRoutes: Routes = [
     redirectTo: 'NotFound' }*/
 ];
 
-
 @NgModule({
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
+    SweetAlert2Module.forRoot({
+      buttonsStyling: false,
+      confirmButtonClass: 'btn btn-primary btn-swal',
+      cancelButtonClass: 'btn btn-danger btn-swal'
+    }),
     SocialLoginModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
+    NgHttpLoaderModule,
     NgReduxModule,
     PdfViewerModule,
     FileUploadModule
@@ -223,7 +250,12 @@ export const appRoutes: Routes = [
     DocumentsComponent,
     ReportsComponent,
     ResearchSubjectsComponent,
-    AddPictureComponent
+    AddPictureComponent,
+    PublicationComponent,
+    AddPublicationComponent,
+    FormControlErrorsComponent,
+    DocumentsComponent,
+    FollowsComponent
   ],
   providers: [
     {
@@ -249,7 +281,8 @@ export const appRoutes: Routes = [
     ResearchGroupService,
     UserService,
     ReportService,
-    ResearchSubjectService
+    ResearchSubjectService,
+    PublicationService
   ],
   bootstrap: [AppComponent]
 })
@@ -266,9 +299,10 @@ export class AppModule {
         userService.getCurrentUser().subscribe(
           response => {
             // Update data
-            let data = response.user;
-            if (data.photo)
+            const data = response.user;
+            if (data.photo) {
               data.photo = data.photo.link;
+            }
             ngRedux.dispatch({
               type: ADD_SESSION, session:
                 Object.assign({}, {
@@ -280,8 +314,8 @@ export class AppModule {
             });
           },
           error => {
-            if (error.status == 401) {
-              ngRedux.dispatch({ type: REMOVE_SESSION })
+            if (error.status === 401) {
+              ngRedux.dispatch({ type: REMOVE_SESSION });
             }
           }
         );
@@ -293,10 +327,10 @@ export class AppModule {
 
 // Social Login config
 export function getAuthServiceConfigs() {
-  let config = new AuthServiceConfig(
+  const config = new AuthServiceConfig(
     [{
       id: GoogleLoginProvider.PROVIDER_ID,
-      provider: new GoogleLoginProvider("866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com")
+      provider: new GoogleLoginProvider('866195745492-1gm5oqaoosblouo7v9sjndpaj38532ol.apps.googleusercontent.com')
     }]
   );
   return config;

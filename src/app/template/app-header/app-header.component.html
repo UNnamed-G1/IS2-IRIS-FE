@@ -42,7 +42,7 @@
 						<a *ngIf="!(isLogged | async)" routerLink="/login">Iniciar sesión</a>
 						<a *ngIf="(isLogged | async)" routerLink="/profile">
 							<img src="{{(session | async).photo ? (session | async).photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';"/>
-							{{(session | async).name}}
+							{{(session | async).name + " - " + (session | async).type}}
 						</a>
 					</li>
 					<li class="item_NavBar #" *ngIf="(isLogged | async)">
@@ -63,11 +63,12 @@
 			<div class="gcse-searchbox-only" data-resultsUrl="http://unal.edu.co/resultados-de-la-busqueda/" data-newWindow="true"></div>
 		</div>
 		<div class="mainMenu">
-			<div class="btn-group menu"><a routerLink="/news" class="btn btn-default">Noticias</a></div>
-			<div class="btn-group menu"><a routerLink="/research-groups" class="btn btn-default">Grupos de investigación</a></div>
-			<div class="btn-group menu"><a routerLink="/events" class="btn btn-default">Eventos</a></div>
-			<div class="btn-group menu"><a routerLink="/about" class="btn btn-default">Acerca de IRIS</a></div>
-			<div class="btn-group menu"><a routerLink="/leave-comments" class="btn btn-default">Déjanos un comentario</a></div>
+			<div class="btn-group"><a routerLink="/news" class="btn btn-default">Noticias</a></div>
+			<div class="btn-group"><a routerLink="/research-groups" class="btn btn-default">Grupos de investigación</a></div>
+			<div class="btn-group"><a routerLink="/events" class="btn btn-default">Eventos</a></div>
+			<div class="btn-group"><a routerLink="/about" class="btn btn-default">Acerca de IRIS</a></div>
+			<div *ngIf="isLogged | async" class="btn-group"><a routerLink="/leave-comments" class="btn btn-default">Déjanos un comentario</a></div>
+
 			<!--div class="btn-group">
 				<div class="btn btn-default dropdown-toggle" data-toggle="dropdown">Sedes<span class="caret"></span></div>
 				<ul class="dropdown-menu dropItem-16">
@@ -82,6 +83,7 @@
 					<li><a href="http://tumaco-pacifico.unal.edu.co" target="_blank">Tumaco</a><span class="caret-right"></span></li>
 				</ul>
 			</div-->
+			
 			<div class="btn-group"></div>
 		</div>
 		<div class="btn-group hidden-sm hidden-md hidden-lg hidden-print">

@@ -1,0 +1,69 @@
+<div class="jumbotron">
+	<div class="container">
+		<form (ngSubmit)="onSubmit()">
+			<div class="form-group">
+				<label class="col-xs-4 control-label" for="">Nombre: </label>
+        <div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.name" name="name">
+				</div>
+				<label class="col-xs-4 control-label" for="">Fecha: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.date" name="date">
+				</div>
+				<label class="col-xs-4 control-label" for="">abstract: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.abstract" name="abstract">
+				</div>
+				<label class="col-xs-4 control-label" for="">Breve descripción: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.brief_description" name="brief_description">
+				</div>
+				<label class="col-xs-4 control-label" for="">Tipo de publicación: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.type_pub" name="type_pub">
+				</div>
+				<label class="col-xs-4 control-label" for="">Fecha de creación: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.created_at" name="created_at">
+				</div>
+				<label class="col-xs-4 control-label" for="">Fecha de actualización: </label>
+				<div class="col-xs-8">
+					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.updated_at" name="update_at">
+				</div>
+				<label class="col-xs-4 control-label" for="">document: </label>
+				<div class="col-xs-8">
+					<input type="file" ng2FileSelect [uploader]="uploader" />
+				</div>
+
+				<div>
+					<button type="submit" class="btn btn-default">Submit</button>
+					<button type="button" routerLink="/publications" role="button">Volver</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<swal #errLoad
+  title="No se ha podido obtener la publicación."
+  text="Mensaje de error: "
+  type="error">
+</swal>
+<swal #sucAdd
+  title="La publicación ha sido añadida."
+  type="success">
+</swal>
+<swal #errAdd
+  title="Publicación no añadida."
+  text="Mensaje de error: "
+  type="error">
+</swal>
+<swal #sucUpd
+  title="La publicación ha sido actualizado."
+  type="success">
+</swal>
+<swal #errUpd
+  title="Publicación no actualizada."
+  text="Mensaje de error: "
+  type="error">
+</swal>

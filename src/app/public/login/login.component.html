@@ -8,18 +8,30 @@
 		</div>
 		<div class="row align-col">
 			<div class="col-md-6 col-item left-item">
-				<form class="signin" (ngSubmit)="signIn()">
-					<h2 class="form-signin-heading">Inicia sesión</h2><br>
-					<input type="user" id="inputUser" class="form-control" placeholder="Usuario UNAL" required autofocus [(ngModel)]="userSignIn.username" name="username">
-					<input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required [(ngModel)]="userSignIn.password" name="password"><br>
-					<!-- Unsused labels
-      <label for="inputEmail" class="sr-only">Usuario</label>
-      <label for="inputPassword" class="sr-only">Contraseña</label>
-      -->
-					<div id="rem-cbox" class="checkbox">
-						<input type="checkbox" value="remember-me"> Recuérdame
+				<h2 class="form-signin-header">Inicia sesión</h2><br>
+				<form class="signin-form" [formGroup]="signInForm" (ngSubmit)="signIn()">
+          <!-- Username -->
+          <div class="form-group">
+            <label class="form-label">Usuario</label>
+            <input type="text" class="form-control" formControlName="username" placeholder="Usuario UNAL" autofocus>
+            <app-form-control-errors [control]="username"
+            [required]="'Por favor introduce tu usuario.'"
+            [pattern]="'Recuerda que el usuario sólo puede tener letras.'"></app-form-control-errors>
+          </div>
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label">Correo</label>
+            <input type="password" class="form-control" formControlName="password" placeholder="Contraseña">
+            <app-form-control-errors [control]="password"
+            [required]="'Por favor introduce tu contraseña.'"></app-form-control-errors>
+          </div>
+					<div class="form-check">
+					  <input class="form-check-input" type="checkbox" value="" id="rememberInput">
+					  <label class="form-check-label" for="rememberInput">
+					    Recuérdame
+					  </label>
 					</div>
-					<button class="btn btn-lg btn-primary btn-block" type="submit">Ingresar</button><br><br>
+					<button class="btn btn-primary btn-lg btn-block" type="submit" [disabled]="signInForm.invalid">Ingresar</button><br><br>
 				</form>
 			</div>
 			<div class="col-md-6 col-item">
@@ -35,3 +47,5 @@
 	</div>
 </main>
 <router-outlet></router-outlet>
+
+<swal #errSwal title text type="error"></swal>

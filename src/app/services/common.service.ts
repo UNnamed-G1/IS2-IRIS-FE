@@ -10,13 +10,13 @@ export abstract class CommonService {
     this.url = environment.api_url;
   }
 
-  public get(id: number = undefined) {
-    let idValue: string = (id) ? id.toString() : "";
+  public get(id?: number) {
+    const idValue: string = (id) ? id.toString() : '';
     return this.http.get(this.url + idValue);
   }
 
   public getAll(page: number) {
-    return this.http.get(this.url.substring(0, this.url.length - 1) + "?page=" + page);
+    return this.http.get(this.url.substring(0, this.url.length - 1) + '?page=' + page);
   }
 
   public create(body: any) {
@@ -24,17 +24,17 @@ export abstract class CommonService {
   }
 
   public update(id: number, body: any) {
-    return this.http.put(this.url + id, body)
+    return this.http.put(this.url + id, body);
   }
 
   public delete(id: number) {
     return this.http.delete(this.url + id);
   }
 
-  public applyRequestPath(request, path, params = []) {
-    let temp = this.url;
+  public applyRequestPath(request, path, params?: any[]) {
+    const temp = this.url;
     this.url = environment.api_url + path;
-    let response = request.apply(this, params);
+    const response = request.apply(this, params);
     this.url = temp;
     return response;
   }

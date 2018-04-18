@@ -1,5 +1,4 @@
-import { Department } from './department'
-
+import { Department } from './department';
 export class Career {
   public id: number;
   public name: string;

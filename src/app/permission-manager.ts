@@ -13,20 +13,20 @@ export class PermissionManager {
     private router: Router) { }
 
 
-  public validateSession(userTypes = ["estudiante", "profesor", "admin"], route = "/"): boolean {
+  public validateSession(userTypes = ['Estudiante', 'Profesor', 'Admin'], route = '/'): boolean {
     return this.validate(!this.loggedUser() || !this.authorizedUser(userTypes), route);
   }
 
-  public validateLogged(route = "/"): boolean {
+  public validateLogged(route = '/'): boolean {
     return this.validate(!this.loggedUser(), route);
   }
 
-  public validateNotLogged(route = "/"): boolean {
+  public validateNotLogged(route = '/'): boolean {
     return this.validate(this.loggedUser(), route);
   }
 
   public authorizedUser(userTypes: string[]): boolean {
-    let authorized: boolean = false
+    let authorized = false;
     this.session.subscribe((session: ISession) => {
       authorized = userTypes.includes(session.type);
     });
@@ -34,7 +34,7 @@ export class PermissionManager {
   }
 
   public loggedUser(): boolean {
-    let isLogged: boolean = false
+    let isLogged = false;
     this.isLogged.subscribe((logged: boolean) => {
       isLogged = logged;
     });

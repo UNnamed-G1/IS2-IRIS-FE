@@ -7,11 +7,11 @@ export class CareerService extends CommonService {
 
   constructor(protected http: HttpClient) {
     super(http);
-    this.url += "careers/";
+    this.url += 'careers/';
   }
 
   public getByDepartment(depId: number) {
-    return this.applyRequestPath(this.get, "careers_by_dept%23dept_id=" + depId);
+    return this.applyRequestPath(this.get, 'careers_by_dept?dept_id=' + depId);
   }
 
 }

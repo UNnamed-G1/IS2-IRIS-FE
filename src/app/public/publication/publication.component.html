@@ -1,0 +1,29 @@
+<div class="panel panel-default" style="margin-top:10px;">
+  <div class="panel-heading">
+    <h1>Publicaciones</h1>
+  </div>
+
+  <div class="panel-body" style="position:relative">
+    <button class="btn btn-primary btn-sm" routerLink="/publications/add" role="button">Agregar</button>
+    <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+    <br><br>
+    <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)" (onDelete)="delete($event)"></app-crud>
+    <app-pagination [page]="page"></app-pagination>
+    <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+  </div>
+</div>
+
+<swal #sucDelSwal
+  title="La publicación ha sido eliminado."
+  type="success">
+</swal>
+<swal #errDelSwal
+  title="Publicación no eliminada."
+  text="Mensaje de error: "
+  type="error">
+</swal>
+<swal #errUsersSwal
+  title="No se han podido obtener las publicaciones."
+  text="Mensaje de error: "
+  type="error">
+</swal>

@@ -2,24 +2,25 @@
   text-align: center;
 }
 
+.signin-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 0.5rem;
+}
+
 .col-item {
   margin: auto;
   padding: 0 100px;
 }
 
-.col-item input {
-  margin: 10px 0;
+.form-check {
+  margin-bottom: 1rem;
 }
 
-#rem-cbox {
-  align-items: center;
-  text-align: left;
-  margin-left: 25px;
-  margin-top: -25px;
-}
-
-#rem-cbox input {
-  position: relative;
+.form-check-input {
+  margin: 0;
 }
 
 .btn-google {

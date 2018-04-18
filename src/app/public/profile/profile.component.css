@@ -40,7 +40,7 @@ small {
 }
 
 .items-row {
-  display: flex;
+  display: contents;
 }
 
 .close {
@@ -53,6 +53,7 @@ small {
 .card {
   height: 100%;
   max-width: 200px;
+  margin-bottom: 0.5rem;
   overflow: hidden;
   position: relative;
   border: 1px solid #CCC;

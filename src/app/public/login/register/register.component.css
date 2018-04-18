@@ -8,15 +8,17 @@
   vertical-align: middle;
 }
 
-.modal-dialog>div {
-  text-align: center;
-  width: 500px;
+.modal-content {
   margin: 5% auto;
   padding: 5px 20px 13px 20px;
-  background: -moz-linear-gradient(#fff, #999);
-  background: -webkit-linear-gradient(#fff, #999);
-  background: -o-linear-gradient(#fff, #999);
-  background: linear-gradient(#ddd, #fff);
+  background: -moz-linear-gradient(#eee, #fff);
+  background: -webkit-linear-gradient(#eee, #fff);
+  background: -o-linear-gradient(#eee, #fff);
+  background: linear-gradient(#eee, #fff);
+}
+
+.modal-header {
+  text-align: center;
 }
 
 .close {

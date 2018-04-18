@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy, Output,EventEmitter } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
@@ -7,6 +7,7 @@ import { PermissionManager } from 'app/permission-manager';
 import { ResearchGroup } from 'app/classes/research-group';
 import { ResearchSubject } from 'app/classes/research-subject';
 import { ResearchGroupService } from 'app/services/research-group.service';
+import { ADD_AUXILIAR } from 'app/redux/actions';
 
 @Component({
   selector: 'app-rg',
@@ -19,10 +20,13 @@ export class RgComponent implements OnInit {
   researchGroup: ResearchGroup;
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
+  @Output() onDetails = new EventEmitter<number>();
   showInput: boolean = false;
 
   constructor(private researchGroupService: ResearchGroupService,
-    private permMan: PermissionManager,  private ngRedux: NgRedux<AppState>) { }
+    private permMan: PermissionManager,
+    private ngRedux: NgRedux<AppState>,
+    private router: Router )  { }
 
   ngOnInit() { }
 
@@ -72,5 +76,15 @@ export class RgComponent implements OnInit {
     } else {
       console.log("something is going wrong")}
   }
+  details(id: number) {
+    this.onDetails.emit(id);
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/profile');
+  }
+  update(id: string) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/users/add');
+  }
+
 
 }
