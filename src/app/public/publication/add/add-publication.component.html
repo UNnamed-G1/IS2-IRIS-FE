@@ -1,4 +1,4 @@
-<main class="detalle">
+<main class="detalle" *ngIf="uploadForm">
 	<div class="breadcrumb-class">Está en:
 		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
 		<a routerLink="/publications" target="_self" title="Inicio">Publicaciones</a>/
@@ -8,26 +8,31 @@
 		<div class="container-fluid main-container">
 			<div class="row">
 				<div class="col-md-6">
-					 <form name="uploadForm" [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
-            <!-- Name -->
-						<mat-input-container class="medium-width" >
-              <input #title matInput placeholder="Nombre" formControlName="name" >
-            </mat-input-container>
+					 <form *ngIf="publication" [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+             <!-- Name -->
+ 						<div class="form-group">
+ 							<label class="form-label">Nombre</label>
+ 							<input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+ 							<app-form-control-errors [control]="name"></app-form-control-errors>
+ 						</div>
             <!-- Date--->
-            <mat-input-container class="medium-width" >
-              <input #title matInput placeholder="Fecha" formControlName="date" >
-            </mat-input-container>
-
+            <div class="form-group">
+							<label class="form-label">Fecha</label>
+							<input type="text" class="form-control" formControlName="date" placeholder="Fecha">
+							<app-form-control-errors [control]="date"></app-form-control-errors>
+						</div>
 						<!-- abstract -->
-            <mat-input-container class="medium-width" >
-              <input #title matInput placeholder="Abstract" formControlName="abstract" >
-            </mat-input-container>
-
+            <div class="form-group">
+							<label class="form-label">Abstract</label>
+							<input type="text" class="form-control" formControlName="abstract" placeholder="Abstract">
+							<app-form-control-errors [control]="abstract"></app-form-control-errors>
+						</div>
 						<!-- brief_description-->
-            <mat-input-container class="medium-width" >
-              <input #title matInput placeholder="Descripción" formControlName="brief_description" >
-            </mat-input-container>
-
+            <div class="form-group">
+							<label class="form-label">Descripción</label>
+							<input type="text" class="form-control" formControlName="brief_description" placeholder="Descripción">
+							<app-form-control-errors [control]="brief_description"></app-form-control-errors>
+						</div>
 						<!-- type_pub  -->
 						<div class="form-group">
 							<label class="form-label">Tipo de publicación</label>
@@ -36,42 +41,34 @@
 							</select>
 							<app-form-control-errors [control]="type_pubs"></app-form-control-errors>
 						</div>
-
             <!-- created_at-->
-            <<mat-input-container class="medium-width" >
-              <input #title matInput placeholder="Fecha de Creación" formControlName="created_at" >
-            </mat-input-container>
-
-
+            <div class="form-group">
+							<label class="form-label">Fecha de Creación</label>
+							<input type="text" class="form-control" formControlName="created_at" placeholder="Fecha de Creación">
+							<app-form-control-errors [control]="created_at"></app-form-control-errors>
+						</div>
             <!-- updated_at--->
-            <mat-input-container class="medium-width" >
-              <input #title matInput placeholder="Fecha de actualización" formControlName="updated_at" >
-            </mat-input-container>
-
+            <div class="form-group">
+							<label class="form-label">Fecha de Actualización</label>
+							<input type="text" class="form-control" formControlName="updated_at" placeholder="Fecha de Actualización">
+							<app-form-control-errors [control]="updated_at"></app-form-control-errors>
+						</div>
             <!-- document--->
             <div class="row">
-              <div class="col-md-4">
-                <label class="btn  up-button with-cool-font" style="color:white; text-align:center;">
-                  <mat-icon style="vertical-align:middle">cloud_upload</mat-icon>
-                  BROWSE <input type="file" (change)="fileChange($event)"
-                  accept=".pdf" formControlName="document" hidden/>
-                </label>
-              </div>
               <div class="col-md-3">
-                <mat-input-container class="medium-width" >
-                  <input #title matInput placeholder={{fileName}} disabled>
-                </mat-input-container>
+                <input id="document" name="document" type="file" (change)="fileChange($event)"
+                accept=".pdf" formControlName="document" class="file"
+                data-msg-placeholder="Selecciona un {file} para subir...">
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-2"></div>
               <div class="col-md-4">
-                <button mat-button class="upload-button  with-cool-font" >
-                  <mat-icon *ngIf="!uploadRequested" style="vertical-align:middle">music_note</mat-icon>
-                  <img *ngIf="uploadRequested" src="./assets/spinner.gif" width="20" style="margin-right: 5px;">
-                  UPLOAD
-                </button>
+                <div>
+    							<button type="submit" class="btn btn-primary" [disabled]="uploadForm.invalid">Submit</button>
+    							<button type="button" class="btn btn-danger" routerLink="/publications">Volver</button>
+    						</div>
               </div>
             </div>
 

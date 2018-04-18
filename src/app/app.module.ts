@@ -203,7 +203,7 @@ export const appRoutes: Routes = [
     MatInputModule,
     MatIconModule,
     MatDialogModule,
-    NoopAnimationsModule 
+    NoopAnimationsModule
 ],
   declarations: [
     AppComponent,
