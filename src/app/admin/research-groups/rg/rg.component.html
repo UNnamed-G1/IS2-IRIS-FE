@@ -61,55 +61,59 @@
 
         <hr style="border:1px dotted black;">
 
-        <div class="col-sm-6 col-md-6">
-          <div class="panel panel-default">
-            <div class="panel-heading" style="background: #2196F3;">
-              <h3 class="glyphicon glyphicon-calendar"> Eventos</h3>
-            </div>
-            <div class="panel-body" style="overflow-y: auto; height: 300px; ">
-              <div class="research-group">
-                <div *ngFor="let event of events">
-                  <div class=" media">
-                    <div class="media-left media-middle">
-                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                    </div>
+        <div class="container-fluid">
+          <div class="col-sm-6 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #2196F3;">
+                <h3 class="glyphicon glyphicon-calendar"> Eventos</h3>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 300px; ">
+                <div class="research-group">
+                  <div *ngFor="let event of events">
+                    <div class=" media">
+                      <div class="media-left media-middle">
+                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                      </div>
 
-                    <div class="media-body">
-                      <h4 class="media-heading">{{event.topic}}</h4>
-                      <a href="#">Mas informacion</a>
+                      <div class="media-body">
+                        <h4 class="media-heading">{{event.topic}}</h4>
+                        <a href="#">Mas informacion</a>
+                      </div>
                     </div>
+                    <hr style="border:1px dotted black;">
                   </div>
-                  <hr style="border:1px dotted black;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #2196F3;">
+                <h3 class="glyphicon glyphicon-tasks"> Lineas de investigacion</h3>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 300px;">
+                <div class="research-group">
+                  <div *ngFor="let subject of subjects">
+                    <div class="media">
+                      <div class="media-left media-middle">
+                          <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                      </div>
+
+                      <div class="media-body">
+                        <h4 class="media-heading">{{subject.name}}</h4>
+                        <a href="#">Mas informacion</a>
+                      </div>
+                    </div>
+                    <hr style="border:1px dotted black;">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="col-sm-6 col-md-6">
-          <div class="panel panel-default">
-            <div class="panel-heading" style="background: #2196F3;">
-              <h3 class="glyphicon glyphicon-tasks"> Lineas de investigacion</h3>
-            </div>
-            <div class="panel-body" style="overflow-y: auto; height: 300px;">
-              <div class="research-group">
-                <div *ngFor="let subject of subjects">
-                  <div class="media">
-                    <div class="media-left media-middle">
-                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                    </div>
-
-                    <div class="media-body">
-                      <h4 class="media-heading">{{subject.name}}</h4>
-                      <a href="#">Mas informacion</a>
-                    </div>
-                  </div>
-                  <hr style="border:1px dotted black;">
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
+        <hr style="border:1px dotted black;">
 
       <button class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
