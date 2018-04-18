@@ -35,7 +35,7 @@
 
           <div class="col-sm-4 col-md-4">
             <div class="panel panel-default">
-              <div class="panel-heading" style="background: #2196F3;">
+              <div class="panel-heading" style="background: #555;color: white;">
                 <h3 class="glyphicon glyphicon-user"> Usuarios</h3>
               </div>
               <div class="panel-body" style="overflow-y: auto; height: 200px; ">
@@ -64,7 +64,7 @@
         <div class="container-fluid">
           <div class="col-sm-6 col-md-6">
             <div class="panel panel-default">
-              <div class="panel-heading" style="background: #2196F3;">
+              <div class="panel-heading" style="background: #555;color: white;">
                 <h3 class="glyphicon glyphicon-calendar"> Eventos</h3>
               </div>
               <div class="panel-body" style="overflow-y: auto; height: 300px; ">
@@ -89,7 +89,7 @@
 
           <div class="col-sm-6 col-md-6">
             <div class="panel panel-default">
-              <div class="panel-heading" style="background: #2196F3;">
+              <div class="panel-heading" style="background: #555;color: white;">
                 <h3 class="glyphicon glyphicon-tasks"> Lineas de investigacion</h3>
               </div>
               <div class="panel-body" style="overflow-y: auto; height: 300px;">
@@ -114,6 +114,39 @@
         </div>
 
         <hr style="border:1px dotted black;">
+
+        <div class="container-fluid">
+          <div class="panel panel-default">
+            <div class="panel-heading" style="background: #555;color: white;">
+              <h3 class="glyphicon glyphicon-calendar"> Publicaciones</h3>
+              <h3 title="Mostrar PDF">jdsalkadjlksadj</h3>
+            </div>
+
+            <div class="panel-body" style="overflow-y: auto; height: 300px; ">
+              <div class="research-group">
+                <div *ngFor="let publication of publications">
+                  <div class=" media">
+                    <div class="media-left media-middle">
+                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                    </div>
+
+                    <div class="media-body">
+                      <h4 class="media-heading">{{publication.name}}</h4>
+                      <a href="#">Mas informacion</a>
+                    </div>
+                  </div>
+                  <hr style="border:1px dotted black;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr style="border:1px dotted black;">
+
+        <div class="container-fluid">
+          <app-add-picture></app-add-picture>
+        </div>
 
       <button class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>

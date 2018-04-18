@@ -6,6 +6,7 @@ import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { ResearchGroup } from 'app/classes/research-group';
 import { ResearchSubject } from 'app/classes/research-subject';
+import { Publication } from 'app/classes/publication';
 import { ResearchGroupService } from 'app/services/research-group.service';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 
@@ -20,6 +21,8 @@ export class RgComponent implements OnInit {
   researchGroup: ResearchGroup;
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
+  publications: Array<Publication>
+
   @Output() onDetails = new EventEmitter<number>();
   showInput: boolean = false;
 
@@ -41,6 +44,9 @@ export class RgComponent implements OnInit {
             });
             this.researchGroupService.getSubjects(this.researchGroup.id).subscribe((res: {research_subjects: ResearchSubject[]}) => {
               this.subjects = res.research_subjects;
+            });
+            this.researchGroupService.getPublications(this.researchGroup.id).subscribe((res: {publications: Publication[]}) => {
+              this.publications = res.publications;
             });
           }, error => { }
           );

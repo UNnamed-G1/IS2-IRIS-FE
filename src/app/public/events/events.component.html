@@ -77,7 +77,13 @@
             <h5 class="text-center">{{row.topic}}</h5>
           </div>
 
-          <div class="panel panel-body">
+          <div class="panel panel-body" [ngStyle]="
+            {
+              'background-image': 'url(' + url + row.photos[0].picture.url + ')',
+              'background-repeat': 'no-repeat',
+              'background-color': '#555',
+              'background-size': '100%'
+            }">
             <div class="screen">
               <div class="row">
                 <div class="col-sm-12 center-block">
