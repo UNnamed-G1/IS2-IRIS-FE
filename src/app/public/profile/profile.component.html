@@ -1,16 +1,33 @@
 <main class="detalle">
-  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Perfil</span></div>
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <span>Perfil</span>
+  </div>
   <div *ngIf="user" class="container-fluid main-container">
     <div class="container-fluid">
       <div class="row" [hidden]="showInput">
-        <h2>Perfil</h2><br>
+        <h2>Perfil</h2>
+        <br>
         <div class="col-sm-2 col-md-2">
-          <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image" />
+          <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+          />
         </div>
         <div class="col-sm-5 col-md-5">
           <div class="field">
             <h4>{{ user.full_name }}</h4>
           </div>
+        </div>
+        <div class="col-xs-6 col-sm-2 col-md-2">
+          <div class="field">
+            <h4 (click)="viewFollows(true)" data-toggle="modal" data-target="#modal-follows">{{ followersCount }} Seguidores</h4>
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-2 col-md-2">
+          <div class="field">
+            <h4 (click)="viewFollows(false)" data-toggle="modal" data-target="#modal-follows">{{ followingCount }} Siguiendo</h4>
+          </div>
+        </div>
+        <div class="col-sm-5 col-md-5">
           <div class="field">
             {{ user.email }}
           </div>
@@ -39,7 +56,8 @@
       <div class="row" [hidden]="!showInput">
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
-            <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image" />
+            <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+            />
           </div>
           <div class="col-sm-5 col-md-5">
 
@@ -49,23 +67,17 @@
               <div class="row">
                 <div class="form-group col-md-6">
                   <input type="text" class="form-control" formControlName="first" placeholder="Nombres">
-                  <app-form-control-errors [control]="first"
-                  [required]="'Por favor introduce tus nombres.'"
-                  [pattern]="'Tus nombres no pueden contener símbolos.'"
-                  [minLength]="'Por favor introduce tus nombres completos.'"
-                  [maxLength]="'Tus nombres son muy largos.'"></app-form-control-errors>
+                  <app-form-control-errors [control]="first" [required]="'Por favor introduce tus nombres.'" [pattern]="'Tus nombres no pueden contener símbolos.'"
+                    [minLength]="'Por favor introduce tus nombres completos.'" [maxLength]="'Tus nombres son muy largos.'"></app-form-control-errors>
                 </div>
                 <div class="form-group col-md-6">
                   <input type="text" class="form-control" formControlName="last" placeholder="Apellidos">
-                  <app-form-control-errors [control]="last"
-                  [required]="'Por favor introduce tus apellidos.'"
-                  [pattern]="'Tus apellidos no pueden contener símbolos.'"
-                  [minLength]="'Por favor introduce tus apellidos completos.'"
-                  [maxLength]="'Tus apellidos son muy largos.'"></app-form-control-errors>
+                  <app-form-control-errors [control]="last" [required]="'Por favor introduce tus apellidos.'" [pattern]="'Tus apellidos no pueden contener símbolos.'"
+                    [minLength]="'Por favor introduce tus apellidos completos.'" [maxLength]="'Tus apellidos son muy largos.'"></app-form-control-errors>
                 </div>
               </div>
             </div>
-            
+
             <!-- Password and confirmation-->
             <div class="form-group" formGroupName="passwords">
               <label class="form-label">Contraseña</label>
@@ -80,30 +92,26 @@
                 </div>
                 <div class="form-group col-md-6">
                   <input type="password" class="form-control" formControlName="password_confirmation" placeholder="Confirmar contraseña">
-                  <app-form-control-errors [control]="passwordConf"
-                  [minLength]="'Completa tu contraseña.'"></app-form-control-errors>
+                  <app-form-control-errors [control]="passwordConf" [minLength]="'Completa tu contraseña.'"></app-form-control-errors>
                 </div>
               </div>
             </div>
-            
+
             <!-- Professional profile -->
             <div class="form-group">
               <label class="form-label">Perfil profesional</label>
-              <textarea  type="text" class="form-control" formControlName="professional_profile" placeholder="Perfil profesional" rows="3"></textarea>
-              <app-form-control-errors [control]="professional_profile"
-              [required]="'Por favor introduce tu perfil profesional.'"
-              [maxLength]="'Tu perfil profesional es muy largo, resúmelo un poco.'"></app-form-control-errors>
+              <textarea type="text" class="form-control" formControlName="professional_profile" placeholder="Perfil profesional" rows="3"></textarea>
+              <app-form-control-errors [control]="professional_profile" [required]="'Por favor introduce tu perfil profesional.'" [maxLength]="'Tu perfil profesional es muy largo, resúmelo un poco.'"></app-form-control-errors>
             </div>
           </div>
-          
+
           <div class="col-sm-5 col-md-5">
             <div [ngClass]="{ 'row': user.user_type != 'estudiante' } ">
               <!-- Phone -->
               <div class="form-group" [ngClass]="{ 'col-md-6': user.user_type != 'estudiante' } ">
                 <label class="form-label">Teléfono</label>
                 <input type="text" class="form-control" formControlName="phone" placeholder="Teléfono">
-                <app-form-control-errors [control]="phone"
-                [pattern]="'Tu teléfono sólo debe contener números.'"></app-form-control-errors>
+                <app-form-control-errors [control]="phone" [pattern]="'Tu teléfono sólo debe contener números.'"></app-form-control-errors>
               </div>
               <!-- Office -->
               <div class="form-group col-md-6" *ngIf="user.user_type != 'estudiante'">
@@ -112,14 +120,14 @@
                 <app-form-control-errors [control]="office"></app-form-control-errors>
               </div>
             </div>
-            
+
             <!-- CvLAC -->
             <div class="form-group">
               <label class="form-label">CvLAC</label>
               <input type="text" class="form-control" formControlName="cvlac_link" placeholder="URL de CvLAC">
               <app-form-control-errors [control]="cvlac_link"></app-form-control-errors>
             </div>
-            
+
             <div id="dependencies-dropdowns" class="row">
               <div id="faculty-dropdown" class="col-md-4">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
@@ -153,7 +161,7 @@
                 <button class="btn btn-primary dropdown-toggle" [ngClass]="{'disabled': !careers.length}" type="button" data-toggle="dropdown">
                   <!--{{ user.career ? user.career.name : "Carrera" }}-->
                   Carrera
-                   <span class="caret"></span>
+                  <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li *ngFor="let career of careers">
@@ -177,7 +185,8 @@
       <div *ngIf="user.research_subjects.length" class="container-fluid main-container">
         <div class="row items-row">
           <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
-            <h2>Temas de interes</h2><br>
+            <h2>Temas de interes</h2>
+            <br>
             <div class="alert alert-info">
               <a (click)="delete(rs.id)" class="close" data-dismiss="alert" aria-label="close">&times;</a>
               <p>{{ rs.name }}</p>
@@ -188,17 +197,21 @@
     </div>
     <div *ngIf="user.research_groups">
       <div *ngIf="user.research_groups.length" class="container-fluid main-container">
-        <h2>Grupos de investigación</h2><br>
+        <h2>Grupos de investigación</h2>
+        <br>
         <div class="row items-row">
           <div *ngFor="let rg of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
             <div class="card" routerLink="/">
               <div class="header-bg"></div>
               <div class="avatar">
-                <img src="{{rg.photo ? rg.photo.link : 'assets/images/user.png'}}" alt="" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image" />
+                <img src="{{rg.photo ? rg.photo.link : 'assets/images/user.png'}}" alt="" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+                />
                 <!--img src="{{rg.photo.link}}" alt="" /-->
               </div>
               <div class="content">
-                <p><b>{{ rg.name }}</b><br> {{ rg.description }}</p>
+                <p>
+                  <b>{{ rg.name }}</b>
+                  <br> {{ rg.description }}</p>
               </div>
             </div>
           </div>
@@ -207,7 +220,8 @@
     </div>
     <div *ngIf="user.publications">
       <div *ngIf="user.publications.length" class="container-fluid main-container">
-        <h2>Publicaciones</h2><br>
+        <h2>Publicaciones</h2>
+        <br>
         <div class="row items-row">
           <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
             <div class="card" routerLink="/">
@@ -224,7 +238,8 @@
     </div>
     <div *ngIf="user.events">
       <div *ngIf="user.events.length" class="container-fluid main-container">
-        <h2>Eventos</h2><br>
+        <h2>Eventos</h2>
+        <br>
         <div class="row items-row">
           <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-2">
             <div class="card" routerLink="/">
@@ -242,5 +257,7 @@
   </div>
 </main>
 
-<swal #errSwal title text type="error"></swal>
 <swal #sucSwal title type="success"></swal>
+<swal #errSwal title text type="error"></swal>
+
+<app-follows [displayFollowers]="displayFollowers" (setFollowersCount)="setFollowersCount($event)" (setFollowingCount)="setFollowingCount($event)"></app-follows>

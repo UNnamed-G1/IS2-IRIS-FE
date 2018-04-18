@@ -75,6 +75,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { FollowsComponent } from './public/profile/follows/follows.component';
 
 export const appRoutes: Routes = [
   {
@@ -87,7 +88,11 @@ export const appRoutes: Routes = [
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    children: [{
+      path: 'follows',
+      component: FollowsComponent
+    }]
   },
   {
     path: 'search',
@@ -194,7 +199,7 @@ export const appRoutes: Routes = [
     NgReduxModule,
     PdfViewerModule,
     FileUploadModule
-],
+  ],
   declarations: [
     AppComponent,
     AppHeaderComponent,
@@ -226,7 +231,8 @@ export const appRoutes: Routes = [
     PublicationComponent,
     AddPublicationComponent,
     FormControlErrorsComponent,
-    DocumentsComponent
+    DocumentsComponent,
+    FollowsComponent
   ],
   providers: [
     {
