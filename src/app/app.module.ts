@@ -71,6 +71,7 @@ import { CrudComponent } from './crud/crud.component';
 import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { FollowsComponent } from './public/profile/follows/follows.component';
 
 export const appRoutes: Routes = [
   {
@@ -83,7 +84,11 @@ export const appRoutes: Routes = [
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    children: [{
+      path: 'follows',
+      component: FollowsComponent
+    }]
   },
   {
     path: 'search',
@@ -181,7 +186,7 @@ export const appRoutes: Routes = [
     NgHttpLoaderModule,
     NgReduxModule,
     PdfViewerModule
-],
+  ],
   declarations: [
     AppComponent,
     AppHeaderComponent,
@@ -211,7 +216,8 @@ export const appRoutes: Routes = [
     PaginationComponent,
     CrudComponent,
     FormControlErrorsComponent,
-    DocumentsComponent
+    DocumentsComponent,
+    FollowsComponent
   ],
   providers: [
     {
