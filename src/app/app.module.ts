@@ -11,6 +11,11 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
 import * as persistState from 'redux-localstorage';
+import { MatFormFieldModule, MatInputModule,MatIconModule } from '@angular/material';
+import { MatDialogRef,MatDialogModule,MatDialog} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA} from '@angular/material';
+import { HttpModule } from '@angular/http';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -64,6 +69,7 @@ import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { PublicationService } from './services/publication.service';
+import { DataService } from './services/data.service';
 
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
@@ -74,7 +80,6 @@ import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
-import { FileUploadModule } from 'ng2-file-upload';
 
 export const appRoutes: Routes = [
   {
@@ -190,10 +195,15 @@ export const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    HttpModule,
     NgHttpLoaderModule,
     NgReduxModule,
     PdfViewerModule,
-    FileUploadModule
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatDialogModule,
+    NoopAnimationsModule 
 ],
   declarations: [
     AppComponent,
@@ -229,6 +239,12 @@ export const appRoutes: Routes = [
     DocumentsComponent
   ],
   providers: [
+    { provide: MAT_DIALOG_DATA,
+      useValue: []
+    },
+    { provide: MatDialogRef,
+      useValue: {}
+    },
     {
       provide: APP_BASE_HREF,
       useValue: '/'
@@ -251,7 +267,8 @@ export const appRoutes: Routes = [
     FacultyService,
     ResearchGroupService,
     UserService,
-    PublicationService
+    PublicationService,
+    DataService
   ],
   bootstrap: [AppComponent]
 })

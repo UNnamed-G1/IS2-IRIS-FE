@@ -1,69 +1,86 @@
-<div class="jumbotron">
-	<div class="container">
-		<form (ngSubmit)="onSubmit()">
-			<div class="form-group">
-				<label class="col-xs-4 control-label" for="">Nombre: </label>
-        <div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.name" name="name">
-				</div>
-				<label class="col-xs-4 control-label" for="">Fecha: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.date" name="date">
-				</div>
-				<label class="col-xs-4 control-label" for="">abstract: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.abstract" name="abstract">
-				</div>
-				<label class="col-xs-4 control-label" for="">Breve descripción: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.brief_description" name="brief_description">
-				</div>
-				<label class="col-xs-4 control-label" for="">Tipo de publicación: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.type_pub" name="type_pub">
-				</div>
-				<label class="col-xs-4 control-label" for="">Fecha de creación: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.created_at" name="created_at">
-				</div>
-				<label class="col-xs-4 control-label" for="">Fecha de actualización: </label>
-				<div class="col-xs-8">
-					<input type="text" style="width: 300px" class="form-control" required [(ngModel)]="publication.updated_at" name="update_at">
-				</div>
-				<label class="col-xs-4 control-label" for="">document: </label>
-				<div class="col-xs-8">
-					<input type="file" ng2FileSelect [uploader]="uploader" />
-				</div>
+<main class="detalle">
+	<div class="breadcrumb-class">Está en:
+		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+		<a routerLink="/publications" target="_self" title="Inicio">Publicaciones</a>/
+		<span>{{ (auxiliarID | async) ? 'Añadir Publicación' : 'Editar Publicación' }}</span>
+	</div>
+	<div class="container-fluid">
+		<div class="container-fluid main-container">
+			<div class="row">
+				<div class="col-md-6">
+					 <form name="uploadForm" [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+            <!-- Name -->
+						<mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Nombre" formControlName="name" >
+            </mat-input-container>
+            <!-- Date--->
+            <mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Fecha" formControlName="date" >
+            </mat-input-container>
 
-				<div>
-					<button type="submit" class="btn btn-default">Submit</button>
-					<button type="button" routerLink="/publications" role="button">Volver</button>
+						<!-- abstract -->
+            <mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Abstract" formControlName="abstract" >
+            </mat-input-container>
+
+						<!-- brief_description-->
+            <mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Descripción" formControlName="brief_description" >
+            </mat-input-container>
+
+						<!-- type_pub  -->
+						<div class="form-group">
+							<label class="form-label">Tipo de publicación</label>
+							<select class="form-control" formControlName="type_pub">
+								<option *ngFor="let t of type_pubs" [ngValue]="t">{{ t }}</option>
+							</select>
+							<app-form-control-errors [control]="type_pubs"></app-form-control-errors>
+						</div>
+
+            <!-- created_at-->
+            <<mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Fecha de Creación" formControlName="created_at" >
+            </mat-input-container>
+
+
+            <!-- updated_at--->
+            <mat-input-container class="medium-width" >
+              <input #title matInput placeholder="Fecha de actualización" formControlName="updated_at" >
+            </mat-input-container>
+
+            <!-- document--->
+            <div class="row">
+              <div class="col-md-4">
+                <label class="btn  up-button with-cool-font" style="color:white; text-align:center;">
+                  <mat-icon style="vertical-align:middle">cloud_upload</mat-icon>
+                  BROWSE <input type="file" (change)="fileChange($event)"
+                  accept=".pdf" formControlName="document" hidden/>
+                </label>
+              </div>
+              <div class="col-md-3">
+                <mat-input-container class="medium-width" >
+                  <input #title matInput placeholder={{fileName}} disabled>
+                </mat-input-container>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-2"></div>
+              <div class="col-md-4">
+                <button mat-button class="upload-button  with-cool-font" >
+                  <mat-icon *ngIf="!uploadRequested" style="vertical-align:middle">music_note</mat-icon>
+                  <img *ngIf="uploadRequested" src="./assets/spinner.gif" width="20" style="margin-right: 5px;">
+                  UPLOAD
+                </button>
+              </div>
+            </div>
+
+  				</form>
 				</div>
 			</div>
-		</form>
+		</div>
 	</div>
-</div>
+</main>
 
-<swal #errLoad
-  title="No se ha podido obtener la publicación."
-  text="Mensaje de error: "
-  type="error">
-</swal>
-<swal #sucAdd
-  title="La publicación ha sido añadida."
-  type="success">
-</swal>
-<swal #errAdd
-  title="Publicación no añadida."
-  text="Mensaje de error: "
-  type="error">
-</swal>
-<swal #sucUpd
-  title="La publicación ha sido actualizado."
-  type="success">
-</swal>
-<swal #errUpd
-  title="Publicación no actualizada."
-  text="Mensaje de error: "
-  type="error">
-</swal>
+<swal #errSwal title text type="error"></swal>
+<swal #sucSwal title type="success"></swal>

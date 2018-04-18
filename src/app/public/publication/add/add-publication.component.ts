@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, AfterContentInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterContentInit, ViewChild, Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators,FormControl } from '@angular/forms';
 import { NgRedux, select } from '@angular-redux/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -7,83 +8,82 @@ import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { PublicationService } from 'app/services/publication.service';
 import { Publication } from 'app/classes/publication';
-import { FileUploader } from 'ng2-file-upload';
+import { DataService } from 'app/services/data.service';
+import { Router } from '@angular/router';
+import { MAT_DIALOG_DATA} from '@angular/material';
+import { MatFormFieldModule, MatInputModule,MatIconModule } from '@angular/material';
+import { MatDialogRef,MatDialogModule,MatDialog} from '@angular/material/dialog';
 
-// const URL = '/api/';
-const URL = 'https://evening-anchorage-3159.herokuapp.com/api/';
+
 @Component({
-  selector: 'app-add-publication',
   templateUrl: './add-publication.component.html',
   styleUrls: ['./add-publication.component.css']
 })
-export class AddPublicationComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('errLoad') private errLoad: SwalComponent;
-  @ViewChild('sucAdd') private sucAdd: SwalComponent;
-  @ViewChild('errAdd') private errAdd: SwalComponent;
-  @ViewChild('sucUpd') private sucUpd: SwalComponent;
-  @ViewChild('errUpd') private errUpd: SwalComponent;
 
+export class AddPublicationComponent implements OnInit, OnDestroy {
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
   @select() auxiliarID;
 
+  fileName:string;
+  fileList: FileList;
+  file:File;
+  fileReader: FileReader = new FileReader();
+  uploadPublicationResponse$;
+  publicationForm: FormGroup;
   publication: Publication = new Publication();
-  public uploader:FileUploader = new FileUploader({url: URL});
-  public hasBaseDropZoneOver:boolean = false;
-  public hasAnotherDropZoneOver:boolean = false;
-  public fileOverBase(e:any):void {
-    this.hasBaseDropZoneOver = e;
-  }
-  public fileOverAnother(e:any):void {
-    this.hasAnotherDropZoneOver = e;
-  }
+  type_pubs: string[] = ['monografia', 'patente', 'libro', 'articulo', 'tesis','software'];
+
   constructor(private publicationService: PublicationService,
+    public dialogRef: MatDialogRef<AddPublicationComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private router: Router,
+    private dataService :DataService,
     private permMan: PermissionManager,
+    private formBuilder: FormBuilder,
     private ngRedux: NgRedux<AppState>) { }
 
-  ngOnInit() {
-    this.permMan.validateSession(['Admin']);
-  }
-
-  ngAfterContentInit() {
-    this.auxiliarID.subscribe(id => {
-      if (id) {
-        this.publicationService.get(id).subscribe((publication: { publication: Publication }) => {
-          this.publication = publication.publication;
-        });
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
-  }
-
-  public onSubmit() {
-    if (this.publication.id) {
-      this.publicationService
-        .update(this.publication.id, { publication: this.publication })
-        .subscribe(
-          (response: { publication: Publication }) => {
-            this.sucUpd.show();
-          },
-          (error: HttpErrorResponse) => {
-            this.errUpd.text += error.message;
-            this.errUpd.show();
-          }
-        );
-    } else {
-      this.publicationService
-        .create({ publication: this.publication })
-        .subscribe(
-          (response: { publication: Publication }) => {
-            this.sucAdd.show();
-            this.publication = new Publication();
-          },
-          (error: HttpErrorResponse) => {
-            this.errAdd.text += error.message;
-            this.errAdd.show();
-          }
-        );
+    ngOnInit() {
+      this.permMan.validateSession(['Admin']);
     }
-  }
 
+      ngOnDestroy() {
+      this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
+    }
+
+    fileChange(event) {
+    this.fileList = event.target.files;
+    if(this.fileList.length > 0) {
+        this.file = this.fileList[0];
+        this.fileName = this.file.name;
+      }
+    }
+
+    uploadRequested = false;
+
+    onSubmit(){
+      this.uploadPublicationResponse$ = this.publicationService.uploadPublication(this.uploadForm.value,this.file);
+      this.uploadRequested = true;
+      this.uploadPublicationResponse$.subscribe(
+        res => {
+          if (res.status == 200){
+            this.uploadRequested = false
+            this.dialogRef.close( )
+          }
+        },
+        err => {
+          console.log( err );
+        }
+      );
+    }
+    uploadForm = new FormGroup({
+      name: new FormControl(null,[Validators.required]),
+      date: new FormControl(null,[Validators.required]),
+      abstract: new FormControl(null,[Validators.required]),
+      brief_description: new FormControl(null,[Validators.required]),
+      type_pub: new FormControl(null,[Validators.required]),
+      created_at: new FormControl(null,[Validators.required]),
+      updated_at: new FormControl(null,[Validators.required]),
+      document: new FormControl(null,[Validators.required]),
+    });
 }

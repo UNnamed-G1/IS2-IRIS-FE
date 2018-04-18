@@ -39,45 +39,12 @@ export class PublicationComponent implements OnInit {
     this.permMan.validateSession(["Admin"]);
   }
 
-  ngAfterContentInit() {
-    this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({});
-      this.page.actual = +params.page || 1;
-      this.getPublications();
-    })
-  }
+
 
   update(id: string) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/publications/add');
   }
 
-  delete(id: number) {
-    this.publicationService.delete(id)
-      .subscribe(
-        (response: {publication: Publication}) => {
-          this.getPublications();
-          this.sucDelSwal.show();
-        },
-        (error: HttpErrorResponse) => {
-          this.errDelSwal.text += error.message;
-          this.errDelSwal.show();
-        }
-      );
-  }
 
-
-  getPublications() {
-    this.publicationService.getAll(this.page.actual)
-      .subscribe(
-        (res: { publications: Publication[], total_pages: number }) => {
-          this.publications = res.publications.map(p => Object.assign(p, {name: p.name + " " + p.abstract}));
-          this.page.total = res.total_pages;
-        },
-        (error: HttpErrorResponse) => {
-          this.errUsersSwal.text += error.message;
-          this.errUsersSwal.show();
-        }
-      );
-  }
 }

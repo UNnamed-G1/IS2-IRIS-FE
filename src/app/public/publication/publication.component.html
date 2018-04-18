@@ -7,8 +7,7 @@
     <button class="btn btn-primary btn-sm" routerLink="/publications/add" role="button">Agregar</button>
     <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
     <br><br>
-    <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)" (onDelete)="delete($event)"></app-crud>
-    <app-pagination [page]="page"></app-pagination>
+    <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)"></app-crud>
     <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
   </div>
 </div>
