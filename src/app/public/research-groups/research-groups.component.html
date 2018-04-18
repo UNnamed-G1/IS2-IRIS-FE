@@ -54,7 +54,6 @@
 		</div>
 	</div>
  
- 	<!-- {{row.photo.picture.url}} -->
 	<div class="row" id="research_groups_view">
 		<div class="research-group" *ngFor="let row of rows">
 			<div class="col-xs-6 col-md-3 col-lg-3">
@@ -67,6 +66,7 @@
 						{
 							'background-image': 'url(' + url + row.photo.picture.url + ')',
 							'background-repeat': 'no-repeat',
+							'background-color': '#555',
 							'background-size': '100%'
 						}">
 						<div class="screen">
