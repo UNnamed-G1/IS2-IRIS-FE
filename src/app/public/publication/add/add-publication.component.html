@@ -8,7 +8,7 @@
 		<div class="container-fluid main-container">
 			<div class="row">
 				<div class="col-md-6">
-					 <form *ngIf="publication" [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+					 <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
              <!-- Name -->
  						<div class="form-group">
  							<label class="form-label">Nombre</label>
@@ -40,18 +40,6 @@
 								<option *ngFor="let t of type_pubs" [ngValue]="t">{{ t }}</option>
 							</select>
 							<app-form-control-errors [control]="type_pubs"></app-form-control-errors>
-						</div>
-            <!-- created_at-->
-            <div class="form-group">
-							<label class="form-label">Fecha de Creación</label>
-							<input type="text" class="form-control" formControlName="created_at" placeholder="Fecha de Creación">
-							<app-form-control-errors [control]="created_at"></app-form-control-errors>
-						</div>
-            <!-- updated_at--->
-            <div class="form-group">
-							<label class="form-label">Fecha de Actualización</label>
-							<input type="text" class="form-control" formControlName="updated_at" placeholder="Fecha de Actualización">
-							<app-form-control-errors [control]="updated_at"></app-form-control-errors>
 						</div>
             <!-- document--->
             <div class="row">

@@ -9,14 +9,11 @@ import { CommonService } from './common.service'
 import { HttpHeaders } from '@angular/common/http';
 @Injectable()
 export class PublicationService extends CommonService {
+  headers: any;
+
   url: string;
-  backPath;
-  httpOptions = {
-     headers: new HttpHeaders({
-     'Content-Type':  'application/json',
-     'Authorization': 'my-auth-token'
-    })
-  };
+  backPath = 'http://localhost:3000';
+
   constructor(protected http: HttpClient) {
     super(http);
     this.url += 'publications/';
@@ -28,21 +25,24 @@ export class PublicationService extends CommonService {
   uploadPublication( formData , file) {
 
    let publicationData:FormData = new FormData();
-   publicationData.append('name',formData.name);
-   publicationData.append('date',formData.date);
-   publicationData.append('abstract',formData.abstract);
-   publicationData.append('brief_description',formData.brief_description);
-   publicationData.append('type_pub',formData.type_pub);
-   publicationData.append('created_at',formData.created_at);
-   publicationData.append('updated_at',formData.updated_at);
-   publicationData.append('document',file,file.document);
+   publicationData.append('publication[name]',formData.name);
+   publicationData.append('publication[date]',formData.date);
+   publicationData.append('publication[abstract]',formData.abstract);
+   publicationData.append('publication[brief_description]',formData.brief_description);
+   publicationData.append('publication[type_pub]',formData.type_pub);
+   publicationData.append('publication[document]',file,file.document);
    let headers = new Headers();
    headers.append('enctype', 'multipart/form-data');
-   headers.append('x-access-token' , localStorage.getItem( 'accessToken' ));
-   headers.append('Accept', 'application/json');
-   let options = new RequestOptions({ headers: headers });
+   let httpOptions = {
+      headers: new HttpHeaders({
+      })
+   };
+    return this.http.post( 'http://localhost:3000/publications', publicationData, httpOptions )
+             .map( ( res: Response ) => res );
+  }
 
-    return this.http.post( this.backPath + '/publications', publicationData, this.httpOptions )
+  downloadPdf( id ) {
+    return this.http.get( 'http://localhost:3000/publications' + id , {headers: new HttpHeaders, responseType: 'blob' as 'json'} )
              .map( ( res: Response ) => res );
   }
 }

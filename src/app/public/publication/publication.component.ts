@@ -17,11 +17,10 @@ import { Publication } from 'app/classes/publication';
 export class PublicationComponent implements OnInit , AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  @ViewChild('errUsersSwal') private errUsersSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',
-     'Corta descripción', 'Tipo de Publicación','Fecha Creación','Fecha de actualización','documentos'];
-  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at', 'update_at','document'];
+     'Corta descripción', 'Tipo de Publicación','Fecha Creación'];
+  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
   publications: Array<Publication>;
 
   page: {
@@ -88,6 +87,4 @@ export class PublicationComponent implements OnInit , AfterContentInit {
         }
       );
   }
-
-
 }

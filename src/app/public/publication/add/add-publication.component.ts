@@ -80,19 +80,7 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
     uploadRequested = false;
 
     onSubmit(){
-      this.uploadPublicationResponse$ = this.publicationService.uploadPublication(this.uploadForm.value,this.file);
-      this.uploadRequested = true;
-      this.uploadPublicationResponse$.subscribe(
-        res => {
-          if (res.status == 200){
-            this.uploadRequested = false
-            this.dialogRef.close( )
-          }
-        },
-        err => {
-          console.log( err );
-        }
-      );
+
       if (this.uploadForm.pristine) {
         return;
       }
@@ -108,30 +96,31 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
           .subscribe(
             (response: { publication: Publication }) => {
               Object.assign(this.publication, response.publication);
-              this.sucSwal.title = 'El grupo de investigación ha sido actualizado';
+              this.sucSwal.title = 'La publicación ha sido actualizada';
               this.sucSwal.show();
               this.createRGForm();
             },
             (error: HttpErrorResponse) => {
-              this.errSwal.title = 'Grupo de investigación no actualizado';
+              this.errSwal.title = 'Publicación no actualizada';
               this.errSwal.text = 'Mensaje de error: ' + error.message;
               this.errSwal.show();
             }
           );
       } else {
-        this.publicationService.create(publication)
-          .subscribe(
-            (response: { publication: Publication }) => {
-              this.sucSwal.title = 'El grupo de investigación ha sido añadido';
-              this.sucSwal.show();
-              this.uploadForm.reset();
-            },
-            (error: HttpErrorResponse) => {
-              this.errSwal.title = 'Grupo de investigación no añadido';
-              this.errSwal.text = 'Mensaje de error: ' + error.message;
-              this.errSwal.show();
-            }
-          );
+        this.uploadPublicationResponse$ = this.publicationService.uploadPublication(this.uploadForm.value,this.file);
+        this.uploadRequested = true;
+        this.uploadPublicationResponse$.subscribe(
+          (response: { publication: Publication }) => {
+            this.sucSwal.title = 'El grupo de investigación ha sido añadido';
+            this.sucSwal.show();
+            this.uploadForm.reset();
+          },
+          (error: HttpErrorResponse) => {
+            this.errSwal.title = 'Publicación no añadida';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
       }
     }
 
@@ -142,10 +131,8 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
         date: [this.publication.date, [Validators.required]],
         abstract: [this.publication.abstract, [Validators.required, Validators.maxLength(1000)]],
         brief_description: [this.publication.brief_description, [Validators.required, Validators.maxLength(1000)]],
-        type_pub: [this.publication.type_pub],
-        created_at: [this.publication.created_at, [Validators.required]],
-        updated_at: [this.publication.updated_at, [Validators.required]],
-        document: [this.publication.document]
+        type_pub: [this.publication.type_pub, [Validators.required]],
+        document: [this.publication.document, [Validators.required]]
       });
     }
     /*uploadForm = new FormGroup({
@@ -163,8 +150,6 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
     get abstract() { return this.uploadForm.get('abstract'); }
     get brief_description() { return this.uploadForm.get('brief_description'); }
     get type_pub() { return this.uploadForm.get('type_pub'); }
-    get created_at() { return this.uploadForm.get('created_at'); }
-    get updated_at() { return this.uploadForm.get('updated_at'); }
     get document() { return this.uploadForm.get('document'); }
 
 }

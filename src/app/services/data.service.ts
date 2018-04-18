@@ -11,8 +11,7 @@ export class DataService {
   private headers = new Subject<any>( );
   headersObs$ = this.headers.asObservable( );
 
-  public backPath = 'http://localhost:3000'
-
+  
   constructor( private http: Http ) { }
 
   init( ) {
