@@ -9,6 +9,8 @@
           <div class="field">
             <h4>{{ researchGroup.description }}</h4>
           </div>
+        </div>
+        <div class="col-sm-5 col-md-5">
           <label for="strategic_focus">Enfoque estratégico</label>
           <div class="field">
             <h4>{{ researchGroup.strategic_focus }}</h4>
@@ -38,13 +40,7 @@
         </div>
           <label for="researchGroup.members">Miembros</label>
           <div *ngFor="let member of researchGroup.members" class="field">
-            <a href="details(member.user.id)">{{member.user.full_name}}</a>
-            <h4>{{member.user.id}}</h4>
-            <app-crud [columns]="headers" [keys]="keys" [rows]="users" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
-            <button class="btn btn-primary btn-xs" (click)="details(30)" (onDetails)="details($event)">
-              <span class="glyphicon glyphicon-search"></span> Details</button>
-            <button class="btn btn-primary btn-xs" (click)="update(30)">
-                <span class="glyphicon glyphicon-edit"></span>Editar</button>
+            <h4>{{member.user.full_name}}</h4>
           </div>
       </div>
     </div>
