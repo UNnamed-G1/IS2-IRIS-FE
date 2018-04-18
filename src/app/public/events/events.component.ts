@@ -1,7 +1,9 @@
+import { ActivatedRoute, Router } from '@angular/router';
+import { AppState } from 'app/redux/store';
+import { ADD_AUXILIAR } from 'app/redux/actions';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { ActivatedRoute } from '@angular/router';
 import { Event } from 'app/classes/events';
 import { EventService } from 'app/services/event.service';
 

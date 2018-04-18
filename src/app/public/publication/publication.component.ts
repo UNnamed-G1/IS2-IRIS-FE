@@ -22,7 +22,8 @@ export class PublicationComponent implements OnInit , AfterContentInit {
      'Corta descripción', 'Tipo de Publicación','Fecha Creación'];
   keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
   publications: Array<Publication>;
-
+  pub: Publication=new Publication();
+  pdfSrc:any;
   page: {
     actual: number,
     total: number
@@ -54,7 +55,7 @@ export class PublicationComponent implements OnInit , AfterContentInit {
 
   details(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
-    this.router.navigateByUrl('/documents');
+    this.getPublication(id)
   }
 
   delete(id: number) {
@@ -72,7 +73,20 @@ export class PublicationComponent implements OnInit , AfterContentInit {
         }
       );
   }
-
+  getPublication(id) {
+    this.publicationService.get(id)
+    .subscribe(
+      (res:{publication:Publication}) =>{
+        this.pub= res.publication;
+        console.log(this.pub.document); 
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se han podido obtener la Publicación';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
+  }
   getPublications() {
     this.publicationService.getAll(this.page.actual)
       .subscribe(

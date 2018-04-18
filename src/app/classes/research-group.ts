@@ -8,4 +8,5 @@ export class ResearchGroup {
   public classification: string;
   public date_classification: string;
   public url: string;
+  public photo: any;
 }

@@ -9,13 +9,14 @@ import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
-import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
+import { ADD_SESSION, REMOVE_SESSION } from '../app/redux/actions';
 import * as persistState from 'redux-localstorage';
 import { MatFormFieldModule, MatInputModule,MatIconModule } from '@angular/material';
 import { MatDialogRef,MatDialogModule,MatDialog} from '@angular/material/dialog';
 import { MAT_DIALOG_DATA} from '@angular/material';
 import { HttpModule } from '@angular/http';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {  FileUploadModule } from 'ng2-file-upload';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -57,6 +58,8 @@ import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
+import { ReportsComponent } from './public/reports/reports.component';
+import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -73,13 +76,19 @@ import { DataService } from './services/data.service';
 
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
+import { ReportService } from './services/report.service';
+import { ResearchSubjectService } from './services/research-subject.service';
 import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { AddPictureComponent } from './add-picture/add-picture.component';
+
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
+import { FollowsComponent } from './public/profile/follows/follows.component';
+
 
 export const appRoutes: Routes = [
   {
@@ -92,7 +101,11 @@ export const appRoutes: Routes = [
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    children: [{
+      path: 'follows',
+      component: FollowsComponent
+    }]
   },
   {
     path: 'search',
@@ -167,8 +180,20 @@ export const appRoutes: Routes = [
     component: RgComponent
   },
   {
+    path: 'reports',
+    component: ReportsComponent
+  },
+  {
+    path: 'research-subjects',
+    component: ResearchSubjectsComponent
+  },
+  {
     path: 'documents',
     component: DocumentsComponent
+  },
+  {
+    path: 'add-pictures',
+    component: AddPictureComponent
   },
   {
     path: 'publications',
@@ -203,7 +228,8 @@ export const appRoutes: Routes = [
     MatInputModule,
     MatIconModule,
     MatDialogModule,
-    NoopAnimationsModule
+    NoopAnimationsModule,
+    FileUploadModule
 ],
   declarations: [
     AppComponent,
@@ -233,10 +259,15 @@ export const appRoutes: Routes = [
     FilterPipe,
     PaginationComponent,
     CrudComponent,
+    DocumentsComponent,
+    ReportsComponent,
+    ResearchSubjectsComponent,
+    AddPictureComponent,
     PublicationComponent,
     AddPublicationComponent,
     FormControlErrorsComponent,
-    DocumentsComponent
+    DocumentsComponent,
+    FollowsComponent
   ],
   providers: [
     { provide: MAT_DIALOG_DATA,
@@ -268,7 +299,9 @@ export const appRoutes: Routes = [
     ResearchGroupService,
     UserService,
     PublicationService,
-    DataService
+    DataService,
+    ReportService,
+    ResearchSubjectService
   ],
   bootstrap: [AppComponent]
 })
@@ -293,7 +326,7 @@ export class AppModule {
               type: ADD_SESSION, session:
                 Object.assign({}, {
                   name: data.full_name,
-                  type: data.user_type,
+                  type: data.user_type.toLowerCase(),
                   username: data.username,
                   photo: data.photo
                 })

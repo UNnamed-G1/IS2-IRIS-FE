@@ -10,6 +10,7 @@ import { PermissionManager } from 'app/permission-manager';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResearchGroup } from 'app/classes/research-group';
+import { ResearchSubject } from 'app/classes/research-subject';
 import { ResearchGroupService } from 'app/services/research-group.service';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 
@@ -25,7 +26,8 @@ export class RgComponent implements OnInit {
   @select() auxiliarID;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-
+  events: Array<Event>;
+  subjects: Array<ResearchSubject>;
   @Output() onDetails = new EventEmitter<number>();
   researchGroup:ResearchGroup=new ResearchGroup();
   showInput: boolean = false;
@@ -45,12 +47,17 @@ export class RgComponent implements OnInit {
         this.researchGroupService.get(id)
           .subscribe((researchGroup: { research_group: ResearchGroup }) => {
             this.researchGroup = researchGroup.research_group;
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
+            this.researchGroupService.getEvents(this.researchGroup.id).subscribe((res: {events: Event[]}) => {
+              this.events = res.events;
+            });
+            this.researchGroupService.getSubjects(this.researchGroup.id).subscribe((res: {research_subjects: ResearchSubject[]}) => {
+              this.subjects = res.research_subjects;
+            });
+          }, (error: HttpErrorResponse) => {
+                      this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
+                      this.errSwal.text = 'Mensaje de error: ' + error.message;
+                      this.errSwal.show();
+                    }
           );
       }
     });

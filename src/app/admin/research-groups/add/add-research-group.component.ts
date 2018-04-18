@@ -16,7 +16,6 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   styleUrls: ['./add-research-group.component.css']
 })
 
-
 export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;

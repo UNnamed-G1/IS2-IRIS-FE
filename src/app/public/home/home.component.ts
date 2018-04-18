@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
 import { select } from '@angular-redux/store';
-
 import { PermissionManager } from 'app/permission-manager'
 
 @Component({

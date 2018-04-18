@@ -1,9 +1,13 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { ActivatedRoute } from '@angular/router';
 import { ResearchGroup } from 'app/classes/research-group';
 import { ResearchGroupService } from 'app/services/research-group.service';
+import { environment } from 'environments/environment';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgRedux } from '@angular-redux/store';
+import { AppState } from 'app/redux/store';
+import { ADD_AUXILIAR } from 'app/redux/actions';
 
 @Component({
   selector: 'app-research-groups',
@@ -17,18 +21,20 @@ export class ResearchGroupsComponent implements OnInit {
     'foundation_date', 'classification', 'date_classification', 'url'];
   rows: Array<ResearchGroup>;
   news: Array<ResearchGroup>;
-  item_active: ResearchGroup;
   items: Array<ResearchGroup>;
-
+  item_active: ResearchGroup;
+  url: string;
   page: {
     actual: number,
     total: number
   };
 
   constructor(private researchGroupService: ResearchGroupService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute, private router: Router, private ngRedux: NgRedux<AppState>) {
+  }
 
   ngOnInit() {
+    this.url = environment.api_url;
     this.route.queryParams.subscribe(params => {
       this.page = Object.assign({});
       this.page.actual = +params.page || 1;
@@ -61,5 +67,10 @@ export class ResearchGroupsComponent implements OnInit {
           this.errSwal.show();
         }
       );
+  }
+
+  openRG(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.router.navigateByUrl('/rg');
   }
 }

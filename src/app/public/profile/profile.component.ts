@@ -26,14 +26,17 @@ import { Career } from 'app/classes/career';
 export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-
+  
   @select() auxiliarID;
   user: User;
   faculties: Faculty[] = new Array<Faculty>();
   departments: Department[] = new Array<Department>();
   careers: Career[] = new Array<Career>();
+  displayFollowers: boolean;
   showInput = false;
   profileForm: FormGroup;
+  followersCount: number;
+  followingCount: number;
 
   constructor(private userService: UserService,
     private facultyService: FacultyService,
@@ -117,6 +120,18 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   careerClicked(career: Career) {
     this.user.career = career;
     this.user.career_id = career.id;
+  }
+
+  viewFollows(followers: boolean) {
+    this.displayFollowers = followers;
+  }
+
+  setFollowersCount(count: number) {
+    this.followersCount = count;
+  }
+
+  setFollowingCount(count: number) {
+    this.followingCount = count;
   }
 
   setUser(user) {

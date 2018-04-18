@@ -5,3 +5,11 @@
   border-radius: 50%;
   background: #eee;
 }
+
+#unalTop .menu:hover {
+	background: #0b7dda;
+}
+
+#unalTop .menu .active {
+	background: #0b7dda;
+}

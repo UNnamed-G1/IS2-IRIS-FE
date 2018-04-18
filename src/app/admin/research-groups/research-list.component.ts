@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { NgRedux } from '@angular-redux/store';
-import { AppState } from 'app/redux/store';
-import { ADD_AUXILIAR } from 'app/redux/actions';
-import { PermissionManager } from 'app/permission-manager';
-import { ResearchGroupService } from 'app/services/research-group.service';
-import { ResearchGroup } from 'app/classes/research-group';
+import { AppState } from '../../redux/store';
+import { ADD_AUXILIAR } from '../..//redux/actions';
+import { PermissionManager } from '../../permission-manager';
+import { ResearchGroupService } from '../../services/research-group.service';
+import { ResearchGroup } from '../../classes/research-group';
 
 @Component({
   selector: 'app-research-list',

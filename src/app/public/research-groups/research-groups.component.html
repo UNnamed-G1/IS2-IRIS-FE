@@ -53,25 +53,31 @@
 		  	</a>
 		</div>
 	</div>
-
+ 
 	<div class="row" id="research_groups_view">
 		<div class="research-group" *ngFor="let row of rows">
 			<div class="col-xs-6 col-md-3 col-lg-3">
 				<div class="panel panel-default">
 					<div class="panel panel-heading">
-						<h5 class="text-center">{{row.name}}</h5>
+						<h4 class="text-center">{{row.name}}</h4>
 					</div>
 
-					<div class="panel panel-body">
+					<div class="panel panel-body" [ngStyle]="
+						{
+							'background-image': 'url(' + url + row.photo.picture.url + ')',
+							'background-repeat': 'no-repeat',
+							'background-color': '#555',
+							'background-size': '100%'
+						}">
 						<div class="screen">
 							<div class="row">
 								<div class="col-sm-12 center-block">
 									<div class="box">
 										<p class="white-text ">{{row.description}}</p>
-										<div class="glyphicon pull-right pull-down" align="bottom">
-											<a href="#">
-	          											<span class="glyphicon glyphicon-eye-open align-index"></span>
-	        											</a>
+										<div class="glyphicon pull-right pull-down">
+											<a (click)="openRG(row.id)">
+	          						<span class="glyphicon glyphicon-eye-open"></span>
+	        						</a>
 										</div>
 									</div>
 								</div>

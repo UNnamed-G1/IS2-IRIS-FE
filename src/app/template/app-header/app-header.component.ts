@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { NgRedux, select } from '@angular-redux/store';
-import { AppState } from 'app/redux/store';
-import { REMOVE_SESSION } from 'app/redux/actions';
+import { AppState } from '../../redux/store';
+import { REMOVE_SESSION } from '../../redux/actions';
 
 @Component({
   selector: 'app-header',
