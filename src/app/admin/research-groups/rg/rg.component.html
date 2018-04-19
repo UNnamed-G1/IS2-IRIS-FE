@@ -8,7 +8,10 @@
           <div class="col-sm-8 col-md-8">
             <div class="media">
               <div class="media-left media-middle">
-                  <img src="http://localhost:3000{{ researchGroup.photo.picture }}" class="media-object" style="width:250px; height:250px;">
+                <img src="{{rg.photo ? rg.photo.link : 'assets/images/user.png'}}" alt="" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+                />
+                  <!--img src="http://localhost:3000{{ researchGroup.photo.picture }}" onerror="this.src='assets/images/user.png';" class="media-object" style="width:250px; height:250px;">
+                  /-->
               </div>
 
               <div class="media-body">
@@ -170,8 +173,12 @@
                 <label for="inputUrl">Url</label>
                 <input id="inputUrl" type="text" class="form-control" required [(ngModel)]="researchGroup.url" name="url">
               </div>
+              <div class="btn-group">
+                <button class="btn btn-primary" type="submit" [disabled]="rgForm.invalid">Guardar</button>
+                <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
+              </div>
             </div>
-          </form>
+        </form>
       </div>
     </div>
   </div>

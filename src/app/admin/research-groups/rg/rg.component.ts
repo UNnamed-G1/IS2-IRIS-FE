@@ -20,7 +20,7 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
   styleUrls: ['./rg.component.css']
 })
 
-export class RgComponent implements OnInit {
+export class RgComponent implements OnInit,AfterContentInit {
   @select() session;
   @select() isLogged;
   @select() auxiliarID;
@@ -77,8 +77,6 @@ export class RgComponent implements OnInit {
         rg[k] = this.rgForm.get(k).value;
       }
     }
-
-
     this.researchGroupService.update(this.researchGroup.id, { research_group: rg }).subscribe(
       (response: { researchGroup: ResearchGroup }) => {
         this.sucSwal.title = 'El grupo ha sido actualizado';
@@ -173,7 +171,6 @@ export class RgComponent implements OnInit {
       classification: [this.researchGroup.classification, [Validators.required]],
       date_classification: [this.researchGroup.date_classification, [Validators.required]],
       url: [this.researchGroup.url, [Validators.required]],
-
     })
   }
 
