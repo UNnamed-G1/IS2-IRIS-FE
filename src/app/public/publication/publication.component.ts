@@ -55,7 +55,8 @@ export class PublicationComponent implements OnInit , AfterContentInit {
 
   details(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
-    this.getPublication(id)
+    this.pdfSrc=this.getPublication(id);
+    this.router.navigateByUrl('/documents');
   }
 
   delete(id: number) {
@@ -78,7 +79,7 @@ export class PublicationComponent implements OnInit , AfterContentInit {
     .subscribe(
       (res:{publication:Publication}) =>{
         this.pub= res.publication;
-        console.log(this.pub.document); 
+        console.log(this.pub.document);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se han podido obtener la Publicación';

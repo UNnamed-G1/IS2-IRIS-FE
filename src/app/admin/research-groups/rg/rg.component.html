@@ -8,10 +8,7 @@
           <div class="col-sm-8 col-md-8">
             <div class="media">
               <div class="media-left media-middle">
-                <img src="{{rg.photo ? rg.photo.link : 'assets/images/user.png'}}" alt="" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
-                />
-                  <!--img src="http://localhost:3000{{ researchGroup.photo.picture }}" onerror="this.src='assets/images/user.png';" class="media-object" style="width:250px; height:250px;">
-                  /-->
+                  <img src="http://localhost:3000{{ researchGroup.photo.picture }}" class="media-object" style="width:250px; height:250px;">
               </div>
 
               <div class="media-body">
@@ -112,46 +109,23 @@
               </div>
             </div>
           </div>
-        </div>
-        <br><br>
-        <button class="btn btn-primary" *ngIf="(session | async).type === 'Admin'" (click)="toggleShowInput()">Editar</button>
-        <button class="btn btn-primary" *ngIf="(isLogged | async)"  routerLink="/login" role="button">Unirse</button>
-        <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
-
       </div>
 
+      <button class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
+    </div>
+
       <div class="row" [hidden]="!showInput">
-          <form (ngSubmit)="onSubmit()">
-            <div class="col-sm-5 col-md-5">
-              <div class="row">
-                <div class="col-md-6">
-                  <label for="inputName">Nombre</label>
-                  <input id="inputName" type="text" class="form-control" required [(ngModel)]="researchGroup.name" name="Name" />
-                </div>
-                <div class="col-md-6">
-                  <label for="inputDescription">Descripción</label>
-                  <input id="inputDescription" type="text" class="form-control" required [(ngModel)]="researchGroup.description" name="description" />
-                </div>
-                <label for="inputStrategicFocus">Enfoque Estratégico</label>
-                <textarea id="inputStrategicFocus" type="text" class="form-control" required [(ngModel)]="researchGroup.strategic_focus" name="strategic_focus" rows="3"></textarea>
-                <label for="inputResearchPriorities">Prioridades de Investigación</label>
-                <textarea id="inputResearchPriorities" type="text" class="form-control" required [(ngModel)]="researchGroup.research_priorities" name="research_priorities" rows="3"></textarea>
-                <div class="col-md-6">
-                  <label for="inputFoundationDate">Fecha de Fundación</label>
-                  <input id="inputFoundationDate" type="text" class="form-control" required [(ngModel)]="researchGroup.foundation_date" name="foundation_date">
-                </div>
-                <div class="col-md-6">
-                  <label for="inputClassification">Clasificación</label>
-                  <input id="inputClassification" type="text" class="form-control" required [(ngModel)]="researchGroup.classification" name="classification" >
-                </div>
-                <div class="col-md-6">
-                  <label for="inputDateClassification">Fecha de Clasificación</label>
-                  <input id="inputDateClassification" type="text" class="form-control" required [(ngModel)]="researchGroup.date_classification" name="date_classification">
-                </div>
-                <div class="col-md-6">
-                  <label for="inputUrl">Url</label>
-                  <input id="inputUrl" type="text" class="form-control" required [(ngModel)]="researchGroup.url" name="url">
-                </div>
+        <form (ngSubmit)="onSubmit()">
+          <div class="col-sm-5 col-md-5">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="inputName">Nombre</label>
+                <input id="inputName" type="text" class="form-control" required [(ngModel)]="researchGroup.name" name="Name" />
+              </div>
+              <div class="col-md-6">
+                <label for="inputDescription">Descripción</label>
+                <input id="inputDescription" type="text" class="form-control" required [(ngModel)]="researchGroup.description" name="description" />
               </div>
               <label for="inputStrategicFocus">Enfoque Estratégico</label>
               <textarea id="inputStrategicFocus" type="text" class="form-control" required [(ngModel)]="researchGroup.strategic_focus" name="strategic_focus" rows="3"></textarea>
@@ -173,12 +147,14 @@
                 <label for="inputUrl">Url</label>
                 <input id="inputUrl" type="text" class="form-control" required [(ngModel)]="researchGroup.url" name="url">
               </div>
-              <div class="btn-group">
-                <button class="btn btn-primary" type="submit" [disabled]="rgForm.invalid">Guardar</button>
-                <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
-              </div>
             </div>
-        </form>
+            <br><br>
+            <div class="btn-group">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
+            </div>
+          </div>
+          </form>
       </div>
     </div>
   </div>
