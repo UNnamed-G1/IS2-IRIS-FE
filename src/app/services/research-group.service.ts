@@ -4,12 +4,11 @@ import { CommonService } from './common.service';
 
 @Injectable()
 export class ResearchGroupService extends CommonService {
-
   constructor(protected http: HttpClient) {
     super(http);
     this.url += 'research_groups/';
   }
-
+  
   public getCurrentGroup() {
     return this.applyRequestPath(this.get, 'research_groups/1');
   }
@@ -19,9 +18,17 @@ export class ResearchGroupService extends CommonService {
   public getEvents(id: number){
     return this.applyRequestPath(this.get, "events_by_rg?id="+id);
   }
-
+  
   public getSubjects(id: number){
     return this.applyRequestPath(this.get, "rs_by_rg?id="+id)
+  }
+  
+  public requestJoinGroup(id: any): any {
+    return this.applyRequestPath(this.create, 'research_groups/join', [id]);
+  }
+
+  public leaveGroup(id: any): any {
+    return this.applyRequestPath(this.create, 'research_groups/leave', [id]);
   }
 
 }

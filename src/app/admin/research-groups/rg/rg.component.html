@@ -34,6 +34,8 @@
           </div>
 
           <div class="col-sm-4 col-md-4">
+            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isMember" (click)="requestJoin()">Unirse</button>
+            <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isMember" (click)="leave()">Abandonar</button>-->
             <div class="panel panel-default">
               <div class="panel-heading" style="background: #2196F3;">
                 <h3 class="glyphicon glyphicon-user"> Usuarios</h3>

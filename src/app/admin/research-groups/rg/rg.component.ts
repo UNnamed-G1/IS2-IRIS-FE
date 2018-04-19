@@ -33,6 +33,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   @Output() onDetails = new EventEmitter<number>();
   researchGroup: ResearchGroup = new ResearchGroup();
   showInput: boolean = false;
+  isMember: boolean;
   rgForm: FormGroup;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
@@ -57,6 +58,8 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
           this.subjects = res.research_subjects;
         });
         this.setRG(this.researchGroupService.get(id));
+      } else {
+        this.permMan.authorizedUser([]);
       }
     });
   }
@@ -110,6 +113,11 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         this.researchGroup = Object.assign(new ResearchGroup(), response.research_group);
         this.researchGroup['photo'] = environment.api_url + this.researchGroup['photo'].picture;
         this.createRGForm();
+        this.session.subscribe(session => {
+          console.log(this.isMember)
+          this.isMember = response.research_group['members'].map(u => u.user.username).includes(session.username);
+          console.log(this.isMember)
+        });
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
@@ -165,6 +173,36 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
           })
         ;
     }
+  }
+
+  requestJoin() {
+    this.researchGroupService.requestJoinGroup({ id: this.researchGroup.id }).subscribe(
+      (response) => {
+        this.sucSwal.title = 'Te has unido a este grupo';
+        this.sucSwal.show();
+        this.setRG(this.researchGroupService.get(this.researchGroup.id));
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No te has podido unir al grupo';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    )
+  }
+  
+  leave() {
+    this.researchGroupService.leaveGroup({ id: this.researchGroup.id }).subscribe(
+      (response) => {
+        this.sucSwal.title = 'Has abandonado este grupo';
+        this.sucSwal.show();
+        this.setRG(this.researchGroupService.get(this.researchGroup.id));
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No has podido abandonar el grupo';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    )
   }
 
   fileOverBase(e: any): void {
