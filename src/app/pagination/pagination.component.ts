@@ -12,12 +12,17 @@ export class PaginationComponent implements OnInit, AfterContentInit {
     actual: number,
     total: number
   };
+  @Input() routing: boolean;
+  @Output() changePage = new EventEmitter<number>();
 
   actualRoute: string;
 
   constructor(private router: Router) { }
 
   ngOnInit() {
+    if (this.routing === undefined) {
+      this.routing = true;
+    }
     this.actualRoute = this.router.url.split('?')[0];
   }
 
@@ -43,15 +48,30 @@ export class PaginationComponent implements OnInit, AfterContentInit {
   }
 
   onPage(p: number): void {
-    this.router.navigate([this.actualRoute], { queryParams: { page: p } });
+    if (this.routing) {
+      this.router.navigate([this.actualRoute], { queryParams: { page: p } });
+    } else {
+      this.page.actual = p;
+      this.changePage.emit(this.page.actual);
+    }
   }
 
   onPrev(): void {
-    this.router.navigate([this.actualRoute], { queryParams: { page: this.page.actual - 1 } });
+    if (this.routing) {
+      this.router.navigate([this.actualRoute], { queryParams: { page: this.page.actual - 1 } });
+    } else {
+      this.page.actual--;
+      this.changePage.emit(this.page.actual);
+    }
   }
 
   onNext(): void {
-    this.router.navigate([this.actualRoute], { queryParams: { page: this.page.actual + 1 } });
+    if (this.routing) {
+      this.router.navigate([this.actualRoute], { queryParams: { page: this.page.actual + 1 } });
+    } else {
+      this.page.actual++;
+      this.changePage.emit(this.page.actual);
+    }
   }
 
 }

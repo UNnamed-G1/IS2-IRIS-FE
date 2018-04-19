@@ -17,6 +17,7 @@ export class DocumentsComponent implements OnInit {
   zoom: number = 1.0;
   originalSize: boolean = true;
   rotate: number = 0;
+  pdfSrc;
   constructor() { }
 
   ngOnInit() {
@@ -65,6 +66,5 @@ export class DocumentsComponent implements OnInit {
   rotatePdf(){
     this.rotate += 90;
   }
-
 
 }

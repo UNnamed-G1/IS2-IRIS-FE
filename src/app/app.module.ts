@@ -11,6 +11,11 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import { ADD_SESSION, REMOVE_SESSION } from '../app/redux/actions';
 import * as persistState from 'redux-localstorage';
+import { MatFormFieldModule, MatInputModule,MatIconModule } from '@angular/material';
+import { MatDialogRef,MatDialogModule,MatDialog} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA} from '@angular/material';
+import { HttpModule } from '@angular/http';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {  FileUploadModule } from 'ng2-file-upload';
 
 // Redux imports
@@ -67,6 +72,7 @@ import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { PublicationService } from './services/publication.service';
+import { DataService } from './services/data.service';
 
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
@@ -214,11 +220,17 @@ export const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    HttpModule,
     NgHttpLoaderModule,
     NgReduxModule,
     PdfViewerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatDialogModule,
+    NoopAnimationsModule,
     FileUploadModule
-  ],
+],
   declarations: [
     AppComponent,
     AppHeaderComponent,
@@ -258,6 +270,12 @@ export const appRoutes: Routes = [
     FollowsComponent
   ],
   providers: [
+    { provide: MAT_DIALOG_DATA,
+      useValue: []
+    },
+    { provide: MatDialogRef,
+      useValue: {}
+    },
     {
       provide: APP_BASE_HREF,
       useValue: '/'
@@ -280,9 +298,10 @@ export const appRoutes: Routes = [
     FacultyService,
     ResearchGroupService,
     UserService,
+    PublicationService,
+    DataService,
     ReportService,
-    ResearchSubjectService,
-    PublicationService
+    ResearchSubjectService
   ],
   bootstrap: [AppComponent]
 })
@@ -307,7 +326,7 @@ export class AppModule {
               type: ADD_SESSION, session:
                 Object.assign({}, {
                   name: data.full_name,
-                  type: data.user_type.toLowerCase(),
+                  type: data.user_type,
                   username: data.username,
                   photo: data.photo
                 })

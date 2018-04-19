@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CommonService } from './common.service'
+import { CommonService } from './common.service';
 
 @Injectable()
 export class UserService extends CommonService {
@@ -14,32 +14,22 @@ export class UserService extends CommonService {
     return this.applyRequestPath(this.get, 'users/current/');
   }
 
-  public getFollowingCount(id?: number) {
-    if (id) {
-      return this.applyRequestPath(this.get, 'following_count?id=' + id);
-    }
-    return this.applyRequestPath(this.get, 'following_count');
+  public getCurrFollowing() {
+    return this.applyRequestPath(this.get, 'curr_following');
   }
 
-  public getFollowersCount(id?: number) {
+  public getFollowing(page: number, id?: number) {
     if (id) {
-      return this.applyRequestPath(this.get, 'followers_count?id=' + id);
+      return this.applyRequestPath(this.get, 'following?id=' + id + '&page=' + page);
     }
-    return this.applyRequestPath(this.get, 'followers_count');
+    return this.applyRequestPath(this.get, 'following?page=' + page);
   }
 
-  public getFollowing(id?: number) {
+  public getFollowers(page: number, id?: number) {
     if (id) {
-      return this.applyRequestPath(this.get, 'following?id=' + id);
+      return this.applyRequestPath(this.get, 'followers?id=' + id + '&page=' + page);
     }
-    return this.applyRequestPath(this.get, 'following');
-  }
-
-  public getFollowers(id?: number) {
-    if (id) {
-      return this.applyRequestPath(this.get, 'followers?id=' + id);
-    }
-    return this.applyRequestPath(this.get, 'followers');
+    return this.applyRequestPath(this.get, 'followers?page=' + page);
   }
 
   public follow(id: number) {

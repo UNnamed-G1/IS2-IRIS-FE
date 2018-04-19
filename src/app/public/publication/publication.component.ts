@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -14,16 +14,16 @@ import { Publication } from 'app/classes/publication';
   templateUrl: './publication.component.html',
   styleUrls: ['./publication.component.css']
 })
-export class PublicationComponent implements OnInit {
-  @ViewChild('sucDelSwal') private sucDelSwal: SwalComponent;
-  @ViewChild('errDelSwal') private errDelSwal: SwalComponent;
-  @ViewChild('errUsersSwal') private errUsersSwal: SwalComponent;
+export class PublicationComponent implements OnInit , AfterContentInit {
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',
-     'Corta descripción', 'Tipo de Publicación','Fecha Creación','Fecha de actualización','documentos'];
-  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at', 'update_at','document'];
+     'Corta descripción', 'Tipo de Publicación','Fecha Creación'];
+  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
   publications: Array<Publication>;
-
+  pub: Publication=new Publication();
+  pdfSrc:any;
   page: {
     actual: number,
     total: number
@@ -39,44 +39,66 @@ export class PublicationComponent implements OnInit {
     this.permMan.validateSession(["Admin"]);
   }
 
+
   ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
       this.page = Object.assign({});
       this.page.actual = +params.page || 1;
       this.getPublications();
-    })
+    });
   }
 
-  update(id: string) {
+  update(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/publications/add');
+  }
+
+  details(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.pdfSrc=this.getPublication(id);
+    this.router.navigateByUrl('/documents');
   }
 
   delete(id: number) {
     this.publicationService.delete(id)
       .subscribe(
-        (response: {publication: Publication}) => {
+        (response: { publication: Publication }) => {
           this.getPublications();
-          this.sucDelSwal.show();
+          this.sucSwal.title = 'El grupo de investigación ha sido eliminado';
+          this.sucSwal.show();
         },
         (error: HttpErrorResponse) => {
-          this.errDelSwal.text += error.message;
-          this.errDelSwal.show();
+          this.errSwal.title = 'Grupo de investigación no eliminado';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }
-
-
+  getPublication(id) {
+    this.publicationService.get(id)
+    .subscribe(
+      (res:{publication:Publication}) =>{
+        this.pub= res.publication;
+        console.log(this.pub.document);
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se han podido obtener la Publicación';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
+  }
   getPublications() {
     this.publicationService.getAll(this.page.actual)
       .subscribe(
         (res: { publications: Publication[], total_pages: number }) => {
-          this.publications = res.publications.map(p => Object.assign(p, {name: p.name + " " + p.abstract}));
+          this.publications = res.publications;
           this.page.total = res.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errUsersSwal.text += error.message;
-          this.errUsersSwal.show();
+          this.errSwal.title = 'No se han podido obtener los grupos de investigación';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         }
       );
   }

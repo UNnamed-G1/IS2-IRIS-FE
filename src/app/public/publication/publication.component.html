@@ -7,23 +7,11 @@
     <button class="btn btn-primary btn-sm" routerLink="/publications/add" role="button">Agregar</button>
     <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
     <br><br>
-    <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)" (onDelete)="delete($event)"></app-crud>
+    <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
     <app-pagination [page]="page"></app-pagination>
     <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
   </div>
 </div>
 
-<swal #sucDelSwal
-  title="La publicación ha sido eliminado."
-  type="success">
-</swal>
-<swal #errDelSwal
-  title="Publicación no eliminada."
-  text="Mensaje de error: "
-  type="error">
-</swal>
-<swal #errUsersSwal
-  title="No se han podido obtener las publicaciones."
-  text="Mensaje de error: "
-  type="error">
-</swal>
+<swal #errSwal title text type="error"></swal>
+<swal #sucSwal title type="success"></swal>
