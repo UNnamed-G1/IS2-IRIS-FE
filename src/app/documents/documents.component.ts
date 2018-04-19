@@ -11,13 +11,13 @@ export class DocumentsComponent implements OnInit {
   @Input() url: string;
   page: number = 1;
   totalPages: number;
-  isLoaded: boolean = false;
+  isLoaded: boolean = true;
   stickToPage: boolean = false;
   showAll: boolean = false;
   zoom: number = 1.0;
   originalSize: boolean = true;
   rotate: number = 0;
-  pdfSrc;
+  
   constructor() { }
 
   ngOnInit() {

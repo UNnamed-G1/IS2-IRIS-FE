@@ -66,7 +66,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         });
         this.setRG(this.researchGroupService.get(id));
       } else {
-        this.permMan.authorizedUser([]);
+        this.router.navigateByUrl('home');
       }
     });
   }

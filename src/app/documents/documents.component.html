@@ -1,10 +1,8 @@
 <div class="jumbotron">
-
   <div class="panel panel-default" style="margin-top:10px;">
     <br><br>
     <div class="form-group">
       <div *ngIf="isLoaded" style="text-align: center;">
-        <!--button (click)="switchShowAll()">show All</button-->
         <button (click)="prevPage()" data-toggle="tooltip" title="Página anterior"  [disabled]="page === 1">
           <span class="glyphicon glyphicon-arrow-left"></span>
         </button>
@@ -28,10 +26,6 @@
         <button (click)="rotatePdf()" data-toggle="tooltip" title="Girar 90°" class="btn btn-default btn-sm">
            <span class="glyphicon glyphicon-repeat"></span>
         </button>
-        <!--input type="text" class="form-control" placeholder="Escribe para buscar...">
-        <button (click)="search()" data-toggle="tooltip" title="buscar" class="btn btn-default btn-sm">
-           <span class="glyphicon glyphicon-search"></span>
-        </button-->
       </div>
     </div>
       <pdf-viewer [src]="url"
