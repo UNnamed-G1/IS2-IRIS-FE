@@ -113,7 +113,9 @@ export class FollowsComponent implements OnInit, OnChanges {
     this.userService.getFollowing(this.page.actual, id).subscribe(
       (response) => {
         this.isLogged.subscribe((logged: boolean) => {
-          this.currFollowing = response.following.map(u => u.username);
+          if (!id && logged) {
+            this.currFollowing = response.following.map(u => u.username);
+          }
         });
         if (!this.displayFollowers) {
           this.page.total = response.total_pages;

@@ -23,7 +23,7 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
     'Fecha de clasificación', 'URL'];
   keys: Array<string> = ['name', 'description', 'strategic_focus',
     'research_priorities', 'foundation_date', 'classification',
-    'classification_date', 'url'];
+    'date_classification', 'url'];
   researchGroups: Array<ResearchGroup>;
 
   page: {
