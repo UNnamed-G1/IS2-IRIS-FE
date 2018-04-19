@@ -47,13 +47,14 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
       this.page.actual = +params.page || 1;
       this.getResearchGroups();
     });
+
   }
 
   update(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/research-groups/add');
   }
-  
+
   details(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/rg');
