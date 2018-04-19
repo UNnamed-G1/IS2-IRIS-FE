@@ -10,13 +10,13 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
 export class DocumentsComponent implements OnInit {
   page: number = 1;
   totalPages: number;
-  isLoaded: boolean = false;
+  isLoaded: boolean = true;
   stickToPage: boolean = false;
   showAll: boolean = false;
   zoom: number = 1.0;
   originalSize: boolean = true;
   rotate: number = 0;
-  pdfSrc;
+  pdfSrc='/uploads/documents/publication/5f505ad5-20d1-4c29-b723-4f171976b9e8.pdf';
   constructor() { }
 
   ngOnInit() {

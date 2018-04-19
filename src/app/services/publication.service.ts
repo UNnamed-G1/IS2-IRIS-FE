@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { ResponseContentType,Http, Response, Headers, RequestOptions } from '@angular/http';
 import { DataService } from './data.service';
-import { ResponseContentType } from '@angular/http';
 import { environment } from 'environments/environment';
 import 'rxjs/add/operator/map'
 import { HttpClient } from '@angular/common/http';
 import { CommonService } from './common.service'
 import { HttpHeaders } from '@angular/common/http';
+
 @Injectable()
 export class PublicationService extends CommonService {
   headers: any;
@@ -20,7 +20,16 @@ export class PublicationService extends CommonService {
   }
 
 
+  downloadPdf( id ) {
+    const headers = new Headers( this.headers );
+    var httpOptions ={
+      headers: new HttpHeaders( this.headers ),
+      responseType: 'blob' as 'json'
+    }
+    return this.http.get( 'http://localhost:3000/publications/' + id , httpOptions )
+             .map( ( res: Response ) => res );
 
+}
 
   uploadPublication( formData , file) {
 
@@ -38,11 +47,6 @@ export class PublicationService extends CommonService {
       })
    };
     return this.http.post( 'http://localhost:3000/publications', publicationData, httpOptions )
-             .map( ( res: Response ) => res );
-  }
-
-  downloadPdf( id ) {
-    return this.http.get( 'http://localhost:3000/publications' + id , {headers: new HttpHeaders, responseType: 'blob' as 'json'} )
              .map( ( res: Response ) => res );
   }
 }
