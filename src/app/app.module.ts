@@ -11,12 +11,12 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import { ADD_SESSION, REMOVE_SESSION } from '../app/redux/actions';
 import * as persistState from 'redux-localstorage';
-import { MatFormFieldModule, MatInputModule,MatIconModule } from '@angular/material';
-import { MatDialogRef,MatDialogModule,MatDialog} from '@angular/material/dialog';
-import { MAT_DIALOG_DATA} from '@angular/material';
+import { MatFormFieldModule, MatInputModule, MatIconModule } from '@angular/material';
+import { MatDialogRef, MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material';
 import { HttpModule } from '@angular/http';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {  FileUploadModule } from 'ng2-file-upload';
+import { FileUploadModule } from 'ng2-file-upload';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -83,7 +83,6 @@ import { CrudComponent } from './crud/crud.component';
 import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './documents/documents.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { AddPictureComponent } from './add-picture/add-picture.component';
 
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
@@ -192,10 +191,6 @@ export const appRoutes: Routes = [
     component: DocumentsComponent
   },
   {
-    path: 'add-pictures',
-    component: AddPictureComponent
-  },
-  {
     path: 'publications',
     component: PublicationComponent
   }/*,
@@ -230,7 +225,7 @@ export const appRoutes: Routes = [
     MatDialogModule,
     NoopAnimationsModule,
     FileUploadModule
-],
+  ],
   declarations: [
     AppComponent,
     AppHeaderComponent,
@@ -262,7 +257,6 @@ export const appRoutes: Routes = [
     DocumentsComponent,
     ReportsComponent,
     ResearchSubjectsComponent,
-    AddPictureComponent,
     PublicationComponent,
     AddPublicationComponent,
     FormControlErrorsComponent,
@@ -270,10 +264,12 @@ export const appRoutes: Routes = [
     FollowsComponent
   ],
   providers: [
-    { provide: MAT_DIALOG_DATA,
+    {
+      provide: MAT_DIALOG_DATA,
       useValue: []
     },
-    { provide: MatDialogRef,
+    {
+      provide: MatDialogRef,
       useValue: {}
     },
     {

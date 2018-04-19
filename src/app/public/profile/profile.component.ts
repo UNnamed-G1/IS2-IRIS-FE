@@ -7,6 +7,7 @@ import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+import { environment } from 'environments/environment';
 
 import { FacultyService } from 'app/services/faculty.service';
 import { DepartmentService } from 'app/services/department.service';
@@ -17,7 +18,6 @@ import { User } from 'app/classes/user';
 import { Faculty } from 'app/classes/faculty';
 import { Department } from 'app/classes/department';
 import { Career } from 'app/classes/career';
-import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -50,7 +50,12 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     private formBuilder: FormBuilder) { }
 
   ngOnInit() { // Validate existent id if not logged
-    this.uploader = new FileUploader({ queueLimit: 1 });
+    this.auxiliarID.subscribe(id => {
+      if (!id) {
+        this.permMan.validateLogged();
+      }
+      this.uploader = new FileUploader({ queueLimit: 1 });
+    });
   }
 
   ngAfterContentInit() {
@@ -159,7 +164,6 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
           // this.setDepartments(this.user.career.id);
           // this.setCareers(this.user.career.id);
         }
-        console.log(response.user);
         this.createProfileForm();
       },
       (error: HttpErrorResponse) => {

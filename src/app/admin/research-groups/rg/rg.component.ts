@@ -2,11 +2,13 @@ import { Component, ViewChild, OnInit, AfterContentInit, OnDestroy, EventEmitter
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+import { environment } from 'environments/environment';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResearchGroup } from 'app/classes/research-group';
@@ -20,7 +22,7 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
   styleUrls: ['./rg.component.css']
 })
 
-export class RgComponent implements OnInit,AfterContentInit {
+export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   @select() session;
   @select() isLogged;
   @select() auxiliarID;
@@ -29,36 +31,32 @@ export class RgComponent implements OnInit,AfterContentInit {
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
   @Output() onDetails = new EventEmitter<number>();
-  researchGroup:ResearchGroup=new ResearchGroup();
+  researchGroup: ResearchGroup = new ResearchGroup();
   showInput: boolean = false;
   rgForm: FormGroup;
+  uploader: FileUploader;
+  hasBaseDropZoneOver = false;
 
   constructor(private researchGroupService: ResearchGroupService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
     private router: Router,
-    private formBuilder: FormBuilder )  { }
+    private formBuilder: FormBuilder) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.uploader = new FileUploader({ queueLimit: 1 });
+  }
 
   ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
       if (id) {
-        this.researchGroupService.get(id)
-          .subscribe((researchGroup: { research_group: ResearchGroup }) => {
-            this.researchGroup = researchGroup.research_group;
-            this.researchGroupService.getEvents(this.researchGroup.id).subscribe((res: {events: Event[]}) => {
-              this.events = res.events;
-            });
-            this.researchGroupService.getSubjects(this.researchGroup.id).subscribe((res: {research_subjects: ResearchSubject[]}) => {
-              this.subjects = res.research_subjects;
-            });
-          }, (error: HttpErrorResponse) => {
-                      this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
-                      this.errSwal.text = 'Mensaje de error: ' + error.message;
-                      this.errSwal.show();
-                    }
-          );
+        this.researchGroupService.getEvents(id).subscribe((res: { events: Event[] }) => {
+          this.events = res.events;
+        });
+        this.researchGroupService.getSubjects(id).subscribe((res: { research_subjects: ResearchSubject[] }) => {
+          this.subjects = res.research_subjects;
+        });
+        this.setRG(this.researchGroupService.get(id));
       }
     });
   }
@@ -68,21 +66,34 @@ export class RgComponent implements OnInit,AfterContentInit {
   }
 
   updateGroup() {
-    if (this.rgForm.pristine) {
+    if (this.rgForm.pristine && this.uploader.queue.length === 0) {
       return;
     }
     const rg = new ResearchGroup();
-    for (const k in this.rgForm.controls) {
-      if (this.rgForm.get(k).dirty) {
-        rg[k] = this.rgForm.get(k).value;
+    if (this.rgForm.pristine) {
+      rg.id = this.researchGroup.id;
+    } else {
+      for (const k in this.rgForm.controls) {
+        if (this.rgForm.get(k).dirty) {
+          rg[k] = this.rgForm.get(k).value;
+        }
       }
     }
-    this.researchGroupService.update(this.researchGroup.id, { research_group: rg }).subscribe(
-      (response: { researchGroup: ResearchGroup }) => {
+    const fd = new FormData();
+    for (const key of Object.keys(rg)) {
+      fd.append('research_group[' + key + ']', rg
+      [key]);
+    }
+    if (this.uploader.queue.length) {
+      fd.append('picture', this.uploader.queue[0].file.rawFile);
+    }
+    this.researchGroupService.update(this.researchGroup.id, fd).subscribe(
+      (response: { research_group: ResearchGroup }) => {
         this.sucSwal.title = 'El grupo ha sido actualizado';
         this.sucSwal.show();
         this.toggleShowInput();
-        Object.assign(this.researchGroup, response.researchGroup);
+        Object.assign(this.researchGroup, response.research_group);
+        this.researchGroup['photo'] = environment.api_url + this.researchGroup['photo'].picture;
         this.createRGForm();
       },
       (error: HttpErrorResponse) => {
@@ -92,26 +103,27 @@ export class RgComponent implements OnInit,AfterContentInit {
       }
     );
   }
+
   setRG(researchGroup) {
     researchGroup.subscribe(
-      (response: { researchGroup: ResearchGroup }) => {
-        this.researchGroup = Object.assign(new ResearchGroup(), response.researchGroup);
+      (response: { research_group: ResearchGroup }) => {
+        this.researchGroup = Object.assign(new ResearchGroup(), response.research_group);
+        this.researchGroup['photo'] = environment.api_url + this.researchGroup['photo'].picture;
         this.createRGForm();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido obtener el grupo';
+        this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
         this.errSwal.text = 'Mensaje de error: ' + error.message;
         this.errSwal.show();
       }
     );
   }
 
-
   toggleShowInput() {
     this.showInput = !this.showInput
   }
 
-  onSubmit(){
+  onSubmit() {
     if (this.rgForm.pristine) {
       return;
     }
@@ -155,12 +167,15 @@ export class RgComponent implements OnInit,AfterContentInit {
     }
   }
 
+  fileOverBase(e: any): void {
+    this.hasBaseDropZoneOver = e;
+  }
 
   private createRGForm() {
     this.rgForm = this.formBuilder.group({
       name: [this.researchGroup.name,
-        [Validators.required, Validators.pattern('[a-zA-Z ]*'),
-        Validators.minLength(3), Validators.maxLength(100)]],
+      [Validators.required, Validators.pattern('[a-zA-Z ]*'),
+      Validators.minLength(3), Validators.maxLength(100)]],
       description: [this.researchGroup.description,
       [Validators.required, Validators.maxLength(5000)]],
       strategic_focus: [this.researchGroup.strategic_focus,

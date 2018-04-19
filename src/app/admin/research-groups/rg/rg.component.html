@@ -8,7 +8,7 @@
           <div class="col-sm-8 col-md-8">
             <div class="media">
               <div class="media-left media-middle">
-                  <img src="http://localhost:3000{{ researchGroup.photo.picture }}" class="media-object" style="width:250px; height:250px;">
+                  <img src="{{ researchGroup.photo }}" class="media-object" style="width:250px; height:250px;">
               </div>
 
               <div class="media-body">
@@ -117,8 +117,19 @@
 
       <div class="row" [hidden]="!showInput">
         <form (ngSubmit)="onSubmit()">
-          <div class="col-sm-5 col-md-5">
-            <div class="row">
+            <div class="col-sm-2 col-md-2">
+              
+              <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)" [uploader]="uploader"
+              class="well my-drop-zone">
+                Suelta tu imagen aquí
+                <img src="{{researchGroup.photo ? researchGroup.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+              />
+              </div>
+            <input type="file" ng2FileSelect [uploader]="uploader"/>
+          </div>        
+        
+        <div class="col-sm-5 col-md-5">
+          <div class="row">
               <div class="col-md-6">
                 <label for="inputName">Nombre</label>
                 <input id="inputName" type="text" class="form-control" required [(ngModel)]="researchGroup.name" name="Name" />
@@ -150,7 +161,7 @@
             </div>
             <br><br>
             <div class="btn-group">
-              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="submit" class="btn btn-primary" (click)="updateGroup()">Guardar</button>
               <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
             </div>
           </div>
@@ -159,3 +170,6 @@
     </div>
   </div>
 </main>
+
+<swal #sucSwal title type="success"></swal>
+<swal #errSwal title text type="error"></swal>
