@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output } from '@angular/core';
 import { PdfViewerComponent } from 'ng2-pdf-viewer';
 
 
@@ -8,6 +8,7 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
   styleUrls: ['./documents.component.css']
 })
 export class DocumentsComponent implements OnInit {
+  @Input() url: string;
   page: number = 1;
   totalPages: number;
   isLoaded: boolean = false;

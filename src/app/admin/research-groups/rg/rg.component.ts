@@ -21,7 +21,8 @@ export class RgComponent implements OnInit {
   researchGroup: ResearchGroup;
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
-  publications: Array<Publication>
+  publications: Array<Publication>;
+  PDF: boolean = false;
 
   @Output() onDetails = new EventEmitter<number>();
   showInput: boolean = false;
@@ -70,7 +71,13 @@ export class RgComponent implements OnInit {
     this.showInput = !this.showInput
   }
 
+  pdfMode(){
+    this.PDF = !this.PDF;
+  }
 
+  newUrl(id: number){
+    return "http://localhost:3000/reports/rep_by_rg.pdf?id"+id;
+  }
 
   onSubmit() {
     console.log("Adding a Group: " + this.researchGroup.name);
