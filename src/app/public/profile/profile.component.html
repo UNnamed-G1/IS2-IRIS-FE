@@ -9,7 +9,7 @@
         <h2>Perfil</h2>
         <br>
         <div class="col-sm-2 col-md-2">
-          <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+          <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
           />
         </div>
         <div class="col-sm-5 col-md-5">
@@ -56,8 +56,16 @@
       <div class="row" [hidden]="!showInput">
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
-            <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
-            />
+
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)" [uploader]="uploader"
+              class="well my-drop-zone">
+              Suelta tu imagen aquí
+              <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+              />
+            </div>
+            <input type="file" ng2FileSelect [uploader]="uploader"/>
+
+
           </div>
           <div class="col-sm-5 col-md-5">
 

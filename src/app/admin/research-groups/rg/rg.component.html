@@ -8,7 +8,7 @@
           <div class="col-sm-8 col-md-8">
             <div class="media">
               <div class="media-left media-middle">
-                  <img src="http://localhost:3000{{ researchGroup.photo.picture }}" class="media-object" style="width:250px; height:250px;">
+                  <img src="http://localhost:3000{{ researchGroup?.photo?.picture }}" class="media-object" style="width:250px; height:250px;">
               </div>
 
               <div class="media-body">
@@ -35,8 +35,15 @@
 
           <div class="col-sm-4 col-md-4">
             <div class="panel panel-default">
-              <div class="panel-heading" style="background: #2196F3;">
-                <h3 class="glyphicon glyphicon-user"> Usuarios</h3>
+              <div class="panel-heading" style="background: #555;color: white;">
+                <div class="row">
+                  <div class="col-sm-1 col-md-1">
+                    <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
+                  </div>
+                  <div class="col-sm-11 col-md-11">
+                    <h3>Usuarios</h3>
+                  </div>
+                </div>
               </div>
               <div class="panel-body" style="overflow-y: auto; height: 200px; ">
                 <div class="research-group">
@@ -61,46 +68,102 @@
 
         <hr style="border:1px dotted black;">
 
-        <div class="col-sm-6 col-md-6">
-          <div class="panel panel-default">
-            <div class="panel-heading" style="background: #2196F3;">
-              <h3 class="glyphicon glyphicon-calendar"> Eventos</h3>
-            </div>
-            <div class="panel-body" style="overflow-y: auto; height: 300px; ">
-              <div class="research-group">
-                <div *ngFor="let event of events">
-                  <div class=" media">
-                    <div class="media-left media-middle">
-                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                    </div>
-
-                    <div class="media-body">
-                      <h4 class="media-heading">{{event.topic}}</h4>
-                      <a href="#">Mas informacion</a>
-                    </div>
+        <div class="container-fluid">
+          <div class="col-sm-6 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #555;color: white;">
+                <div class="row">
+                  <div class="col-sm-1 col-md-1">
+                    <span class="glyphicon glyphicon-calendar" style="font-size: 1.8rem"></span>
                   </div>
-                  <hr style="border:1px dotted black;">
+                  <div class="col-sm-11 col-md-11">
+                    <h3>Eventos</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 300px; ">
+                <div class="research-group">
+                  <div *ngFor="let event of events">
+                    <div class=" media">
+                      <div class="media-left media-middle">
+                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                      </div>
+
+                      <div class="media-body">
+                        <h4 class="media-heading">{{event.topic}}</h4>
+                        <a href="#">Mas informacion</a>
+                      </div>
+                    </div>
+                    <hr style="border:1px dotted black;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #555;color: white;">
+                <div class="row">
+                  <div class="col-sm-1 col-md-1">
+                    <span class="glyphicon glyphicon-tasks" style="font-size: 1.8rem"></span>
+                  </div>
+                  <div class="col-sm-11 col-md-11">
+                    <h3>Lineas de investigacion</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 300px;">
+                <div class="research-group">
+                  <div *ngFor="let subject of subjects">
+                    <div class="media">
+                      <div class="media-left media-middle">
+                          <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                      </div>
+
+                      <div class="media-body">
+                        <h4 class="media-heading">{{subject.name}}</h4>
+                        <a href="#">Mas informacion</a>
+                      </div>
+                    </div>
+                    <hr style="border:1px dotted black;">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="col-sm-6 col-md-6">
+        <hr style="border:1px dotted black;">
+
+        <div class="container-fluid">
           <div class="panel panel-default">
-            <div class="panel-heading" style="background: #2196F3;">
-              <h3 class="glyphicon glyphicon-tasks"> Lineas de investigacion</h3>
+            <div class="panel-heading" style="background: #555;color: white;">
+              <div class="row">
+                <div class="col-sm-1 col-md-1">
+                  <span class="glyphicon glyphicon-book" style="font-size: 1.8rem"></span>
+                </div>
+                <div class="col-sm-10 col-md-10">
+                  <h3>Publicaciones</h3>
+                </div>
+                <div class="col-sm-1 col-md-1">
+                  <a (click)="pdfMode()">
+                    <span class="glyphicon glyphicon-file" title="Ver PDF"></span>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div class="panel-body" style="overflow-y: auto; height: 300px;">
+
+            <div *ngIf="!PDF" class="panel-body" style="overflow-y: auto; height: 300px; ">
               <div class="research-group">
-                <div *ngFor="let subject of subjects">
-                  <div class="media">
+                <div *ngFor="let publication of publications">
+                  <div class=" media">
                     <div class="media-left media-middle">
-                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
                     </div>
 
                     <div class="media-body">
-                      <h4 class="media-heading">{{subject.name}}</h4>
+                      <h4 class="media-heading">{{publication.name}}</h4>
                       <a href="#">Mas informacion</a>
                     </div>
                   </div>
@@ -108,8 +171,16 @@
                 </div>
               </div>
             </div>
+
+            <div *ngIf="PDF" class="panel-body" style="overflow-y: auto; height: 800px; ">
+              <app-documents [url]="'http://localhost:3000/reports/rep_by_rg.pdf?id='+researchGroup.id"></app-documents>
+            </div>
+
+
           </div>
-      </div>
+        </div>
+
+        <hr style="border:1px dotted black;">
 
       <button class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>

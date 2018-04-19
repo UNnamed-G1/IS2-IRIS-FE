@@ -18,7 +18,6 @@ import { HttpClientModule } from '@angular/common/http';
   styleUrls: ['./publication.component.css']
 })
 export class PublicationComponent implements OnInit , AfterContentInit {
-  [x: string]: any;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   PDFpage: number = 1;
@@ -83,12 +82,7 @@ export class PublicationComponent implements OnInit , AfterContentInit {
         }
       );
   }
-  showComp(){
-    var url;
-    console.log(this.pdfSrc + " showComp");
-    url=this.pdfSrc;
-    return url;
-  }
+
   getPublication(id) {
     this.publicationService.get(id)
     .subscribe(
@@ -114,9 +108,12 @@ export class PublicationComponent implements OnInit , AfterContentInit {
         this.pdfLoaded=!this.pdfLoaded;
         console.log(this.pdfSrc);
     },
-  );
-
-
+        (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se han podido obtener la Publicación';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
   }
 
   getPublications() {
@@ -165,7 +162,6 @@ export class PublicationComponent implements OnInit , AfterContentInit {
 
   setPage(num: number){
     this.PDFpage += num;
-    console.log(this.PDFpage);
   }
   incrementZoom(amount: number) {
     this.zoom += amount;

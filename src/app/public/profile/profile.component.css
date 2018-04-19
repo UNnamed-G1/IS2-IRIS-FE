@@ -104,3 +104,15 @@ small {
   border-radius: 50%;
   border: 3px solid rgba(0, 0, 30, 0.8);
 }
+
+.my-drop-zone { 
+	border: dotted 3px lightgray; 
+}
+
+.nv-file-over { 
+	border: dotted 3px red; 
+}
+
+.file-loaded { 
+	border: dotted 3px lightgreen; 
+}

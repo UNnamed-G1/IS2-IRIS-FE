@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output } from '@angular/core';
 import { PdfViewerComponent } from 'ng2-pdf-viewer';
 
 
@@ -8,6 +8,7 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
   styleUrls: ['./documents.component.css']
 })
 export class DocumentsComponent implements OnInit {
+  @Input() url: string;
   page: number = 1;
   totalPages: number;
   isLoaded: boolean = true;
@@ -16,7 +17,7 @@ export class DocumentsComponent implements OnInit {
   zoom: number = 1.0;
   originalSize: boolean = true;
   rotate: number = 0;
-  pdfSrc='/uploads/documents/publication/5f505ad5-20d1-4c29-b723-4f171976b9e8.pdf';
+  
   constructor() { }
 
   ngOnInit() {

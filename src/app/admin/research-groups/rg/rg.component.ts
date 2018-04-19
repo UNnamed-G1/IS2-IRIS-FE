@@ -11,6 +11,7 @@ import { PermissionManager } from 'app/permission-manager';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResearchGroup } from 'app/classes/research-group';
 import { ResearchSubject } from 'app/classes/research-subject';
+import { Publication } from 'app/classes/publication';
 import { ResearchGroupService } from 'app/services/research-group.service';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 
@@ -28,6 +29,9 @@ export class RgComponent implements OnInit,AfterContentInit {
   @ViewChild('errSwal') private errSwal: SwalComponent;
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
+  publications: Array<Publication>;
+  PDF: boolean = false;
+
   @Output() onDetails = new EventEmitter<number>();
   researchGroup:ResearchGroup=new ResearchGroup();
   showInput: boolean = false;
@@ -52,6 +56,9 @@ export class RgComponent implements OnInit,AfterContentInit {
             });
             this.researchGroupService.getSubjects(this.researchGroup.id).subscribe((res: {research_subjects: ResearchSubject[]}) => {
               this.subjects = res.research_subjects;
+            });
+            this.researchGroupService.getPublications(this.researchGroup.id).subscribe((res: {publications: Publication[]}) => {
+              this.publications = res.publications;
             });
           }, (error: HttpErrorResponse) => {
                       this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
@@ -109,6 +116,14 @@ export class RgComponent implements OnInit,AfterContentInit {
 
   toggleShowInput() {
     this.showInput = !this.showInput
+  }
+
+  pdfMode(){
+    this.PDF = !this.PDF;
+  }
+
+  newUrl(id: number){
+    return "http://localhost:3000/reports/rep_by_rg.pdf?id"+id;
   }
 
   onSubmit(){
