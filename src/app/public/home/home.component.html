@@ -11,7 +11,7 @@
 						<button *ngIf="!(isLogged | async)" class="btn btn-primary btn-lg" routerLink="/login" role="button">Login</button>
 						<button *ngIf="(session | async).type === 'Admin'" class="btn btn-primary btn-lg" routerLink="/admin/manage" role="button">ADMINISTRAR</button>
 						<button *ngIf="(session | async).type === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">EVENTOS</button>
-
+						
 					</p>
 				</div>
 			</div>
