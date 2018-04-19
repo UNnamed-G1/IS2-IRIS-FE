@@ -14,16 +14,16 @@ import { Publication } from 'app/classes/publication';
   templateUrl: './publication.component.html',
   styleUrls: ['./publication.component.css']
 })
-export class PublicationComponent implements OnInit , AfterContentInit {
+export class PublicationComponent implements OnInit, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',
-     'Corta descripción', 'Tipo de Publicación','Fecha Creación'];
+    'Corta descripción', 'Tipo de Publicación', 'Fecha Creación'];
   keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
   publications: Array<Publication>;
-  pub: Publication=new Publication();
-  pdfSrc:any;
+  pub: Publication = new Publication();
+  pdfSrc: any;
   page: {
     actual: number,
     total: number
@@ -36,7 +36,7 @@ export class PublicationComponent implements OnInit , AfterContentInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(["Admin"]);
+    this.permMan.validateSession(['Admin']);
   }
 
 
@@ -55,7 +55,7 @@ export class PublicationComponent implements OnInit , AfterContentInit {
 
   details(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
-    this.pdfSrc=this.getPublication(id);
+    this.pdfSrc = this.getPublication(id);
     this.router.navigateByUrl('/documents');
   }
 
@@ -64,11 +64,11 @@ export class PublicationComponent implements OnInit , AfterContentInit {
       .subscribe(
         (response: { publication: Publication }) => {
           this.getPublications();
-          this.sucSwal.title = 'El grupo de investigación ha sido eliminado';
+          this.sucSwal.title = 'La publicación ha sido eliminado';
           this.sucSwal.show();
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Grupo de investigación no eliminado';
+          this.errSwal.title = 'Publicación no eliminada';
           this.errSwal.text = 'Mensaje de error: ' + error.message;
           this.errSwal.show();
         }
@@ -76,27 +76,27 @@ export class PublicationComponent implements OnInit , AfterContentInit {
   }
   getPublication(id) {
     this.publicationService.get(id)
-    .subscribe(
-      (res:{publication:Publication}) =>{
-        this.pub= res.publication;
-        console.log(this.pub.document);
-      },
-      (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener la Publicación';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
-      }
-    );
+      .subscribe(
+        (response: { publication: Publication }) => {
+          this.pub = response.publication;
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'No se han podido obtener la Publicación';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
+      );
   }
+
   getPublications() {
     this.publicationService.getAll(this.page.actual)
       .subscribe(
-        (res: { publications: Publication[], total_pages: number }) => {
-          this.publications = res.publications;
-          this.page.total = res.total_pages;
+        (response: { publications: Publication[], total_pages: number }) => {
+          this.publications = response.publications;
+          this.page.total = response.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener los grupos de investigación';
+          this.errSwal.title = 'No se han podido obtener las publicaciones';
           this.errSwal.text = 'Mensaje de error: ' + error.message;
           this.errSwal.show();
         }

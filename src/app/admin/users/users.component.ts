@@ -17,6 +17,7 @@ import { User } from 'app/classes/user';
 export class UsersComponent implements OnInit, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
+  PDF: boolean = false;
 
   headers: Array<string> = ['Nombre completo', 'Usuario', 'Perfil profesional',
      'Teléfono', 'Oficina','URL CvLAC','Tipo'];
@@ -70,6 +71,10 @@ export class UsersComponent implements OnInit, AfterContentInit {
   details(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/profile');
+  }
+
+  pdfMode(){
+    this.PDF = !this.PDF;
   }
 
   getUsers() {

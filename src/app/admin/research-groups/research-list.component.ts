@@ -17,6 +17,7 @@ import { ResearchGroup } from '../../classes/research-group';
 export class ResearchListComponent implements OnInit, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
+  PDF: boolean = false;
 
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
     'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
@@ -58,6 +59,10 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
   details(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
     this.router.navigateByUrl('/rg');
+  }
+
+  pdfMode(){
+    this.PDF = !this.PDF;
   }
 
   delete(id: number) {

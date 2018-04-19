@@ -159,7 +159,9 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     user.subscribe(
       (response: { user: User }) => {
         this.user = Object.assign(new User(), response.user);
-        this.user['photo'] = environment.api_url + this.user['photo'].picture;
+        if (this.user['photo']) {
+          this.user['photo'] = environment.api_url + this.user['photo'].picture;
+        }
         if (this.user.career) {
           // this.setDepartments(this.user.career.id);
           // this.setCareers(this.user.career.id);
