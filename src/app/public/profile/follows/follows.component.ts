@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, ViewChild, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { select, NgRedux } from '@angular-redux/store';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -13,23 +13,30 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
   templateUrl: './follows.component.html',
   styleUrls: ['./follows.component.css']
 })
-export class FollowsComponent implements OnInit {
+export class FollowsComponent implements OnInit, OnChanges {
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @Input() displayFollowers: boolean;
   @Output() setFollowersCount = new EventEmitter<number>();
   @Output() setFollowingCount = new EventEmitter<number>();
+  @select() session;
   @select() isLogged;
   @select() auxiliarID;
 
   currFollowing = new Array<User>();
   following: User[];
   followers: User[];
+  page: {
+    actual: number,
+    total: number,
+  };
+  totalPagesAux: number;
 
   constructor(private userService: UserService,
     private ngRedux: NgRedux<AppState>,
     private router: Router) { }
 
   ngOnInit() {
+    this.page = Object.assign({ actual: 1 });
     this.auxiliarID.subscribe(
       (id: number) => {
         this.isLogged.subscribe((logged: boolean) => {
@@ -41,6 +48,13 @@ export class FollowsComponent implements OnInit {
         this.setFollowers(id);
       }
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.displayFollowers && !changes.displayFollowers.firstChange) {
+      this.displayFollowers = !this.displayFollowers;
+      this.toggleDisplay(changes.displayFollowers.currentValue);
+    }
   }
 
   goToUser(id: number) {
@@ -76,8 +90,13 @@ export class FollowsComponent implements OnInit {
 
   // Users following profile user
   setFollowers(id?: number) {
-    this.userService.getFollowers(id).subscribe(
+    this.userService.getFollowers(this.page.actual, id).subscribe(
       (response) => {
+        if (this.displayFollowers) {
+          this.page.total = response.total_pages;
+        } else {
+          this.totalPagesAux = response.total_pages;
+        }
         this.followers = response.followers;
         this.setFollowersCount.emit(response.count);
       },
@@ -91,14 +110,16 @@ export class FollowsComponent implements OnInit {
 
   // Users followed by profile user
   setFollowing(id?: number) {
-    this.userService.getFollowing(id).subscribe(
+    this.userService.getFollowing(this.page.actual, id).subscribe(
       (response) => {
-        console.log(response)
         this.isLogged.subscribe((logged: boolean) => {
-          if (!id) {
-            this.currFollowing = response.following.map(u => u.username);
-          }
+          this.currFollowing = response.following.map(u => u.username);
         });
+        if (!this.displayFollowers) {
+          this.page.total = response.total_pages;
+        } else {
+          this.totalPagesAux = response.total_pages;
+        }
         this.following = response.following;
         this.setFollowingCount.emit(response.count);
       },
@@ -112,7 +133,7 @@ export class FollowsComponent implements OnInit {
 
   // Users followed by logged user
   setCurrFollowing() {
-    this.userService.getFollowing().subscribe(
+    this.userService.getCurrFollowing().subscribe(
       (response) => {
         this.auxiliarID.subscribe(
           (id: number) => {
@@ -130,7 +151,25 @@ export class FollowsComponent implements OnInit {
     );
   }
 
+  setPage(page: number) {
+    this.auxiliarID.subscribe(
+      (id: number) => {
+        if (this.displayFollowers) {
+          this.setFollowers(id);
+        } else {
+          this.setFollowing(id);
+        }
+      });
+  }
+
   toggleDisplay(display: boolean) {
-    this.displayFollowers = display;
+    if (this.displayFollowers !== display) {
+      this.displayFollowers = display;
+      this.page.actual = 1;
+      const tmp = this.totalPagesAux;
+      this.totalPagesAux = this.page.total;
+      this.page.total = tmp;
+      this.setPage(this.page.actual);
+    }
   }
 }
