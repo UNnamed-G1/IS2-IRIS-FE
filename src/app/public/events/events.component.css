@@ -3,8 +3,9 @@
   overflow: hidden;
   padding-top: 5%;
   margin: 0;
-  background-color: rgb(70,150,255);
+  background: #555;;
   border-style: none;
+  color: white;
 }
 
 #events_view .panel {
@@ -16,7 +17,8 @@
   overflow: hidden;
   padding-top: 2%;
   margin: 0;
-  background-color: #111;
+  background: #555;
+  color: white;
   border-style: none;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
@@ -28,7 +30,6 @@
   margin: 0;
   border-style: none;
   color: white;
-
 }
 
 
@@ -46,22 +47,12 @@
 
 }
 
-#events_view .btn-default#create-event {
-  height: 15rem;
-  width: 15rem;
-  line-height: 13.6rem;
-  font-size: 10rem;
-  border-radius: 50%;
-  margin-top: 7rem;
-
-}
-
 #events_view .screen {
   height: 100%;
   width: 100%;
   background-size: cover;
   padding-left: 0rem;
-  padding-right: 0rem;
+  padding-right: 0rem
 }
 
 #events_view .col-sm-12,
@@ -112,20 +103,22 @@
 
 #events_view .box #show:hover {
   text-decoration: none;
-  color: $secondary-color;
 }
 
 .glyphicon.pull-right.pull-down {
-  margin-left: .3em;
-  border-radius: 50%;
-  height: 4.5rem;
-  width: 4.5rem;
+  position: relative;
+  top: 80%;
   font-size: 2.6rem;
-  padding: 0.5;
-  background-color: $primary-color;
-  color: white;
 }
 
-.glyphicon.glyphicon-eye-open.align-index {
+.glyphicon.glyphicon-eye-open {
+  color: white;
+  border-radius: 50%;
+  background: #555;
+  padding: 0.21em;
+}
+
+.glyphicon.glyphicon-eye-open:hover {
+  color: red;
   padding: 0.21em;
 }

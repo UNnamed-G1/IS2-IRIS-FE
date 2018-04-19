@@ -13,6 +13,7 @@ import { environment } from 'environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ResearchGroup } from 'app/classes/research-group';
 import { ResearchSubject } from 'app/classes/research-subject';
+import { Publication } from 'app/classes/publication';
 import { ResearchGroupService } from 'app/services/research-group.service';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 
@@ -30,6 +31,9 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('errSwal') private errSwal: SwalComponent;
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
+  publications: Array<Publication>;
+  PDF: boolean = false;
+
   @Output() onDetails = new EventEmitter<number>();
   researchGroup: ResearchGroup = new ResearchGroup();
   showInput: boolean = false;
@@ -51,11 +55,14 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
       if (id) {
-        this.researchGroupService.getEvents(id).subscribe((res: { events: Event[] }) => {
+        this.researchGroupService.getEvents(id).subscribe((res: {events: Event[]}) => {
           this.events = res.events;
         });
-        this.researchGroupService.getSubjects(id).subscribe((res: { research_subjects: ResearchSubject[] }) => {
+        this.researchGroupService.getSubjects(id).subscribe((res: {research_subjects: ResearchSubject[]}) => {
           this.subjects = res.research_subjects;
+        });
+        this.researchGroupService.getPublications(id).subscribe((res: {publications: Publication[]}) => {
+          this.publications = res.publications;
         });
         this.setRG(this.researchGroupService.get(id));
       } else {
@@ -114,9 +121,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         this.researchGroup['photo'] = environment.api_url + this.researchGroup['photo'].picture;
         this.createRGForm();
         this.session.subscribe(session => {
-          console.log(this.isMember)
           this.isMember = response.research_group['members'].map(u => u.user.username).includes(session.username);
-          console.log(this.isMember)
         });
       },
       (error: HttpErrorResponse) => {
@@ -128,10 +133,18 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   toggleShowInput() {
-    this.showInput = !this.showInput
+    this.showInput = !this.showInput;
   }
 
-  onSubmit() {
+  pdfMode(){
+    this.PDF = !this.PDF;
+  }
+
+  newUrl(id: number){
+    return "http://localhost:3000/reports/rep_by_rg.pdf?id"+id;
+  }
+
+  onSubmit(){
     if (this.rgForm.pristine) {
       return;
     }

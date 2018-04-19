@@ -1,0 +1,20 @@
+.glyphicon.glyphicon-file {
+    color: white;
+    font-size: 1.8rem;
+}
+
+.glyphicon.glyphicon-file:hover {
+    color: red;
+}
+
+.my-drop-zone {
+    border: dotted 3px lightgray;
+}
+
+.nv-file-over {
+    border: dotted 3px red;
+}
+
+.file-loaded {
+    border: dotted 3px lightgreen;
+}

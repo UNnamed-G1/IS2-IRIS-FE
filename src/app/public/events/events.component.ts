@@ -6,6 +6,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { Event } from 'app/classes/events';
 import { EventService } from 'app/services/event.service';
+import { environment } from 'environments/environment';
+import { NgRedux } from '@angular-redux/store';
 
 @Component({
   selector: 'app-events',
@@ -20,16 +22,17 @@ export class EventsComponent implements OnInit {
   news: Array<Event>;
   item_active: Event;
   items: Array<Event>;
-
+  url: string;
   page: {
     actual: number,
     total: number
   };
 
   constructor(private eventService: EventService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute, private router: Router, private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
+    this.url = environment.api_url;
     this.route.queryParams.subscribe(params => {
       this.page = Object.assign({});
       this.page.actual = +params.page || 1;
