@@ -3,7 +3,7 @@
     <h1>Publicaciones</h1>
   </div>
 
-  <div class="panel-body" style="position:relative">
+  <div *ngIf=!pdfLoaded class="panel-body" style="position:relative">
     <button class="btn btn-primary btn-sm" routerLink="/publications/add" role="button">Agregar</button>
     <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
     <br><br>
@@ -14,6 +14,8 @@
 </div>
 <div *ngIf=pdfLoaded class="jumbotron">
   <div class="panel panel-default" style="margin-top:10px;">
+    <br><br>
+    <button class="btn btn-primary btn-sm" (click)="showPub()">Volver a publicaciones</button>
     <br><br>
     <div class="form-group">
       <div *ngIf="isLoaded" style="text-align: center;">
@@ -42,6 +44,7 @@
         </button>
       </div>
     </div>
+    <div class="container-fluid" style="width: 80%; position: relative;">
       <pdf-viewer [src]="pdfSrc"
              [original-size]="true"
              [show-all]="showAll"
@@ -53,6 +56,7 @@
              (after-load-complete)="afterLoadComplete($event)"
              style="display: block;"
       ></pdf-viewer>
+    </div>
   </div>
 </div>
 <swal #errSwal title text type="error"></swal>
