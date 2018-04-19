@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit, AfterContentInit, OnDestroy } from '@angu
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
@@ -17,6 +17,7 @@ import { User } from 'app/classes/user';
 import { Faculty } from 'app/classes/faculty';
 import { Department } from 'app/classes/department';
 import { Career } from 'app/classes/career';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -37,6 +38,8 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   profileForm: FormGroup;
   followersCount: number;
   followingCount: number;
+  uploader: FileUploader;
+  hasBaseDropZoneOver = false;
 
   constructor(private userService: UserService,
     private facultyService: FacultyService,
@@ -47,6 +50,7 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     private formBuilder: FormBuilder) { }
 
   ngOnInit() { // Validate existent id if not logged
+    this.uploader = new FileUploader({ queueLimit: 1 });
   }
 
   ngAfterContentInit() {
@@ -74,35 +78,47 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   updateProfile() {
-    if (this.profileForm.pristine) {
+    if (this.profileForm.pristine && this.uploader.queue.length === 0) {
       return;
     }
+    const fd = new FormData();
     const u = new User();
-    for (const k in this.profileForm.controls) {
-      if (this.profileForm.get(k).dirty) {
-        u[k] = this.profileForm.get(k).value;
+    if (this.profileForm.pristine) {
+      u.username = this.user.username;
+    } else {
+      for (const k in this.profileForm.controls) {
+        if (this.profileForm.get(k).dirty) {
+          u[k] = this.profileForm.get(k).value;
+        }
+      }
+      if (u.name) {
+        Object.assign(u, {
+          name: u.name['first'],
+          lastname: u.name['last']
+        });
+      }
+      if (u['passwords']) {
+        Object.assign(u, {
+          password: u['passwords'].password,
+          password_confirmation: u['passwords'].pass
+        });
+        delete u['passwords'];
       }
     }
-    if (u.name) {
-      Object.assign(u, {
-        name: u.name['first'],
-        lastname: u.name['last']
-      });
+    for (const key of Object.keys(u)) {
+      fd.append('user[' + key + ']', u
+      [key]);
     }
-    if (u['passwords']) {
-      Object.assign(u, {
-        password: u['passwords'].password,
-        password_confirmation: u['passwords'].pass
-      });
-      delete u['passwords'];
+    if (this.uploader.queue.length) {
+      fd.append('picture', this.uploader.queue[0].file.rawFile);
     }
-
-    this.userService.update(this.user.id, { user: u }).subscribe(
+    this.userService.update(this.user.id, fd).subscribe(
       (response: { user: User }) => {
         this.sucSwal.title = 'Tu perfil ha sido actualizado';
         this.sucSwal.show();
         this.toggleShowInput();
         Object.assign(this.user, response.user);
+        this.user['photo'] = environment.api_url + this.user['photo'].picture;
         this.createProfileForm();
       },
       (error: HttpErrorResponse) => {
@@ -138,10 +154,12 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     user.subscribe(
       (response: { user: User }) => {
         this.user = Object.assign(new User(), response.user);
+        this.user['photo'] = environment.api_url + this.user['photo'].picture;
         if (this.user.career) {
           // this.setDepartments(this.user.career.id);
           // this.setCareers(this.user.career.id);
         }
+        console.log(response.user);
         this.createProfileForm();
       },
       (error: HttpErrorResponse) => {
@@ -199,6 +217,10 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
       }
     );
     this.careers = new Array<Career>();
+  }
+
+  fileOverBase(e: any): void {
+    this.hasBaseDropZoneOver = e;
   }
 
   private passwordMatchValidator(g: FormGroup) {

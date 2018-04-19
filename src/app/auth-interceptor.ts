@@ -14,6 +14,16 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private permMan: PermissionManager) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (req.body && (req.body.hasOwnProperty('picture')
+      || req.body.hasOwnProperty('pictures')
+      || (req.body.hasOwnProperty('publication')
+        && req.body['publication'].hasOwnProperty('document')))) {
+      req = req.clone({
+        setHeaders: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
     if (this.permMan.loggedUser()) {
       let token: string;
       this.session.subscribe((s: ISession) => token = s.token);
