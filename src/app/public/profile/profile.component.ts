@@ -26,7 +26,7 @@ import { Career } from 'app/classes/career';
 export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  
+
   @select() auxiliarID;
   user: User;
   faculties: Faculty[] = new Array<Faculty>();
