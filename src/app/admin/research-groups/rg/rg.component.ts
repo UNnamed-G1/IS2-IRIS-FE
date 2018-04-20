@@ -55,14 +55,26 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   ngAfterContentInit() {
     this.auxiliarID.subscribe(id => {
       if (id) {
-        this.researchGroupService.getEvents(id).subscribe((res: {events: Event[]}) => {
+        this.researchGroupService.getEvents(id).subscribe((res: { events: Event[] }) => {
           this.events = res.events;
+        }, (error: HttpErrorResponse) => {
+          this.errSwal.title = 'No se han podido obtener los eventos del grupo de ivnestigación';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         });
-        this.researchGroupService.getSubjects(id).subscribe((res: {research_subjects: ResearchSubject[]}) => {
+        this.researchGroupService.getSubjects(id).subscribe((res: { research_subjects: ResearchSubject[] }) => {
           this.subjects = res.research_subjects;
+        }, (error: HttpErrorResponse) => {
+          this.errSwal.title = 'No se han podido obtener las lineas de investigación del grupo';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         });
-        this.researchGroupService.getPublications(id).subscribe((res: {publications: Publication[]}) => {
+        this.researchGroupService.getPublications(id).subscribe((res: { publications: Publication[] }) => {
           this.publications = res.publications;
+        }, (error: HttpErrorResponse) => {
+          this.errSwal.title = 'No se han podido obtener las publicaciones del grupo de ivnestigación';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
         });
         this.setRG(this.researchGroupService.get(id));
       } else {
@@ -136,15 +148,15 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
     this.showInput = !this.showInput;
   }
 
-  pdfMode(){
+  pdfMode() {
     this.PDF = !this.PDF;
   }
 
-  newUrl(id: number){
-    return "http://localhost:3000/reports/rep_by_rg.pdf?id"+id;
+  newUrl(id: number) {
+    return "http://localhost:3000/reports/rep_by_rg.pdf?id" + id;
   }
 
-  onSubmit(){
+  onSubmit() {
     if (this.rgForm.pristine) {
       return;
     }
@@ -202,7 +214,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
       }
     )
   }
-  
+
   leave() {
     this.researchGroupService.leaveGroup({ id: this.researchGroup.id }).subscribe(
       (response) => {
@@ -225,7 +237,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   private createRGForm() {
     this.rgForm = this.formBuilder.group({
       name: [this.researchGroup.name,
-      [Validators.required, Validators.pattern('[a-zA-Z ]*'),
+      [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
       Validators.minLength(3), Validators.maxLength(100)]],
       description: [this.researchGroup.description,
       [Validators.required, Validators.maxLength(5000)]],

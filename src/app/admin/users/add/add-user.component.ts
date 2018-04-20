@@ -139,10 +139,10 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
     this.userForm = this.formBuilder.group({
       name: this.formBuilder.group({
         first: [this.user.name,
-        [Validators.required, Validators.pattern('[a-zA-Z ]*'),
+        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
         Validators.minLength(3), Validators.maxLength(100)]],
         last: [this.user.lastname,
-        [Validators.required, Validators.pattern('[a-zA-Z ]*'),
+        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
         Validators.minLength(3), Validators.maxLength(100)]]
       }),
       username: [this.user.username, [Validators.required, Validators.pattern('[a-z]+')]],

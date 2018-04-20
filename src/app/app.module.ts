@@ -1,7 +1,7 @@
 // Modules
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angular5-social-login';
@@ -328,7 +328,7 @@ export class AppModule {
                 })
             });
           },
-          error => {
+          (error: HttpErrorResponse) => {
             if (error.status === 401) {
               ngRedux.dispatch({ type: REMOVE_SESSION });
             }

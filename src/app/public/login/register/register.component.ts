@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UserService } from 'app/services/user.service'
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { User } from 'app/classes/user';
 
 @Component({
   selector: 'app-register',
@@ -9,6 +12,8 @@ import { UserService } from 'app/services/user.service'
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
   registerForm: FormGroup;
 
   constructor(private userService: UserService,
@@ -36,16 +41,23 @@ export class RegisterComponent implements OnInit {
     };*/
     this.userService.create({ 'user': user })
       .subscribe(
-        response => this.registerForm.reset(),
-        error => console.error(error.message)
+        (response: { user: User }) => {
+          this.sucSwal.title = 'El grupo de investigación ha sido actualizado';
+          this.sucSwal.show();
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'No ha podido realizar el registro';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
       );
   }
 
   private createRegisterForm() {
     this.registerForm = this.formBuilder.group({
       name: this.formBuilder.group({
-        first: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.minLength(3), Validators.maxLength(100)]],
-        last: ['', [Validators.required, Validators.pattern('[a-zA-Z ]*'), Validators.minLength(3), Validators.maxLength(100)]]
+        first: ['', [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'), Validators.minLength(3), Validators.maxLength(100)]],
+        last: ['', [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'), Validators.minLength(3), Validators.maxLength(100)]]
       }),
       email: ['', [Validators.required, Validators.pattern('[a-z]+@unal.edu.co')]],
       passwords: this.formBuilder.group({

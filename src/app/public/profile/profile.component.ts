@@ -247,10 +247,10 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     this.profileForm = this.formBuilder.group({
       name: this.formBuilder.group({
         first: [this.user.name,
-        [Validators.required, Validators.pattern('[a-zA-Z ]*'),
+        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
         Validators.minLength(3), Validators.maxLength(100)]],
         last: [this.user.lastname,
-        [Validators.required, Validators.pattern('[a-zA-Z ]*'),
+        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
         Validators.minLength(3), Validators.maxLength(100)]]
       }),
       professional_profile: [this.user.professional_profile,
