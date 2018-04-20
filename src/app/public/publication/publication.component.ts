@@ -106,7 +106,6 @@ export class PublicationComponent implements OnInit, AfterContentInit {
         this.pdfSrc = 'http://localhost:3000' + this.pub.document;
         this.pdfName = this.pub.name + ".pdf";
         this.pdfLoaded=!this.pdfLoaded;
-        console.log(this.pdfSrc);
     },
         (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se han podido obtener la Publicación';

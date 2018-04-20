@@ -2,7 +2,7 @@
 	<div class="breadcrumb-class">Está en:
 		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
 		<a routerLink="/publications" target="_self" title="Inicio">Publicaciones</a>/
-		<span>{{ (auxiliarID | async) ? 'Añadir Publicación' : 'Editar Publicación' }}</span>
+		<span>{{ (auxiliarID | async) ? 'Editar Publicación' :  'Añadir Publicación' }}</span>
 	</div>
 	<div class="container-fluid">
 		<div class="container-fluid main-container">
@@ -15,7 +15,7 @@
  							<input type="text" class="form-control" formControlName="name" placeholder="Nombre">
  							<app-form-control-errors [control]="name"></app-form-control-errors>
  						</div>
-            <!-- Date--->
+            <!-- Date-->
             <div class="form-group">
 							<label class="form-label">Fecha</label>
 							<input type="text" class="form-control" formControlName="date" placeholder="Fecha">
@@ -41,7 +41,7 @@
 							</select>
 							<app-form-control-errors [control]="type_pubs"></app-form-control-errors>
 						</div>
-            <!-- document--->
+            <!-- document-->
             <div class="row">
               <div class="col-md-3">
                 <input id="document" name="document" type="file" (change)="fileChange($event)"

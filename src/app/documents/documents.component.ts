@@ -8,25 +8,25 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
   styleUrls: ['./documents.component.css']
 })
 export class DocumentsComponent implements OnInit {
+  @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
   @Input() url: string;
-  page: number = 1;
+  page = 1;
   totalPages: number;
-  isLoaded: boolean = true;
-  stickToPage: boolean = false;
-  showAll: boolean = false;
-  zoom: number = 1.0;
-  originalSize: boolean = true;
-  rotate: number = 0;
-  
+  isLoaded = true;
+  stickToPage = false;
+  showAll = false;
+  zoom = 1.0;
+  originalSize = true;
+  rotate = 0;
+
   constructor() { }
 
   ngOnInit() {
   }
 
-  @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
   search(stringToSearch: string) {
     this.pdfComponent.pdfFindController.executeCommand('find', {
-    caseSensitive: false, findPrevious: undefined, highlightAll: true, phraseSearch: true, query: stringToSearch
+      caseSensitive: false, findPrevious: undefined, highlightAll: true, phraseSearch: true, query: stringToSearch
     });
   }
   afterLoadComplete(pdfData: any) {
@@ -41,21 +41,20 @@ export class DocumentsComponent implements OnInit {
   prevPage() {
     this.page--;
   }
-  onAfterLoad(event: any){
+  onAfterLoad(event: any) {
   }
 
-  switchSticky(){
+  switchSticky() {
     this.stickToPage = !this.stickToPage;
   }
 
-  switchShowAll(){
+  switchShowAll() {
 
     this.showAll = !this.showAll;
   }
 
-  setPage(num: number){
+  setPage(num: number) {
     this.page += num;
-    console.log(this.page);
   }
   incrementZoom(amount: number) {
     this.zoom += amount;
@@ -63,7 +62,7 @@ export class DocumentsComponent implements OnInit {
   originalZoom() {
     this.zoom = 1.0;
   }
-  rotatePdf(){
+  rotatePdf() {
     this.rotate += 90;
   }
 
