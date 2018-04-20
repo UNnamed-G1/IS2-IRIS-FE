@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild, Input, Output } from '@angular/core';
 import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { select } from '@angular-redux/store';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { saveAs } from 'file-saver';
 import { ResponseContentType } from '@angular/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 @Component({
   selector: 'app-documents',
@@ -11,6 +13,7 @@ import { ResponseContentType } from '@angular/http';
 })
 export class DocumentsComponent implements OnInit {
   @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
+  @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['session', 'type']) type;
   @Input() url: string;
   page = 1;
@@ -68,16 +71,15 @@ export class DocumentsComponent implements OnInit {
   }
   downloadPdf() {
     // This function should be moved and replaced
-    /*
-    return this.http.get(this.url, { responseType: ResponseContentType.Blob })
-      .subscribe((res: Response) => {
-        console.log(res)
-        const blob = new Blob([res.blob], { type: 'application/pdf' });
-        console.log(blob)
-        const url = window.URL.createObjectURL(blob);
-        console.log(url)
-        window.open(url);
-      });*/
+    this.http.get(this.url, { responseType: 'blob' })
+      .subscribe((res) => {
+        saveAs(res, 'file.pdf');
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'Grupo de investigación no añadido';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      });
   }
 
 }
