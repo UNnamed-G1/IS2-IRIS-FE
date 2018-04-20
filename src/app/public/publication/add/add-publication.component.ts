@@ -139,7 +139,7 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
       document: [undefined]
     });
   }
-  
+
   get name() { return this.uploadForm.get('name'); }
   get date() { return this.uploadForm.get('date'); }
   get abstract() { return this.uploadForm.get('abstract'); }

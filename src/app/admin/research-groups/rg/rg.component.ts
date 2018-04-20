@@ -29,14 +29,14 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   @select() auxiliarID;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
+  @Output() detailsEmitter = new EventEmitter<number>();
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
   publications: Array<Publication>;
-  PDF: boolean = false;
+  PDF = false;
 
-  @Output() onDetails = new EventEmitter<number>();
   researchGroup: ResearchGroup = new ResearchGroup();
-  showInput: boolean = false;
+  showInput = false;
   isMember: boolean;
   rgForm: FormGroup;
   uploader: FileUploader;
@@ -84,7 +84,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR })
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
   }
 
   updateGroup() {
@@ -153,7 +153,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   newUrl(id: number) {
-    return "http://localhost:3000/reports/rep_by_rg.pdf?id" + id;
+    return environment.api_url + 'reports/rep_by_rg.pdf?id' + id;
   }
 
   onSubmit() {
@@ -212,7 +212,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         this.errSwal.text = 'Mensaje de error: ' + error.message;
         this.errSwal.show();
       }
-    )
+    );
   }
 
   leave() {
@@ -227,7 +227,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         this.errSwal.text = 'Mensaje de error: ' + error.message;
         this.errSwal.show();
       }
-    )
+    );
   }
 
   fileOverBase(e: any): void {
@@ -249,7 +249,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
       classification: [this.researchGroup.classification, [Validators.required]],
       date_classification: [this.researchGroup.date_classification, [Validators.required]],
       url: [this.researchGroup.url, [Validators.required]],
-    })
+    });
   }
 
   get name() { return this.rgForm.get('name'); }

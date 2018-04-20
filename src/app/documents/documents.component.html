@@ -11,7 +11,7 @@
         <button (click)="nextPage()" data-toggle="tooltip" title="Página siguiente" [disabled]="page === totalPages">
           <span class="glyphicon glyphicon-arrow-right"></span>
         </button>
-        <a *ngIf="(session | async).type === 'Admin'" class="button" href="url" target="_blank" download="1.pdf" data-toggle="tooltip" title="Descargar" class="btn btn-default btn-sm">
+        <a *ngIf="(type | async) === 'Admin'" (click)="downloadPdf()" class="button" title="Descargar" class="btn btn-default btn-sm">
           <span class="glyphicon glyphicon-download-alt"></span>
         </a>
         <button (click)="incrementZoom(-0.1)" data-toggle="tooltip" title="Alejar" class="btn btn-default btn-sm">

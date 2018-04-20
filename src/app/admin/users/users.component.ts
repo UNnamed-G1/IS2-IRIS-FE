@@ -17,10 +17,10 @@ import { User } from 'app/classes/user';
 export class UsersComponent implements OnInit, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  PDF: boolean = false;
+  PDF = false;
 
   headers: Array<string> = ['Nombre completo', 'Usuario', 'Perfil profesional',
-     'Teléfono', 'Oficina','URL CvLAC','Tipo'];
+    'Teléfono', 'Oficina', 'URL CvLAC', 'Tipo'];
   keys: Array<string> = ['full_name', 'username', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
   users: Array<User>;
 
@@ -55,7 +55,7 @@ export class UsersComponent implements OnInit, AfterContentInit {
   delete(id: number) {
     this.userService.delete(id)
       .subscribe(
-        (response: {user: User}) => {
+        (response: { user: User }) => {
           this.sucSwal.title = 'El usuario ha sido eliminado';
           this.sucSwal.show();
           this.getUsers();
@@ -73,7 +73,7 @@ export class UsersComponent implements OnInit, AfterContentInit {
     this.router.navigateByUrl('/profile');
   }
 
-  pdfMode(){
+  pdfMode() {
     this.PDF = !this.PDF;
   }
 
@@ -81,7 +81,7 @@ export class UsersComponent implements OnInit, AfterContentInit {
     this.userService.getAll(this.page.actual)
       .subscribe(
         (res: { users: User[], total_pages: number }) => {
-          this.users = res.users.map(u => Object.assign(u, {full_name: u.name + ' ' + u.lastname}));
+          this.users = res.users.map(u => Object.assign(u, { full_name: u.name + ' ' + u.lastname }));
           this.page.total = res.total_pages;
         },
         (error: HttpErrorResponse) => {
