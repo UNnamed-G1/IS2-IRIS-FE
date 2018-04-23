@@ -9,6 +9,7 @@ export interface AppState {
 
 export const INITIAL_STATE: AppState = {
   session: {
+    id: undefined,
     token: undefined,
     name: undefined,
     username: undefined,

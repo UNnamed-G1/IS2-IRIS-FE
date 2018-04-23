@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, AfterContentInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -16,17 +16,18 @@ import { DepartmentService } from 'app/services/department.service';
 import { CareerService } from 'app/services/career.service';
 import { UserService } from 'app/services/user.service';
 import { User, Career, Department, Faculty } from 'app/classes/_models';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
+export class ProfileComponent implements OnInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['auxiliarID', 'user']) userID;
-  @select() session;
+  @select(['session', 'id']) sessionID;
   user: User;
   faculties: Faculty[] = new Array<Faculty>();
   departments: Department[] = new Array<Department>();
@@ -45,35 +46,27 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     private careerService: CareerService,
     private ngRedux: NgRedux<AppState>,
     private permMan: PermissionManager,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute) { }
 
-  ngOnInit() { // Validate existent id if not logged
-    this.userID.subscribe((userID: number) => {
-      if (!userID) {
-        this.permMan.validateLogged();
-      }
-      this.uploader = new FileUploader({ queueLimit: 1 });
-    });
-  }
-
-  ngAfterContentInit() {
-    this.userID.subscribe((userID: number) => {
-      if (userID) {
-        this.requestUser(userID);
-      } else if (this.permMan.validateLogged()) {
-        this.userService.getCurrentUser().subscribe(
-          (response: { user: User }) => {
-            this.requestUser(response.user.id);
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se ha podido obtener el perfil';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
+  ngOnInit() {
+    this.route.queryParams.subscribe((params: { username: string }) => {
+      if (params.username) {
+        this.requestUser(this.userService.getByUsername(params.username));
+      } else {
+        this.userID.subscribe((userID: number) => {
+          if (userID) {
+            this.requestUser(this.userService.get(userID));
+          } else if (this.permMan.validateLogged()) {
+            this.sessionID.subscribe((id) => {
+              this.requestUser(this.userService.get(id));
+            });
           }
-        );
+        });
       }
     });
     this.setFaculties();
+    this.uploader = new FileUploader({ queueLimit: 1 });
   }
 
   ngOnDestroy() {
@@ -131,8 +124,8 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     this.user.career_id = career.id;
   }
 
-  requestUser(id: number) {
-    this.userService.get(id).subscribe(
+  requestUser(req) {
+    req.subscribe(
       (response: { user: User }) => {
         this.setUser(response.user);
       },

@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
-import { REMOVE_SESSION, REMOVE_AUXILIAR } from 'app/redux/actions';
+import { REMOVE_SESSION, ADD_AUXILIAR } from 'app/redux/actions';
+import { ISession } from 'app/redux/session';
 
 @Component({
   selector: 'app-header',
@@ -22,8 +23,12 @@ export class AppHeaderComponent implements OnInit {
   }
 
   viewProfile() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'user' });
-    this.router.navigateByUrl('profile');
+    this.session.subscribe(
+      (s: ISession) => {
+        this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: s.id } });
+        this.router.navigateByUrl('profile');
+      }
+    );
   }
 
   logOut() {

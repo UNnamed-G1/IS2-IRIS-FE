@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
               Object.assign(data, { photo: environment.api_url + data.photo.picture });
             }
             Object.assign(session, {
+              id: data.id,
               name: data.full_name,
               type: data.user_type,
               username: data.username,

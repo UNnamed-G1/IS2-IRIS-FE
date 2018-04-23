@@ -310,6 +310,7 @@ export class AppModule {
             this.ngRedux.dispatch({
               type: ADD_SESSION, session:
               Object.assign({}, {
+                id: data.id,
                 name: data.full_name,
                 type: data.user_type,
                 username: data.username,

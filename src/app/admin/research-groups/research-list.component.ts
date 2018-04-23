@@ -52,7 +52,6 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
       this.page.actual = +params.page || 1;
       this.getResearchGroups();
     });
-
   }
 
   update(id: number) {
