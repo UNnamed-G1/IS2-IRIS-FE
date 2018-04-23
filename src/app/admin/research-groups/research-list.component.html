@@ -1,6 +1,6 @@
 <main class="detalle">
-  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Grupos de Investigación</span></div>
-    <div class="panel panel-default" style="margin-top:10px;">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Lista de grupos de investigación</span></div>
+    <div class="panel panel-default">
       <div class="panel-heading">
         <h1>Grupos de Investigación</h1>
       </div>
@@ -15,8 +15,8 @@
         <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
       </div>
 
-      <div *ngIf="!PDF">
-          <app-documents [url]="'http://localhost:3000/reports/rgs_history.pdf'"></app-documents>  
+      <div *ngIf="PDF">
+          <app-documents [url]="historyReportURL"></app-documents>  
       </div>
     </div>
 </main>

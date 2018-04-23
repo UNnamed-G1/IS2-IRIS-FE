@@ -5,7 +5,7 @@
   </div>
   <div *ngIf="user" class="container-fluid main-container">
     <div class="container-fluid">
-      <div class="row" [hidden]="showInput">
+      <div class="row" [hidden]="showForm">
         <h2>Perfil</h2>
         <br>
         <div class="col-sm-2 col-md-2">
@@ -48,12 +48,12 @@
           <div *ngIf="user.career" class="field">
             {{ user.career.degree_type }} {{ user.career.name }}
           </div>
-          <div *ngIf="!( auxiliarID | async )" class="btn-group">
-            <button type="button" class="btn btn-primary" (click)="toggleShowInput()">Editar</button>
+          <div *ngIf="!( userID | async )" class="btn-group">
+            <button type="button" class="btn btn-primary" (click)="toggleShowForm()">Editar</button>
           </div>
         </div>
       </div>
-      <div class="row" [hidden]="!showInput">
+      <div class="row" [hidden]="!showForm">
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
 
@@ -70,17 +70,17 @@
           <div class="col-sm-5 col-md-5">
 
             <!-- Name-->
-            <div class="form-group" formGroupName="name">
+            <div class="form-group">
               <label class="form-label">Nombres y apellidos</label>
               <div class="row">
                 <div class="form-group col-md-6">
-                  <input type="text" class="form-control" formControlName="first" placeholder="Nombres">
-                  <app-form-control-errors [control]="first" [required]="'Por favor introduce tus nombres.'" [pattern]="'Tus nombres no pueden contener símbolos.'"
+                  <input type="text" class="form-control" formControlName="name" placeholder="Nombres">
+                  <app-form-control-errors [control]="name" [required]="'Por favor introduce tus nombres.'" [pattern]="'Tus nombres no pueden contener símbolos.'"
                     [minLength]="'Por favor introduce tus nombres completos.'" [maxLength]="'Tus nombres son muy largos.'"></app-form-control-errors>
                 </div>
                 <div class="form-group col-md-6">
-                  <input type="text" class="form-control" formControlName="last" placeholder="Apellidos">
-                  <app-form-control-errors [control]="last" [required]="'Por favor introduce tus apellidos.'" [pattern]="'Tus apellidos no pueden contener símbolos.'"
+                  <input type="text" class="form-control" formControlName="lastname" placeholder="Apellidos">
+                  <app-form-control-errors [control]="lastname" [required]="'Por favor introduce tus apellidos.'" [pattern]="'Tus apellidos no pueden contener símbolos.'"
                     [minLength]="'Por favor introduce tus apellidos completos.'" [maxLength]="'Tus apellidos son muy largos.'"></app-form-control-errors>
                 </div>
               </div>
@@ -182,8 +182,8 @@
             </div>
             <br>
             <div class="btn-group">
-              <button class="btn btn-primary" type="submit" [disabled]="profileForm.invalid">Registrarse</button>
-              <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
+              <button class="btn btn-primary" type="submit" [disabled]="profileForm.invalid">Guardar cambios</button>
+              <button type="button" class="btn btn-danger" (click)="toggleShowForm()">Cancelar</button>
             </div>
           </div>
         </form>
@@ -191,9 +191,10 @@
     </div>
     <div *ngIf="user.research_subjects">
       <div *ngIf="user.research_subjects.length" class="container-fluid main-container">
+        <h2>Temas de interes</h2>
+        <br>
         <div class="row items-row">
           <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
-            <h2>Temas de interes</h2>
             <br>
             <div class="alert alert-info">
               <a (click)="delete(rs.id)" class="close" data-dismiss="alert" aria-label="close">&times;</a>

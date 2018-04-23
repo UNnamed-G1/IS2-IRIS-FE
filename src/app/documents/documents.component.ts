@@ -14,7 +14,7 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 export class DocumentsComponent implements OnInit {
   @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  @select(['session', 'type']) type;
+  @select(['session', 'type']) sessionType;
   @Input() url: string;
   page = 1;
   totalPages: number;
@@ -70,16 +70,17 @@ export class DocumentsComponent implements OnInit {
     this.rotate += 90;
   }
   downloadPdf() {
-    // This function should be moved and replaced
-    this.http.get(this.url, { responseType: 'blob' })
-      .subscribe((res) => {
-        saveAs(res, 'file.pdf');
+    // This function must be moved to service
+    this.http.get(this.url, { responseType: 'blob' }).subscribe(
+      (response: Blob) => {
+        saveAs(response, 'file.pdf');
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'Grupo de investigación no añadido';
         this.errSwal.text = 'Mensaje de error: ' + error.message;
         this.errSwal.show();
-      });
+      }
+    );
   }
 
 }

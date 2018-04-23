@@ -1,79 +1,79 @@
 <main class="detalle">
-	<div class="breadcrumb-class">Está en:
-		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
-		<a routerLink="/event-list" target="_self" title="Inicio">Lista de eventos</a>/
-		<span>{{ (auxiliarID | async) ? 'Editar evento' : 'Añadir evento' }}</span>
-	</div>
-	<div class="container-fluid">
-		<div class="container-fluid main-container">
-			<div class="row">
-				<div class="col-md-6">
-					<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <a routerLink="/event-list" target="_self" title="Inicio">Lista de eventos</a>/
+    <span>{{ (eventID | async) ? 'Editar evento' : 'Añadir evento' }}</span>
+  </div>
+  <div class="container-fluid">
+    <div class="container-fluid main-container">
+      <div class="row">
+        <div class="col-md-6">
+          <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
 
-						<!-- Topic -->
-						<div class="form-group">
-							<label class="form-label">Tema</label>
-							<input type="text" class="form-control" formControlName="topic" placeholder="Tema">
-							<app-form-control-errors [control]="topic"></app-form-control-errors>
-						</div>
+            <!-- Topic -->
+            <div class="form-group">
+              <label class="form-label">Tema</label>
+              <input type="text" class="form-control" formControlName="topic" placeholder="Tema">
+              <app-form-control-errors [control]="topic"></app-form-control-errors>
+            </div>
 
-						<!-- Description -->
-						<div class="form-group">
-							<label class="form-label">Descripción</label>
-							<input type="text" class="form-control" formControlName="description" placeholder="Descripción">
-							<app-form-control-errors [control]="description"></app-form-control-errors>
-						</div>
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label">Descripción</label>
+              <input type="text" class="form-control" formControlName="description" placeholder="Descripción">
+              <app-form-control-errors [control]="description"></app-form-control-errors>
+            </div>
 
-						<!-- Event type -->
-						<div class="form-group">
-							<label class="form-label">Tipo de evento</label>
-							<select class="form-control" formControlName="event_type">
-								<option *ngFor="let et of event_types" [ngValue]="et">{{ et }}</option>
-							</select>
-							<app-form-control-errors [control]="event_type"></app-form-control-errors>
-						</div>
+            <!-- Event type -->
+            <div class="form-group">
+              <label class="form-label">Tipo de evento</label>
+              <select class="form-control" formControlName="event_type">
+                <option *ngFor="let et of event_types" [ngValue]="et">{{ et }}</option>
+              </select>
+              <app-form-control-errors [control]="event_type"></app-form-control-errors>
+            </div>
 
-						<!-- Date -->
-						<div class="form-group">
-							<label class="form-label">Fecha</label>
-							<input type="text" class="form-control" formControlName="date" placeholder="Fecha">
-							<app-form-control-errors [control]="date"></app-form-control-errors>
-						</div>
+            <!-- Date -->
+            <div class="form-group">
+              <label class="form-label">Fecha</label>
+              <input type="text" class="form-control" formControlName="date" placeholder="Fecha">
+              <app-form-control-errors [control]="date"></app-form-control-errors>
+            </div>
 
-						<!-- Frequence -->
-						<div class="form-group">
-							<label class="form-label">Frecuencia</label>
-							<select class="form-control" formControlName="frequence">
-								<option *ngFor="let ft of frequence_types" [ngValue]="ft">{{ ft }}</option>
-							</select>
-							<app-form-control-errors [control]="frequence"></app-form-control-errors>
-						</div>
+            <!-- Frequence -->
+            <div class="form-group">
+              <label class="form-label">Frecuencia</label>
+              <select class="form-control" formControlName="frequence">
+                <option *ngFor="let ft of frequence_types" [ngValue]="ft">{{ ft }}</option>
+              </select>
+              <app-form-control-errors [control]="frequence"></app-form-control-errors>
+            </div>
 
-						<!-- Duration -->
-						<div class="form-group">
-							<label class="form-label">Duración</label>
-							<input type="text" class="form-control" formControlName="duration" placeholder="Duración">
-							<app-form-control-errors [control]="duration"></app-form-control-errors>
-						</div>
+            <!-- Duration -->
+            <div class="form-group">
+              <label class="form-label">Duración</label>
+              <input type="text" class="form-control" formControlName="duration" placeholder="Duración">
+              <app-form-control-errors [control]="duration"></app-form-control-errors>
+            </div>
 
-						<!-- State -->
-						<div class="form-group">
-							<label class="form-label">Estado</label>
-							<select class="form-control" formControlName="state">
-								<option *ngFor="let st of state_types" [ngValue]="st">{{ st }}</option>
-							</select>
-							<app-form-control-errors [control]="state"></app-form-control-errors>
-						</div>
+            <!-- State -->
+            <div class="form-group">
+              <label class="form-label">Estado</label>
+              <select class="form-control" formControlName="state">
+                <option *ngFor="let st of state_types" [ngValue]="st">{{ st }}</option>
+              </select>
+              <app-form-control-errors [control]="state"></app-form-control-errors>
+            </div>
 
-						<div>
-							<button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Submit</button>
-							<button type="button" class="btn btn-danger" routerLink="/event-list">Volver</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div>
+              <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Submit</button>
+              <button type="button" class="btn btn-danger" routerLink="/event-list">Volver</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <swal #errSwal title text type="error"></swal>

@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy, AfterContentInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgRedux, select } from '@angular-redux/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
+
+import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
+
 import { PermissionManager } from 'app/permission-manager';
-import { User } from 'app/classes/user';
+import { User } from 'app/classes/_models';
 import { UserService } from 'app/services/user.service';
 
 @Component({
@@ -19,7 +21,7 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
-  @select() auxiliarID;
+  @select(['auxiliarID', 'userUpdate']) userID;
 
   user: User = new User();
   userForm: FormGroup;
@@ -35,27 +37,26 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    this.auxiliarID.subscribe(id => {
+    this.userID.subscribe((id: number) => {
       if (id) {
-        this.userService
-          .get(id)
-          .subscribe(
-            (response: { user: User }) => {
-              this.user = response.user;
-              this.createUserForm();
-            },
-            (error: HttpErrorResponse) => {
-              this.errSwal.title = 'No se ha podido obtener el usuario';
-              this.errSwal.text = 'Mensaje de error: ' + error.message;
-              this.errSwal.show();
-            });
+        this.userService.get(id).subscribe(
+          (response: { user: User }) => {
+            this.user = response.user;
+            this.createUserForm();
+          },
+          (error: HttpErrorResponse) => {
+            this.errSwal.title = 'No se ha podido obtener el usuario';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
       }
     });
     this.createUserForm();
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'userUpdate' });
   }
 
   public onSubmit() {
@@ -67,12 +68,6 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
       if (this.userForm.get(k).dirty) {
         u[k] = this.userForm.get(k).value;
       }
-    }
-    if (u.name) {
-      Object.assign(u, {
-        name: u.name['first'],
-        lastname: u.name['last']
-      });
     }
     if (u['passwords']) {
       Object.assign(u, {
@@ -88,63 +83,43 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
       u.user_type = u.user_type.toLowerCase();
     }
     if (this.user.id) {
-      this.userService
-        .update(this.user.id, { user: u })
-        .subscribe(
-          (response: { user: User }) => {
-            this.sucSwal.title = 'El usuario ha sido actualizado';
-            this.sucSwal.show();
-            Object.assign(this.user, response.user);
-            this.createUserForm();
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Usuario no actualizado';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
+      this.userService.update(this.user.id, { user: u }).subscribe(
+        (response: { user: User }) => {
+          this.sucSwal.title = 'El usuario ha sido actualizado';
+          this.sucSwal.show();
+          Object.assign(this.user, response.user);
+          this.createUserForm();
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'Usuario no actualizado';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
+      );
     } else {
-      this.userService
-        .create({ user: u })
-        .subscribe(
-          (response: { user: User }) => {
-            this.sucSwal.title = 'El usuario ha sido añadido';
-            this.sucSwal.show();
-            this.userForm.reset();
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Usuario no añadido';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          })
-        ;
+      this.userService.create({ user: u }).subscribe(
+        (response: { user: User }) => {
+          this.sucSwal.title = 'El usuario ha sido añadido';
+          this.sucSwal.show();
+          this.userForm.reset();
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'Usuario no añadido';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
+      );
     }
-  }
-
-  private passwordMatchValidator(g: FormGroup) {
-    const pass = g.get('password'),
-      passConf = g.get('password_confirmation');
-    if (pass.invalid || (passConf.invalid && passConf.errors.minlength)) {
-      return { 'mismatch': true };
-    }
-    if (pass.dirty) {
-      passConf.markAsDirty();
-    }
-    const ans = pass.value === passConf.value ? null : { 'mismatch': true };
-    passConf.setErrors(ans);
-    return ans;
   }
 
   private createUserForm() {
     this.userForm = this.formBuilder.group({
-      name: this.formBuilder.group({
-        first: [this.user.name,
-        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
-        Validators.minLength(3), Validators.maxLength(100)]],
-        last: [this.user.lastname,
-        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
-        Validators.minLength(3), Validators.maxLength(100)]]
-      }),
+      name: [this.user.name,
+      [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
+      Validators.minLength(3), Validators.maxLength(100)]],
+      lastname: [this.user.lastname,
+      [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
+      Validators.minLength(3), Validators.maxLength(100)]],
       username: [this.user.username, [Validators.required, Validators.pattern('[a-z]+')]],
       user_type: [this.user.user_type],
       professional_profile: [this.user.professional_profile],
@@ -169,9 +144,22 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
     this.professional_profile.setValidators(profValidators);
   }
 
+  private passwordMatchValidator(g: FormGroup) {
+    const pass = g.get('password'),
+      passConf = g.get('password_confirmation');
+    if (pass.invalid || (passConf.invalid && passConf.errors.minlength)) {
+      return { 'mismatch': true };
+    }
+    if (pass.dirty) {
+      passConf.markAsDirty();
+    }
+    const ans = pass.value === passConf.value ? null : { 'mismatch': true };
+    passConf.setErrors(ans);
+    return ans;
+  }
+
   get name() { return this.userForm.get('name'); }
-  get first() { return this.userForm.get('name.first'); }
-  get last() { return this.userForm.get('name.last'); }
+  get lastname() { return this.userForm.get('lastname'); }
   get user_type() { return this.userForm.get('user_type'); }
   get professional_profile() { return this.userForm.get('professional_profile'); }
   get username() { return this.userForm.get('username'); }

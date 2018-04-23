@@ -2,12 +2,15 @@ import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
+
 import { NgRedux } from '@angular-redux/store';
-import { AppState } from '../../redux/store';
-import { ADD_AUXILIAR } from '../..//redux/actions';
-import { PermissionManager } from '../../permission-manager';
-import { ResearchGroupService } from '../../services/research-group.service';
-import { ResearchGroup } from '../../classes/research-group';
+import { AppState } from 'app/redux/store';
+import { ADD_AUXILIAR } from 'app/redux/actions';
+
+import { environment } from 'environments/environment';
+import { PermissionManager } from 'app/permission-manager';
+import { ResearchGroupService } from 'app/services/research-group.service';
+import { ResearchGroup } from 'app/classes/_models';
 
 @Component({
   selector: 'app-research-list',
@@ -17,7 +20,6 @@ import { ResearchGroup } from '../../classes/research-group';
 export class ResearchListComponent implements OnInit, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  PDF: boolean = false;
 
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
     'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
@@ -26,6 +28,8 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
     'research_priorities', 'foundation_date', 'classification',
     'date_classification', 'url'];
   researchGroups: Array<ResearchGroup>;
+  historyReportURL = environment.api_url + 'reports/rgs_history.pdf';
+  PDF = false;
 
   page: {
     actual: number,
@@ -52,47 +56,45 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
   }
 
   update(id: number) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { researchGroupUpdate: id } });
     this.router.navigateByUrl('/research-groups/add');
   }
 
   details(id: number) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { researchGroup: id } });
     this.router.navigateByUrl('/rg');
   }
 
-  pdfMode(){
+  pdfMode() {
     this.PDF = !this.PDF;
   }
 
   delete(id: number) {
-    this.researchGroupService.delete(id)
-      .subscribe(
-        (response: { research_group: ResearchGroup }) => {
-          this.getResearchGroups();
-          this.sucSwal.title = 'El grupo de investigación ha sido eliminado';
-          this.sucSwal.show();
-        },
-        (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Grupo de investigación no eliminado';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
-      );
+    this.researchGroupService.delete(id).subscribe(
+      (response: { research_group: ResearchGroup }) => {
+        this.getResearchGroups();
+        this.sucSwal.title = 'El grupo de investigación ha sido eliminado';
+        this.sucSwal.show();
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'Grupo de investigación no eliminado';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
   }
 
   getResearchGroups() {
-    this.researchGroupService.getAll(this.page.actual)
-      .subscribe(
-        (res: { research_groups: ResearchGroup[], total_pages: number }) => {
-          this.researchGroups = res.research_groups;
-          this.page.total = res.total_pages;
-        },
-        (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener los grupos de investigación';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
-      );
+    this.researchGroupService.getAll(this.page.actual).subscribe(
+      (response: { research_groups: ResearchGroup[], total_pages: number }) => {
+        this.researchGroups = response.research_groups;
+        this.page.total = response.total_pages;
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se han podido obtener los grupos de investigación';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
   }
 }

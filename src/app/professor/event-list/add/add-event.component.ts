@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgRedux, select } from '@angular-redux/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
+
+import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
+
 import { PermissionManager } from 'app/permission-manager';
-import { Event } from 'app/classes/events';
+import { Event } from 'app/classes/_models';
 import { EventService } from 'app/services/event.service';
 @Component({
   selector: 'app-add-event',
@@ -18,7 +20,7 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
-  @select() auxiliarID;
+  @select(['auxiliarID', 'eventUpdate']) eventID;
 
   event: Event = new Event();
   eventForm: FormGroup;
@@ -36,27 +38,26 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    this.auxiliarID.subscribe(id => {
+    this.eventID.subscribe((id: number) => {
       if (id) {
-        this.eventService.get(id)
-          .subscribe(
-            (event: { event: Event }) => {
-              this.event = event.event;
-              this.createEventForm();
-            },
-            (error: HttpErrorResponse) => {
-              this.errSwal.title = 'No se ha podido obtener el evento';
-              this.errSwal.text = 'Mensaje de error: ' + error.message;
-              this.errSwal.show();
-            }
-          );
+        this.eventService.get(id).subscribe(
+          (event: { event: Event }) => {
+            this.event = event.event;
+            this.createEventForm();
+          },
+          (error: HttpErrorResponse) => {
+            this.errSwal.title = 'No se ha podido obtener el evento';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
       }
     });
     this.createEventForm();
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'eventUpdate' });
   }
 
   onSubmit() {
@@ -70,7 +71,7 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
       }
     }
     if (e.event_type) {
-      e['type_ev'] = e.event_type.toLowerCase();
+      e.type_ev = e.event_type.toLowerCase();
       delete e.event_type;
     }
     if (e.frequence) {
@@ -80,36 +81,32 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
       e.state = e.state.toLowerCase();
     }
     if (this.event.id) {
-      this.eventService
-        .update(this.event.id, { event: e })
-        .subscribe(
-          (response: { event: Event }) => {
-            this.sucSwal.title = 'El evento ha sido actualizado';
-            this.sucSwal.show();
-            Object.assign(this.event, response.event);
-            this.createEventForm();
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Evento no actualizado';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
+      this.eventService.update(this.event.id, { event: e }).subscribe(
+        (response: { event: Event }) => {
+          this.sucSwal.title = 'El evento ha sido actualizado';
+          this.sucSwal.show();
+          Object.assign(this.event, response.event);
+          this.createEventForm();
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'Evento no actualizado';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
+      );
     } else {
-      this.eventService
-        .create({ event: e })
-        .subscribe(
-          (response: { event: Event }) => {
-            this.sucSwal.title = 'El evento ha sido añadido';
-            this.sucSwal.show();
-            this.eventForm.reset();
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Evento no añadido';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
+      this.eventService.create({ event: e }).subscribe(
+        (response: { event: Event }) => {
+          this.sucSwal.title = 'El evento ha sido añadido';
+          this.sucSwal.show();
+          this.eventForm.reset();
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'Evento no añadido';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
+      );
     }
   }
 

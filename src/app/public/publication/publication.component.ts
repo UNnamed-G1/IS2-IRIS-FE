@@ -2,14 +2,16 @@ import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { PdfViewerComponent } from 'ng2-pdf-viewer';
+
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
+
+import { environment } from 'environments/environment';
 import { PermissionManager } from 'app/permission-manager';
 import { PublicationService } from 'app/services/publication.service';
-import { Publication } from 'app/classes/publication';
-import { PdfViewerComponent } from 'ng2-pdf-viewer';
-import { HttpClientModule } from '@angular/common/http';
+import { Publication } from 'app/classes/_models';
 
 @Component({
   selector: 'app-publication',
@@ -62,71 +64,68 @@ export class PublicationComponent implements OnInit, AfterContentInit {
   }
 
   update(id: number) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publicationUpdate: id } });
     this.router.navigateByUrl('/publications/add');
   }
 
+  details(id: number) {
+    // this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: id } });
+    // this.router.navigateByUrl('/publication');
+    this.publicationService.get(id).subscribe(
+      (response: { publication: Publication }) => {
+        this.pub = response.publication;
+        this.pdfSrc = environment.api_url + this.pub.document;
+        this.pdfName = this.pub.name + '.pdf';
+        this.pdfLoaded = !this.pdfLoaded;
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se han podido obtener la Publicación';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
+  }
+
   delete(id: number) {
-    this.publicationService.delete(id)
-      .subscribe(
-        (response: { publication: Publication }) => {
-          this.getPublications();
-          this.sucSwal.title = 'La publicación ha sido eliminado';
-          this.sucSwal.show();
-        },
-        (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Publicación no eliminada';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
-      );
+    this.publicationService.delete(id).subscribe(
+      (response: { publication: Publication }) => {
+        this.getPublications();
+        this.sucSwal.title = 'La publicación ha sido eliminado';
+        this.sucSwal.show();
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'Publicación no eliminada';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
   }
 
   getPublication(id) {
-    this.publicationService.get(id)
-      .subscribe(
-        (res: { publication: Publication }) => {
-          this.pub = res.publication;
-
-        },
-        (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se ha podido obtener la Publicación';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
-      );
-  }
-  details(id: number) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: id });
-    this.publicationService.get(id)
-      .subscribe(
-        (res: { publication: Publication }) => {
-          this.pub = res.publication;
-          this.pdfSrc = 'http://localhost:3000' + this.pub.document;
-          this.pdfName = this.pub.name + '.pdf';
-          this.pdfLoaded = !this.pdfLoaded;
-        },
-        (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener la Publicación';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
-      );
+    this.publicationService.get(id).subscribe(
+      (response: { publication: Publication }) => {
+        this.pub = response.publication;
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se ha podido obtener la Publicación';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
   }
 
   getPublications() {
-    this.publicationService.getAll(this.page.actual)
-      .subscribe(
-        (response: { publications: Publication[], total_pages: number }) => {
-          this.publications = response.publications;
-          this.page.total = response.total_pages;
-        },
-        (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener las publicaciones';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
-      );
+    this.publicationService.getAll(this.page.actual).subscribe(
+      (response: { publications: Publication[], total_pages: number }) => {
+        this.publications = response.publications;
+        this.page.total = response.total_pages;
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se han podido obtener las publicaciones';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
   }
   search(stringToSearch: string) {
     this.pdfComponent.pdfFindController.executeCommand('find', {

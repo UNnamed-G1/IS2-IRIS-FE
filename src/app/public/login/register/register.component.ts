@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { UserService } from 'app/services/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { User } from 'app/classes/user';
+
+import { UserService } from 'app/services/user.service';
+import { User } from 'app/classes/_models';
 
 @Component({
   selector: 'app-register',
@@ -12,6 +12,7 @@ import { User } from 'app/classes/user';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  @ViewChild('closeModal') private closeBtn: ElementRef;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   registerForm: FormGroup;
@@ -24,41 +25,27 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    const u = this.registerForm.value;
-    const user = {
-      name: u.name.first,
-      lastname: u.name.last,
-      email: u.email,
-      password: u.passwords.password,
-      password_confirmation: u.passwords.password_confirmation
-    };
-    /*let user = {
-      name: this.first.value,
-      lastname: this.last.value,
-      email: this.email.value,
-      password: this.password.value,
-      password_confirmation: this.passwordConf.value
-    };*/
-    this.userService.create({ 'user': user })
-      .subscribe(
-        (response: { user: User }) => {
-          this.sucSwal.title = 'El grupo de investigación ha sido actualizado';
-          this.sucSwal.show();
-        },
-        (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No ha podido realizar el registro';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
-      );
+    const user = Object.assign(this.registerForm.value, { password: this.password.value, password_confirmation: this.passwordConf.value });
+    delete user.passwords;
+    this.userService.create({ 'user': user }).subscribe(
+      (response: { user: User }) => {
+        this.sucSwal.title = 'Te has registrado satisfactoriamente.';
+        this.sucSwal.show();
+        this.registerForm.reset();
+        this.closeBtn.nativeElement.click();
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No ha podido realizar el registro';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
   }
 
   private createRegisterForm() {
     this.registerForm = this.formBuilder.group({
-      name: this.formBuilder.group({
-        first: ['', [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'), Validators.minLength(3), Validators.maxLength(100)]],
-        last: ['', [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'), Validators.minLength(3), Validators.maxLength(100)]]
-      }),
+      name: ['', [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'), Validators.minLength(3), Validators.maxLength(100)]],
+      lastname: ['', [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'), Validators.minLength(3), Validators.maxLength(100)]],
       email: ['', [Validators.required, Validators.pattern('[a-z]+@unal.edu.co')]],
       passwords: this.formBuilder.group({
         password: ['', [Validators.required, Validators.minLength(8)]],
@@ -85,8 +72,7 @@ export class RegisterComponent implements OnInit {
   }
 
   get name() { return this.registerForm.get('name'); }
-  get first() { return this.registerForm.get('name.first'); }
-  get last() { return this.registerForm.get('name.last'); }
+  get lastname() { return this.registerForm.get('lastname'); }
   get email() { return this.registerForm.get('email'); }
   get passwords() { return this.registerForm.get('passwords'); }
   get password() { return this.registerForm.get('passwords.password'); }

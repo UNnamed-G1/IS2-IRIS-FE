@@ -1,19 +1,17 @@
 import { Component, OnInit, OnDestroy, AfterContentInit, ViewChild, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { NgRedux, select } from '@angular-redux/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { Router } from '@angular/router';
+
+import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { PublicationService } from 'app/services/publication.service';
-import { Publication } from 'app/classes/publication';
+import { Publication } from 'app/classes/_models';
 import { DataService } from 'app/services/data.service';
-import { Router } from '@angular/router';
-import { MAT_DIALOG_DATA } from '@angular/material';
-import { MatFormFieldModule, MatInputModule, MatIconModule } from '@angular/material';
-import { MatDialogRef, MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { PublicationComponent } from '../publication.component';
 
 @Component({
   selector: 'app-add-publication',
@@ -24,7 +22,7 @@ import { PublicationComponent } from '../publication.component';
 export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  @select() auxiliarID;
+  @select(['auxiliarID', 'publicationUpdate']) publicationID;
 
   fileName: string;
   fileList: FileList;
@@ -38,8 +36,6 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
   type_pubs: string[] = ['Monografia', 'Patente', 'Libro', 'Articulo', 'Tesis', 'Software'];
 
   constructor(private publicationService: PublicationService,
-    public dialogRef: MatDialogRef<AddPublicationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
     private router: Router,
     private dataService: DataService,
     private permMan: PermissionManager,
@@ -51,27 +47,26 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
   }
 
   ngAfterContentInit() {
-    this.auxiliarID.subscribe((id: number) => {
+    this.publicationID.subscribe((id: number) => {
       if (id) {
-        this.publicationService.get(id)
-          .subscribe(
-            (publication: { publication: Publication }) => {
-              this.publication = publication.publication;
-              this.createRGForm();
-            },
-            (error: HttpErrorResponse) => {
-              this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
-              this.errSwal.text = 'Mensaje de error: ' + error.message;
-              this.errSwal.show();
-            }
-          );
+        this.publicationService.get(id).subscribe(
+          (publication: { publication: Publication }) => {
+            this.publication = publication.publication;
+            this.createRGForm();
+          },
+          (error: HttpErrorResponse) => {
+            this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
       }
     });
     this.createRGForm();
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'publicationUpdate' });
   }
 
   fileChange(event) {
@@ -96,21 +91,19 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
       publication.type_pub = publication.type_pub.toLowerCase();
     }
     if (this.publication.id) {
-      this.publicationService
-        .update(this.publication.id, publication)
-        .subscribe(
-          (response: { publication: Publication }) => {
-            Object.assign(this.publication, response.publication);
-            this.sucSwal.title = 'La publicación ha sido actualizada';
-            this.sucSwal.show();
-            this.createRGForm();
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Publicación no actualizada';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
+      this.publicationService.update(this.publication.id, publication).subscribe(
+        (response: { publication: Publication }) => {
+          Object.assign(this.publication, response.publication);
+          this.sucSwal.title = 'La publicación ha sido actualizada';
+          this.sucSwal.show();
+          this.createRGForm();
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'Publicación no actualizada';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
+      );
     } else {
       this.uploadPublicationResponse$ = this.publicationService.uploadPublication(publication, this.file);
       this.uploadRequested = true;

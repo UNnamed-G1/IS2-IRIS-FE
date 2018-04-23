@@ -6,7 +6,7 @@ import { ISession } from './redux/session';
 
 @Injectable()
 export class PermissionManager {
-  @select() session;
+  @select(['session', 'type']) sessionType;
   @select() isLogged;
 
   constructor(private ngRedux: NgRedux<AppState>,
@@ -27,8 +27,8 @@ export class PermissionManager {
 
   public authorizedUser(userTypes: string[]): boolean {
     let authorized = false;
-    this.session.subscribe((session: ISession) => {
-      authorized = userTypes.includes(session.type);
+    this.sessionType.subscribe((type: string) => {
+      authorized = userTypes.includes(type);
     });
     return authorized;
   }

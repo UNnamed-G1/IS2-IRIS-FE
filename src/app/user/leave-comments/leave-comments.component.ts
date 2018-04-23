@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { select } from '@angular-redux/store';
 
 import { PermissionManager } from 'app/permission-manager';
 import { CommentService } from 'app/services/comment.service';
-import { Comment } from 'app/classes/comment';
-import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 @Component({
   selector: 'app-leave-comments',
@@ -42,7 +41,8 @@ export class LeaveCommentsComponent implements OnInit {
           this.errSwal.title = 'No se han podido enviar tus comentarios';
           this.errSwal.text = 'Mensaje de error: ' + error.message;
           this.errSwal.show();
-        });
+        }
+      );
     });
   }
 

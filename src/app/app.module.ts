@@ -9,17 +9,13 @@ import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { SweetAlert2Module } from '@toverux/ngx-sweetalert2';
 import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
-import { ADD_SESSION, REMOVE_SESSION } from '../app/redux/actions';
 import * as persistState from 'redux-localstorage';
-import { MatFormFieldModule, MatInputModule, MatIconModule } from '@angular/material';
-import { MatDialogRef, MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MAT_DIALOG_DATA } from '@angular/material';
 import { HttpModule } from '@angular/http';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FileUploadModule } from 'ng2-file-upload';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
+import { ADD_SESSION, REMOVE_SESSION } from './redux/actions';
 // Requests interceptor
 import { AuthInterceptor } from './auth-interceptor';
 // Permission manager
@@ -87,6 +83,9 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
 import { FollowsComponent } from './public/profile/follows/follows.component';
+
+import { environment } from 'environments/environment';
+import { User } from 'app/classes/_models';
 
 
 export const appRoutes: Routes = [
@@ -219,11 +218,6 @@ export const appRoutes: Routes = [
     NgHttpLoaderModule,
     NgReduxModule,
     PdfViewerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatDialogModule,
-    NoopAnimationsModule,
     FileUploadModule
   ],
   declarations: [
@@ -265,14 +259,6 @@ export const appRoutes: Routes = [
   ],
   providers: [
     {
-      provide: MAT_DIALOG_DATA,
-      useValue: []
-    },
-    {
-      provide: MatDialogRef,
-      useValue: {}
-    },
-    {
       provide: APP_BASE_HREF,
       useValue: '/'
     },
@@ -305,38 +291,41 @@ export const appRoutes: Routes = [
 export class AppModule {
   @select() isLogged;
 
-  constructor(ngRedux: NgRedux<AppState>,
-    userService: UserService) {
+  constructor(private ngRedux: NgRedux<AppState>,
+    private userService: UserService) {
     ngRedux.configureStore(rootReducer, INITIAL_STATE, undefined, persistState());
-    // Remove session if logged and token is not valid
+    this.verifyValidSession();
+  }
+
+  verifyValidSession() {
     this.isLogged.subscribe((logged: boolean) => {
       if (logged) {
-        userService.getCurrentUser().subscribe(
-          response => {
+        this.userService.getCurrentUser().subscribe(
+          (response: { user: User }) => {
             // Update data
             const data = response.user;
             if (data.photo) {
-              data.photo = data.photo.link;
+              Object.assign(data, { photo: environment.api_url + data.photo.picture });
             }
-            ngRedux.dispatch({
+            this.ngRedux.dispatch({
               type: ADD_SESSION, session:
-                Object.assign({}, {
-                  name: data.full_name,
-                  type: data.user_type,
-                  username: data.username,
-                  photo: data.photo
-                })
+              Object.assign({}, {
+                name: data.full_name,
+                type: data.user_type,
+                username: data.username,
+                photo: data.photo
+              })
             });
           },
           (error: HttpErrorResponse) => {
+            // Remove session if logged and token is not valid
             if (error.status === 401) {
-              ngRedux.dispatch({ type: REMOVE_SESSION });
+              this.ngRedux.dispatch({ type: REMOVE_SESSION });
             }
           }
         );
       }
     });
-
   }
 }
 

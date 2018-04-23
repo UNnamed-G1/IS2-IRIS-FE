@@ -16,15 +16,15 @@ export class ResearchGroupService extends CommonService {
     return this.applyRequestPath(this.get, 'research_groups_news');
   }
   public getEvents(id: number) {
-    return this.applyRequestPath(this.get, "events_by_rg?id=" + id);
+    return this.applyRequestPath(this.get, 'events_by_rg?id=' + id);
   }
 
   public getSubjects(id: number) {
-    return this.applyRequestPath(this.get, "rs_by_rg?id=" + id);
+    return this.applyRequestPath(this.get, 'rs_by_rg?id=' + id);
   }
 
   public getPublications(id: number) {
-    return this.applyRequestPath(this.get, "publications_by_rg?id=" + id);
+    return this.applyRequestPath(this.get, 'publications_by_rg?id=' + id);
   }
 
   public requestJoinGroup(id: any): any {

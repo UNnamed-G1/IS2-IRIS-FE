@@ -8,7 +8,7 @@
       <div *ngFor="let user of (displayFollowers) ? followers : following">
         <div class="row">
           <div class="col-sm-2 col-md-2">
-            <img src="{{user.photo ? user.photo.link : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+            <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
             />
           </div>
           <div class="col-sm-6 col-md-6">
@@ -20,11 +20,15 @@
               <p>{{ user.professional_profile }}</p>
             </div>
           </div>
-          <div class="col-sm-2 col-md-2" *ngIf="(session | async).username != user.username">
+          <div class="col-sm-2 col-md-2" *ngIf="(sessionUsername | async) != user.username">
             <div class="btn-group">
               <button type="button" class="btn btn-primary" (click)="goToUser(user.id)" data-toggle="modal" data-target="#modal-follows">Perfil</button>
-              <button type="button" class="btn btn-danger" (click)="follow(user.id)" *ngIf="(isLogged | async) && !currFollowing.includes(user.username)">Seguir</button>
-              <button type="button" class="btn btn-danger" (click)="unfollow(user.id)" *ngIf="(isLogged | async) && currFollowing.includes(user.username)">Dejar de seguir</button>
+              <div *ngIf="(isLogged | async)">
+                <button type="button" class="btn btn-danger" (click)="unfollow(user.id)" *ngIf="currFollowing.includes(user.username); else followBtn">Dejar de seguir</button>
+                <ng-template #followBtn>
+                  <button type="button" class="btn btn-danger" (click)="follow(user.id)">Seguir</button>
+                </ng-template>
+              </div>
             </div>
           </div>
         </div>

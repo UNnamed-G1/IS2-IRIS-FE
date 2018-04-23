@@ -156,7 +156,7 @@
               </div>
             </div>
 
-            <div *ngIf="!PDF" class="panel-body" style="overflow-y: auto; height: 300px; ">
+            <div class="panel-body" style="overflow-y: auto; height: 300px; ">
               <div class="research-group">
                 <div *ngFor="let publication of publications">
                   <div class=" media">
@@ -174,13 +174,13 @@
             </div>
 
             <div *ngIf="PDF" class="panel-body" style="overflow-y: auto; height: 800px; ">
-              <app-documents [url]="'http://localhost:3000/reports/rep_by_rg.pdf?id='+researchGroup.id"></app-documents>
+              <app-documents [url]="rgReportUrl"></app-documents>
             </div>
           </div>
         </div>
         <hr style="border:1px dotted black;">
 
-      <button class="btn btn-primary" *ngIf="(session | async).type == 'Admin'" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" *ngIf="(sessionType | async) == 'Admin'" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
     </div>
 

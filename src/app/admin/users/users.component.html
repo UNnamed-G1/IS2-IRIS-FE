@@ -13,8 +13,8 @@
     <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
   </div>
 
-  <div *ngIf="!PDF">
-      <app-documents [url]="'http://localhost:3000/reports/user_history.pdf?send=false'"></app-documents>  
+  <div *ngIf="PDF">
+      <app-documents [url]="usersReportUrl"></app-documents>  
   </div>
 </div>
 

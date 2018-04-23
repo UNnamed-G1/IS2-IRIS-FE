@@ -2,7 +2,7 @@
 	<div class="breadcrumb-class">Está en:
 		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
 		<a routerLink="/research-list" target="_self" title="Inicio">Lista de grupos de investigación</a>/
-		<span>{{ (auxiliarID | async) ? 'Editar grupo de investigación' : 'Añadir grupo de investigación' }}</span>
+		<span>{{ (researchGroupID | async) ? 'Editar grupo de investigación' : 'Añadir grupo de investigación' }}</span>
 	</div>
 	<div class="container-fluid">
 		<div class="container-fluid main-container">

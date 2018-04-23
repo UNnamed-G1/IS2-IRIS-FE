@@ -3,21 +3,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
+
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
-import { REMOVE_AUXILIAR } from 'app/redux/actions';
+import { ISession } from 'app/redux/session';
+import { REMOVE_AUXILIAR, ADD_SESSION } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
-import { environment } from 'environments/environment';
 
+import { environment } from 'environments/environment';
 import { FacultyService } from 'app/services/faculty.service';
 import { DepartmentService } from 'app/services/department.service';
 import { CareerService } from 'app/services/career.service';
 import { UserService } from 'app/services/user.service';
-
-import { User } from 'app/classes/user';
-import { Faculty } from 'app/classes/faculty';
-import { Department } from 'app/classes/department';
-import { Career } from 'app/classes/career';
+import { User, Career, Department, Faculty } from 'app/classes/_models';
 
 @Component({
   selector: 'app-profile',
@@ -27,14 +25,14 @@ import { Career } from 'app/classes/career';
 export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-
-  @select() auxiliarID;
+  @select(['auxiliarID', 'user']) userID;
+  @select() session;
   user: User;
   faculties: Faculty[] = new Array<Faculty>();
   departments: Department[] = new Array<Department>();
   careers: Career[] = new Array<Career>();
   displayFollowers: boolean;
-  showInput = false;
+  showForm = false;
   profileForm: FormGroup;
   followersCount: number;
   followingCount: number;
@@ -50,8 +48,8 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     private formBuilder: FormBuilder) { }
 
   ngOnInit() { // Validate existent id if not logged
-    this.auxiliarID.subscribe(id => {
-      if (!id) {
+    this.userID.subscribe((userID: number) => {
+      if (!userID) {
         this.permMan.validateLogged();
       }
       this.uploader = new FileUploader({ queueLimit: 1 });
@@ -59,13 +57,13 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    this.auxiliarID.subscribe(id => {
-      if (id) {
-        this.setUser(this.userService.get(id));
+    this.userID.subscribe((userID: number) => {
+      if (userID) {
+        this.requestUser(userID);
       } else if (this.permMan.validateLogged()) {
         this.userService.getCurrentUser().subscribe(
           (response: { user: User }) => {
-            this.setUser(this.userService.get(response.user.id));
+            this.requestUser(response.user.id);
           },
           (error: HttpErrorResponse) => {
             this.errSwal.title = 'No se ha podido obtener el perfil';
@@ -79,11 +77,12 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'user' });
   }
 
   updateProfile() {
     if (this.profileForm.pristine && this.uploader.queue.length === 0) {
+      this.toggleShowForm();
       return;
     }
     const fd = new FormData();
@@ -96,12 +95,6 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
           u[k] = this.profileForm.get(k).value;
         }
       }
-      if (u.name) {
-        Object.assign(u, {
-          name: u.name['first'],
-          lastname: u.name['last']
-        });
-      }
       if (u['passwords']) {
         Object.assign(u, {
           password: u['passwords'].password,
@@ -111,20 +104,19 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
       }
     }
     for (const key of Object.keys(u)) {
-      fd.append('user[' + key + ']', u
-      [key]);
+      fd.append('user[' + key + ']', u[key]);
     }
-    if (this.uploader.queue.length) {
+    if (this.uploader.queue.length === 1) {
       fd.append('picture', this.uploader.queue[0].file.rawFile);
     }
     this.userService.update(this.user.id, fd).subscribe(
       (response: { user: User }) => {
         this.sucSwal.title = 'Tu perfil ha sido actualizado';
         this.sucSwal.show();
-        this.toggleShowInput();
-        Object.assign(this.user, response.user);
-        this.user['photo'] = environment.api_url + this.user['photo'].picture;
-        this.createProfileForm();
+        this.toggleShowForm();
+        this.uploader.clearQueue();
+        this.setUser(response.user);
+        this.setSessionUser(response.user);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'Tu perfil no ha podido ser actualizado';
@@ -134,39 +126,15 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     );
   }
 
-  toggleShowInput() {
-    this.showInput = !this.showInput;
-  }
-
   careerClicked(career: Career) {
     this.user.career = career;
     this.user.career_id = career.id;
   }
 
-  viewFollows(followers: boolean) {
-    this.displayFollowers = followers;
-  }
-
-  setFollowersCount(count: number) {
-    this.followersCount = count;
-  }
-
-  setFollowingCount(count: number) {
-    this.followingCount = count;
-  }
-
-  setUser(user) {
-    user.subscribe(
+  requestUser(id: number) {
+    this.userService.get(id).subscribe(
       (response: { user: User }) => {
-        this.user = Object.assign(new User(), response.user);
-        if (this.user['photo']) {
-          this.user['photo'] = environment.api_url + this.user['photo'].picture;
-        }
-        if (this.user.career) {
-          // this.setDepartments(this.user.career.id);
-          // this.setCareers(this.user.career.id);
-        }
-        this.createProfileForm();
+        this.setUser(response.user);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se ha podido obtener el perfil';
@@ -174,6 +142,31 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
         this.errSwal.show();
       }
     );
+  }
+
+  setUser(u: User) {
+    this.user = u;
+    if (u.photo) {
+      Object.assign(this.user, { photo: environment.api_url + this.user.photo.picture });
+    }
+    if (u.career) {
+      // this.setDepartments(this.user.career.id);
+      // this.setCareers(this.user.career.id);
+    }
+    this.createProfileForm();
+  }
+
+  setSessionUser(u: User) {
+    this.ngRedux.dispatch({
+      type: ADD_SESSION,
+      session:
+        Object.assign({}, {
+          name: u.full_name,
+          type: u.user_type,
+          username: u.username,
+          photo: u.photo
+        })
+    });
   }
 
   setFaculties() {
@@ -225,8 +218,50 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     this.careers = new Array<Career>();
   }
 
+  // Boolean displays edit form on true
+  toggleShowForm() {
+    this.showForm = !this.showForm;
+  }
+
+  // Boolean displays followers: true, following: false
+  viewFollows(followers: boolean) {
+    this.displayFollowers = followers;
+  }
+
+  // Setters for follows counters (Setted from follows component)
+  setFollowersCount(count: number) {
+    this.followersCount = count;
+  }
+
+  setFollowingCount(count: number) {
+    this.followingCount = count;
+  }
+
+  // File drop zone
   fileOverBase(e: any): void {
     this.hasBaseDropZoneOver = e;
+  }
+
+  // Form creation
+  private createProfileForm() {
+    this.profileForm = this.formBuilder.group({
+      name: [this.user.name,
+      [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
+      Validators.minLength(3), Validators.maxLength(100)]],
+      lastname: [this.user.lastname,
+      [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
+      Validators.minLength(3), Validators.maxLength(100)]],
+      professional_profile: [this.user.professional_profile,
+      [Validators.required, Validators.maxLength(5000)]],
+      phone: [this.user.phone,
+      [Validators.pattern('[0-9 +-]*'), Validators.minLength(7), Validators.maxLength(20)]],
+      office: [this.user.office, [Validators.minLength(7), Validators.maxLength(20)]],
+      cvlac_link: [this.user.cvlac_link],
+      passwords: this.formBuilder.group({
+        password: ['', [Validators.minLength(8)]],
+        password_confirmation: ['', [Validators.minLength(8)]]
+      }, { validator: this.passwordMatchValidator })
+    });
   }
 
   private passwordMatchValidator(g: FormGroup) {
@@ -243,32 +278,8 @@ export class ProfileComponent implements OnInit, AfterContentInit, OnDestroy {
     return ans;
   }
 
-  private createProfileForm() {
-    this.profileForm = this.formBuilder.group({
-      name: this.formBuilder.group({
-        first: [this.user.name,
-        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
-        Validators.minLength(3), Validators.maxLength(100)]],
-        last: [this.user.lastname,
-        [Validators.required, Validators.pattern('[A-Za-zÀ-ÿ ]*'),
-        Validators.minLength(3), Validators.maxLength(100)]]
-      }),
-      professional_profile: [this.user.professional_profile,
-      [Validators.required, Validators.maxLength(5000)]],
-      phone: [this.user.phone,
-      [Validators.pattern('[0-9 +-]*'), Validators.minLength(7), Validators.maxLength(20)]],
-      office: [this.user.office, [Validators.minLength(7), Validators.maxLength(20)]],
-      cvlac_link: [this.user.cvlac_link],
-      passwords: this.formBuilder.group({
-        password: ['', [Validators.minLength(8)]],
-        password_confirmation: ['', [Validators.minLength(8)]]
-      }, { validator: this.passwordMatchValidator })
-    });
-  }
-
   get name() { return this.profileForm.get('name'); }
-  get first() { return this.profileForm.get('name.first'); }
-  get last() { return this.profileForm.get('name.last'); }
+  get lastname() { return this.profileForm.get('lastname'); }
   get professional_profile() { return this.profileForm.get('professional_profile'); }
   get phone() { return this.profileForm.get('phone'); }
   get office() { return this.profileForm.get('office'); }

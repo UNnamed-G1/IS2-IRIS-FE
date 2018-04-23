@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { NgRedux, select } from '@angular-redux/store';
-import { AppState } from '../../redux/store';
-import { REMOVE_SESSION } from '../../redux/actions';
+import { AppState } from 'app/redux/store';
+import { REMOVE_SESSION, REMOVE_AUXILIAR } from 'app/redux/actions';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +19,11 @@ export class AppHeaderComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
+  }
+
+  viewProfile() {
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'user' });
+    this.router.navigateByUrl('profile');
   }
 
   logOut() {

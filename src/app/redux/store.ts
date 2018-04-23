@@ -1,9 +1,9 @@
-import { ISession } from './session'
+import { ISession } from './session';
 import { ADD_SESSION, ADD_AUXILIAR, REMOVE_SESSION, REMOVE_AUXILIAR } from './actions';
 
 export interface AppState {
   session: ISession;
-  auxiliarID: number;
+  auxiliarID: any;
   isLogged: boolean;
 }
 
@@ -17,7 +17,7 @@ export const INITIAL_STATE: AppState = {
   },
   auxiliarID: undefined,
   isLogged: false
-}
+};
 
 export function rootReducer(state: AppState, action): AppState {
   switch (action.type) {
@@ -32,7 +32,10 @@ export function rootReducer(state: AppState, action): AppState {
     case REMOVE_SESSION:
       return Object.assign({}, state, INITIAL_STATE);
     case REMOVE_AUXILIAR:
-      return Object.assign({}, state, { auxiliarID: undefined });
+      if (state.auxiliarID) {
+        delete state.auxiliarID[action.remove];
+      }
+      return state;
   }
   return state;
 }

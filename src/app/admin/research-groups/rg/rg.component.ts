@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -10,12 +11,8 @@ import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
 
-import { ActivatedRoute, Router } from '@angular/router';
-import { ResearchGroup } from 'app/classes/research-group';
-import { ResearchSubject } from 'app/classes/research-subject';
-import { Publication } from 'app/classes/publication';
+import { Publication, ResearchGroup, ResearchSubject } from 'app/classes/_models';
 import { ResearchGroupService } from 'app/services/research-group.service';
-import { ADD_AUXILIAR } from 'app/redux/actions';
 
 @Component({
   selector: 'app-rg',
@@ -24,18 +21,21 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
 })
 
 export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
-  @select() session;
-  @select() isLogged;
-  @select() auxiliarID;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @Output() detailsEmitter = new EventEmitter<number>();
+  @select(['session', 'username']) sessionUsername;
+  @select(['session', 'type']) sessionType;
+  @select(['auxiliarID', 'researchGroup']) researchGroupID;
+  @select() isLogged;
   events: Array<Event>;
   subjects: Array<ResearchSubject>;
   publications: Array<Publication>;
+
+  rgReportUrl = environment.api_url + 'reports/rep_by_rg.pdf?id=';
   PDF = false;
 
-  researchGroup: ResearchGroup = new ResearchGroup();
+  researchGroup: ResearchGroup;
   showInput = false;
   isMember: boolean;
   rgForm: FormGroup;
@@ -45,6 +45,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   constructor(private researchGroupService: ResearchGroupService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
+    private acRoute: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder) { }
 
@@ -53,38 +54,45 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   ngAfterContentInit() {
-    this.auxiliarID.subscribe(id => {
+    this.researchGroupID.subscribe((id: number) => {
       if (id) {
-        this.researchGroupService.getEvents(id).subscribe((res: { events: Event[] }) => {
-          this.events = res.events;
-        }, (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener los eventos del grupo de ivnestigación';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        });
-        this.researchGroupService.getSubjects(id).subscribe((res: { research_subjects: ResearchSubject[] }) => {
-          this.subjects = res.research_subjects;
-        }, (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener las lineas de investigación del grupo';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        });
-        this.researchGroupService.getPublications(id).subscribe((res: { publications: Publication[] }) => {
-          this.publications = res.publications;
-        }, (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener las publicaciones del grupo de ivnestigación';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        });
-        this.setRG(this.researchGroupService.get(id));
+        this.rgReportUrl += id;
+        this.researchGroupService.getEvents(id).subscribe(
+          (response: { events: Event[] }) => {
+            this.events = response.events;
+          }, (error: HttpErrorResponse) => {
+            this.errSwal.title = 'No se han podido obtener los eventos del grupo de ivnestigación';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
+        this.researchGroupService.getSubjects(id).subscribe(
+          (response: { research_subjects: ResearchSubject[] }) => {
+            this.subjects = response.research_subjects;
+          }, (error: HttpErrorResponse) => {
+            this.errSwal.title = 'No se han podido obtener las lineas de investigación del grupo';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
+        this.researchGroupService.getPublications(id).subscribe(
+          (response: { publications: Publication[] }) => {
+            this.publications = response.publications;
+          }, (error: HttpErrorResponse) => {
+            this.errSwal.title = 'No se han podido obtener las publicaciones del grupo de ivnestigación';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
+        this.requestRG(id);
       } else {
-        this.router.navigateByUrl('home');
+        this.router.navigateByUrl('/');
       }
     });
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR });
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'researchGroup' });
   }
 
   updateGroup() {
@@ -114,9 +122,8 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         this.sucSwal.title = 'El grupo ha sido actualizado';
         this.sucSwal.show();
         this.toggleShowInput();
-        Object.assign(this.researchGroup, response.research_group);
-        this.researchGroup['photo'] = environment.api_url + this.researchGroup['photo'].picture;
-        this.createRGForm();
+        this.uploader.clearQueue();
+        this.setRG(response.research_group);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'El grupo no ha podido ser actualizado';
@@ -126,15 +133,10 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
     );
   }
 
-  setRG(researchGroup) {
-    researchGroup.subscribe(
+  requestRG(id: number) {
+    this.researchGroupService.get(id).subscribe(
       (response: { research_group: ResearchGroup }) => {
-        this.researchGroup = Object.assign(new ResearchGroup(), response.research_group);
-        this.researchGroup['photo'] = environment.api_url + this.researchGroup['photo'].picture;
-        this.createRGForm();
-        this.session.subscribe(session => {
-          this.isMember = response.research_group['members'].map(u => u.user.username).includes(session.username);
-        });
+        this.setRG(response.research_group);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
@@ -142,6 +144,17 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         this.errSwal.show();
       }
     );
+  }
+
+  setRG(rg: ResearchGroup) {
+    this.researchGroup = rg;
+    if (rg.photo) {
+      Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
+    }
+    this.createRGForm();
+    this.sessionUsername.subscribe((username: string) => {
+      this.isMember = this.researchGroup.members.map(u => u.user.username).includes(username);
+    });
   }
 
   toggleShowInput() {
@@ -152,51 +165,29 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
     this.PDF = !this.PDF;
   }
 
-  newUrl(id: number) {
-    return environment.api_url + 'reports/rep_by_rg.pdf?id' + id;
-  }
-
   onSubmit() {
     if (this.rgForm.pristine) {
       return;
     }
     const rg = new ResearchGroup();
-    for (const k in this.rgForm.controls) {
-      if (this.rgForm.get(k).dirty) {
-        rg[k] = this.rgForm.get(k).value;
+    for (const key in this.rgForm.controls) {
+      if (this.rgForm.get(key).dirty) {
+        rg[key] = this.rgForm.get(key).value;
       }
     }
     if (this.researchGroup.id) {
-      this.researchGroupService
-        .update(this.researchGroup.id, rg)
-        .subscribe(
-          (response: { rg: ResearchGroup }) => {
-            Object.assign(this.researchGroup, response.rg);
-            this.sucSwal.title = 'El grupo ha sido actualizado';
-            this.sucSwal.show();
-            this.createRGForm();
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Grupo no actualizado';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
-    } else {
-      this.researchGroupService
-        .create({ researchGroup: rg })
-        .subscribe(
-          (response: { researchGroup: ResearchGroup }) => {
-            this.sucSwal.title = 'El grupo ha sido añadido';
-            this.sucSwal.show();
-            this.rgForm.reset();
-          },
-          (error: HttpErrorResponse) => {
-            this.errSwal.title = 'grupo no añadido';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          })
-        ;
+      this.researchGroupService.update(this.researchGroup.id, rg).subscribe(
+        (response: { research_group: ResearchGroup }) => {
+          this.setRG(response.research_group);
+          this.sucSwal.title = 'El grupo ha sido actualizado';
+          this.sucSwal.show();
+          this.createRGForm();
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'Grupo no actualizado';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        });
     }
   }
 
@@ -205,7 +196,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
       (response) => {
         this.sucSwal.title = 'Te has unido a este grupo';
         this.sucSwal.show();
-        this.setRG(this.researchGroupService.get(this.researchGroup.id));
+        this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No te has podido unir al grupo';
@@ -220,7 +211,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
       (response) => {
         this.sucSwal.title = 'Has abandonado este grupo';
         this.sucSwal.show();
-        this.setRG(this.researchGroupService.get(this.researchGroup.id));
+        this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No has podido abandonar el grupo';

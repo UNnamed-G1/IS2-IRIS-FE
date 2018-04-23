@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ResearchSubject } from '../../classes/research-subject';
-import { ResearchSubjectService } from '../../services/research-subject.service';
+
+import { ResearchSubject } from 'app/classes/_models';
+import { ResearchSubjectService } from 'app/services/research-subject.service';
 
 @Component({
   selector: 'app-research-subjects',
