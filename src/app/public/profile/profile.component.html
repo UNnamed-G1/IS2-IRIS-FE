@@ -48,7 +48,7 @@
           <div *ngIf="user.career" class="field">
             {{ user.career.degree_type }} {{ user.career.name }}
           </div>
-          <div *ngIf="!( userID | async )" class="btn-group">
+          <div *ngIf="( userID | async ) === ( sessionID | async )" class="btn-group">
             <button type="button" class="btn btn-primary" (click)="toggleShowForm()">Editar</button>
           </div>
         </div>

@@ -167,8 +167,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   setFaculties() {
     this.facultyService.get().subscribe(
       (response: { faculties: Array<Faculty> }) => {
-        response.faculties.forEach(function (faculty) {
-          this.faculties.push(Object.assign(new Faculty(), faculty));
+        response.faculties.forEach(function (faculty: Faculty) {
+          this.faculties.push(faculty);
         }, this);
       },
       (error: HttpErrorResponse) => {
@@ -183,8 +183,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   setDepartments(idFaculty: number) {
     this.departmentService.getByFaculty(idFaculty).subscribe(
       (response: { departments: Array<Department> }) => {
-        response.departments.forEach(function (department) {
-          this.departments.push(Object.assign(new Department(), department));
+        response.departments.forEach(function (department: Department) {
+          this.departments.push(department);
         }, this);
       },
       (error: HttpErrorResponse) => {
@@ -200,8 +200,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   setCareers(idDepartment: number) {
     this.careerService.getByDepartment(idDepartment).subscribe(
       (response: { careers: Array<Career> }) => {
-        response.careers.forEach(function (career) {
-          this.careers.push(Object.assign(new Career(), career));
+        response.careers.forEach(function (career: Career) {
+          this.careers.push(career);
         }, this);
       },
       (error: HttpErrorResponse) => {

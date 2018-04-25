@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -13,6 +14,7 @@ import { ISession } from 'app/redux/session';
 })
 
 export class AppHeaderComponent implements OnInit {
+  @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @select() session;
   @select() isLogged;
 
@@ -33,6 +35,8 @@ export class AppHeaderComponent implements OnInit {
 
   logOut() {
     this.ngRedux.dispatch({ type: REMOVE_SESSION });
+    this.sucSwal.title = 'Se ha cerrado tu sesión satisfactoriamente';
+    this.sucSwal.show();
     this.router.navigateByUrl('');
   }
 }
