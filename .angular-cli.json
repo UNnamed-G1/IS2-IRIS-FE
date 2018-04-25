@@ -25,7 +25,8 @@
       "assets/css/reset.css",
       "assets/css/small.css",
       "assets/css/tablet.css",
-      "assets/css/unal.css"
+      "assets/css/unal.css",
+      "assets/css/styles.css"
     ],
     "scripts": [
       "assets/js/jquery.min.js",
@@ -65,15 +66,6 @@
       "config": "./karma.conf.js"
     }
   },
-  "styles": [
-    "../node_modules/bootstrap/dist/css/bootstrap.min.css",
-    "/assets/css"
-  ],
-  "scripts": [
-    "../node_modules/jquery/dist/jquery.min.js",
-    "../node_modules/bootstrap/dist/js/bootstrap.min.js",
-    "/assets/js"
-  ],
   "defaults": {
     "styleExt": "css",
     "component": {}

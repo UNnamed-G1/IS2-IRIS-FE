@@ -1,6 +1,7 @@
 // Modules
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,6 +13,7 @@ import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
 import { FileUploadModule } from 'ng2-file-upload';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -204,6 +206,7 @@ export const appRoutes: Routes = [
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     SweetAlert2Module.forRoot({
       buttonsStyling: false,
@@ -218,7 +221,9 @@ export const appRoutes: Routes = [
     NgHttpLoaderModule,
     NgReduxModule,
     PdfViewerModule,
-    FileUploadModule
+    FileUploadModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
   ],
   declarations: [
     AppComponent,
@@ -309,13 +314,13 @@ export class AppModule {
             }
             this.ngRedux.dispatch({
               type: ADD_SESSION, session:
-              Object.assign({}, {
-                id: data.id,
-                name: data.full_name,
-                type: data.user_type,
-                username: data.username,
-                photo: data.photo
-              })
+                Object.assign({}, {
+                  id: data.id,
+                  name: data.full_name,
+                  type: data.user_type,
+                  username: data.username,
+                  photo: data.photo
+                })
             });
           },
           (error: HttpErrorResponse) => {

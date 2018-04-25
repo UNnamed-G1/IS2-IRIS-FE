@@ -34,10 +34,14 @@
             </div>
 
             <!-- Date -->
-            <div class="form-group">
-              <label class="form-label">Fecha</label>
-              <input type="text" class="form-control" formControlName="date" placeholder="Fecha">
-              <app-form-control-errors [control]="date"></app-form-control-errors>
+            <div class="form-group has-feedback">
+              <label class="form-label">Fecha del evento</label>
+              <input [owlDateTime]="eventDatepicker" [min]="minDate" class="form-control control-datetime" formControlName="date" placeholder="Fecha del evento">
+              <span [owlDateTimeTrigger]="eventDatepicker" class="datetime-trigger">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </span>
+              <owl-date-time #eventDatepicker></owl-date-time>
+              <app-form-control-errors [control]="date" [owlDateTimeMin]="'La fecha debe ser posterior a la actual.'"></app-form-control-errors>
             </div>
 
             <!-- Frequence -->

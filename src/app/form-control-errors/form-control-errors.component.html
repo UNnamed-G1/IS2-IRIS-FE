@@ -9,4 +9,8 @@
   <small *ngIf="control.errors.minlength && !minLength">Escribe al menos {{control.errors.minlength.requiredLength}} carácteres, te faltan {{control.errors.minlength.requiredLength - control.errors.minlength.actualLength}}.<br></small>
   <small *ngIf="control.errors.maxlength && maxLength">{{ maxLength }}<br></small>
   <small *ngIf="control.errors.maxlength && !maxLength">El máximo permitido son {{control.errors.maxlength.requiredLength}} carácteres, elimina {{control.errors.maxlength.actualLength - control.errors.maxlength.requiredLength}}.<br></small>
+  <small *ngIf="control.errors.owlDateTimeMin && owlDateTimeMin">{{ owlDateTimeMin }}<br></small>
+  <small *ngIf="control.errors.owlDateTimeMin && !owlDateTimeMin">La fecha debe ser después de {{control.errors.owlDateTimeMin.min | date: 'medium'}}.<br></small>
+  <small *ngIf="control.errors.owlDateTimeMax && owlDateTimeMax">{{ owlDateTimeMax }}<br></small>
+  <small *ngIf="control.errors.owlDateTimeMax && !owlDateTimeMax">La fecha debe ser antes de {{control.errors.owlDateTimeMax.max | date: 'medium'}}.<br></small>
 </div>

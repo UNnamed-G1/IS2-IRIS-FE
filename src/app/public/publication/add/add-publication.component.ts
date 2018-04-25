@@ -34,6 +34,8 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
   uploadForm: FormGroup;
   publication: Publication = new Publication();
   type_pubs: string[] = ['Monografia', 'Patente', 'Libro', 'Articulo', 'Tesis', 'Software'];
+  minDate = new Date(1900, 0);  // 1900/01/01
+  maxDate = new Date();         // Actual date
 
   constructor(private publicationService: PublicationService,
     private router: Router,
