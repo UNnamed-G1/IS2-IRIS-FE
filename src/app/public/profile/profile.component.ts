@@ -7,7 +7,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ISession } from 'app/redux/session';
-import { REMOVE_AUXILIAR, ADD_SESSION } from 'app/redux/actions';
+import { REMOVE_AUXILIAR, ADD_SESSION, ADD_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 
 import { environment } from 'environments/environment';
@@ -52,7 +52,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.queryParams.subscribe((params: { username: string }) => {
       if (params.username) {
-        this.requestUser(this.userService.getByUsername(params.username));
+        this.requestUser(this.userService.getByUsername(params.username), true);
       } else {
         this.userID.subscribe((userID: number) => {
           if (userID) {
@@ -124,9 +124,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.user.career_id = career.id;
   }
 
-  requestUser(req) {
+  requestUser(req, saveID?: boolean) {
     req.subscribe(
       (response: { user: User }) => {
+        if (saveID) {
+          this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: response.user.id } });
+        }
         this.setUser(response.user);
       },
       (error: HttpErrorResponse) => {
@@ -152,13 +155,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   setSessionUser(u: User) {
     this.ngRedux.dispatch({
       type: ADD_SESSION,
-      session:
-        Object.assign({}, {
-          name: u.full_name,
-          type: u.user_type,
-          username: u.username,
-          photo: u.photo
-        })
+      session: {
+        name: u.full_name,
+        type: u.user_type,
+        username: u.username,
+        photo: u.photo
+      }
     });
   }
 
