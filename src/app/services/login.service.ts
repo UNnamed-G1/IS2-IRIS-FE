@@ -16,7 +16,7 @@ export class LoginService extends CommonService {
     } else {
       b = { email: body.username + '@unal.edu.co', password: body.password };
     }
-    b = { auth: Object.assign({}, b) };
+    b = { auth: b };
     return this.applyRequestPath(this.create, path + 'user_token', [b]);
   }
 
