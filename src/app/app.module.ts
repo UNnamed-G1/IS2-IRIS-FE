@@ -14,6 +14,7 @@ import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
 import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { NvD3Module } from 'ngx-nvd3';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -223,7 +224,8 @@ export const appRoutes: Routes = [
     PdfViewerModule,
     FileUploadModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlNativeDateTimeModule,
+    NvD3Module
   ],
   declarations: [
     AppComponent,

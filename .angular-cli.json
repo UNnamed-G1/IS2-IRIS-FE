@@ -20,6 +20,7 @@
       "assets/css/base.css",
       "assets/css/bootstrap.min.css",
       "assets/css/bootstrap-theme.min.css",
+      "assets/css/nv.d3.min.css",
       "assets/css/phone.css",
       "assets/css/printer.css",
       "assets/css/reset.css",
