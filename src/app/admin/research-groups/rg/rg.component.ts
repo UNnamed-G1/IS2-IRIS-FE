@@ -41,6 +41,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   rgForm: FormGroup;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
+  allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
 
   constructor(private researchGroupService: ResearchGroupService,
     private permMan: PermissionManager,
@@ -50,7 +51,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.uploader = new FileUploader({ queueLimit: 1 });
+    this.uploader = new FileUploader({ queueLimit: 1, allowedMimeType: this.allowedTypes });
   }
 
   ngAfterContentInit() {
@@ -101,7 +102,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
     }
     const rg = new ResearchGroup();
     if (this.rgForm.pristine) {
-      rg.id = this.researchGroup.id;
+      rg.name = this.researchGroup.name;
     } else {
       for (const k in this.rgForm.controls) {
         if (this.rgForm.get(k).dirty) {
@@ -111,8 +112,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
     }
     const fd = new FormData();
     for (const key of Object.keys(rg)) {
-      fd.append('research_group[' + key + ']', rg
-      [key]);
+      fd.append('research_group[' + key + ']', rg[key]);
     }
     if (this.uploader.queue.length) {
       fd.append('picture', this.uploader.queue[0].file.rawFile);
@@ -147,14 +147,16 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   setRG(rg: ResearchGroup) {
-    this.researchGroup = rg;
+    this.researchGroup = Object.assign({}, this.researchGroup, rg);
     if (rg.photo) {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
     this.createRGForm();
-    this.sessionUsername.subscribe((username: string) => {
-      this.isMember = this.researchGroup.members.map(u => u.user.username).includes(username);
-    });
+    if (rg.members) {
+      this.sessionUsername.subscribe((username: string) => {
+        this.isMember = rg.members.map(u => u.user.username).includes(username);
+      });
+    }
   }
 
   toggleShowInput() {
@@ -221,8 +223,19 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
     );
   }
 
-  fileOverBase(e: any): void {
+  fileOverBase(e: any) {
     this.hasBaseDropZoneOver = e;
+  }
+
+  loadedImage(e: FileList) {
+    if (this.allowedTypes.includes(e[0].type)) {
+      this.uploader.clearQueue();
+      this.uploader.addToQueue([e[0]]);
+    } else {
+      this.errSwal.title = 'El tipo de archivo es inválido';
+      this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
+      this.errSwal.show();
+    }
   }
 
   private createRGForm() {

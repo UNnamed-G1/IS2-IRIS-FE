@@ -39,6 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   followingCount: number;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
+  allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
 
   constructor(private userService: UserService,
     private facultyService: FacultyService,
@@ -59,14 +60,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.requestUser(this.userService.get(userID));
           } else if (this.permMan.validateLogged()) {
             this.sessionID.subscribe((id) => {
-              this.requestUser(this.userService.get(id));
+              this.requestUser(this.userService.get(id), true);
             });
           }
         });
       }
     });
-    this.setFaculties();
-    this.uploader = new FileUploader({ queueLimit: 1 });
+    this.userID.subscribe((userID: number) => {
+      this.sessionID.subscribe((id) => {
+        this.setFaculties();
+        this.uploader = new FileUploader({ queueLimit: 1, allowedMimeType: this.allowedTypes });
+      });
+    });
   }
 
   ngOnDestroy() {
@@ -141,7 +146,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   setUser(u: User) {
-    this.user = u;
+    this.user = Object.assign({}, this.user, u);
     if (u.photo) {
       Object.assign(this.user, { photo: environment.api_url + this.user.photo.picture });
     }
@@ -156,10 +161,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.ngRedux.dispatch({
       type: ADD_SESSION,
       session: {
+        id: u.id,
         name: u.full_name,
         type: u.user_type,
         username: u.username,
-        photo: u.photo
+        photo: environment.api_url + u.photo.picture
       }
     });
   }
@@ -233,8 +239,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   // File drop zone
-  fileOverBase(e: any): void {
+  fileOverBase(e: boolean) {
     this.hasBaseDropZoneOver = e;
+  }
+
+  loadedImage(e: FileList) {
+    if (this.allowedTypes.includes(e[0].type)) {
+      this.uploader.clearQueue();
+      this.uploader.addToQueue([e[0]]);
+    } else {
+      this.errSwal.title = 'El tipo de archivo es inválido';
+      this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
+      this.errSwal.show();
+    }
   }
 
   // Form creation

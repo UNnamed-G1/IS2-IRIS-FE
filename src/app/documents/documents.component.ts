@@ -3,7 +3,6 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { select } from '@angular-redux/store';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import { ResponseContentType } from '@angular/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 @Component({

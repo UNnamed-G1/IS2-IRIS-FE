@@ -57,13 +57,12 @@
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
 
-            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)" [uploader]="uploader"
-              class="well my-drop-zone">
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)"
+              [uploader]="uploader" (onFileDrop)="loadedImage($event)" class="well my-drop-zone">
               Suelta tu imagen aquí
-              <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
-              />
+              <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"/>
             </div>
-            <input type="file" ng2FileSelect [uploader]="uploader"/>
+            <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelect)="loadedImage($event)" accept="image/png,image/gif,video/mp4,image/jpeg"/>
 
 
           </div>
