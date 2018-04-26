@@ -86,6 +86,7 @@ import { FollowsComponent } from './public/profile/follows/follows.component';
 
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
+import { EventComponent } from './public/events/event/event.component';
 
 
 export const appRoutes: Routes = [
@@ -178,6 +179,10 @@ export const appRoutes: Routes = [
     component: RgComponent
   },
   {
+    path: 'event',
+    component: EventComponent
+  },
+  {
     path: 'reports',
     component: ReportsComponent
   },
@@ -255,7 +260,8 @@ export const appRoutes: Routes = [
     AddPublicationComponent,
     FormControlErrorsComponent,
     DocumentsComponent,
-    FollowsComponent
+    FollowsComponent,
+    EventComponent
   ],
   providers: [
     {

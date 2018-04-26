@@ -38,7 +38,6 @@ export class PublicationComponent implements OnInit, AfterContentInit {
   pdfLoaded = false;
   pdfSrc;
   pdfName;
-
   page: {
     actual: number,
     total: number
