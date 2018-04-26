@@ -190,8 +190,8 @@
             <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)"
               [uploader]="uploader" (onFileDrop)="loadedImage($event)" class="well my-drop-zone">
                 Suelta tu imagen aquí
-              <img src="{{researchGroup.photo ? researchGroup.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';"
-                class="img-rounded img-responsive profile-image" />
+              <img src="{{ researchGroup?.photo ? researchGroup.photo : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/user.png';" class="img-responsive profile-image"
+              filePreview [media]="uploader?.queue[0]?._file" />
             </div>
             <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelect)="loadedImage($event)" accept="image/png,image/gif,video/mp4,image/jpeg"
               />

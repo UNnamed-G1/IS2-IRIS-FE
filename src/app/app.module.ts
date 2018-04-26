@@ -14,6 +14,7 @@ import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
 import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -80,15 +81,16 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './documents/documents.component';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
 import { FollowsComponent } from './public/profile/follows/follows.component';
 
+// Directives
+import { FilePreviewDirective } from './directives/file-preview.directive';
+
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
-
 
 export const appRoutes: Routes = [
   {
@@ -260,7 +262,8 @@ export const appRoutes: Routes = [
     AddPublicationComponent,
     FormControlErrorsComponent,
     DocumentsComponent,
-    FollowsComponent
+    FollowsComponent,
+    FilePreviewDirective
   ],
   providers: [
     {
