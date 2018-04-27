@@ -27,6 +27,7 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   event_types: string[] = ['Publico', 'Privado'];
   frequence_types: string[] = ['Unico', 'Repetitivo'];
   state_types: string[] = ['Activo', 'Inactivo'];
+  minDate = new Date();         // Actual date
 
   constructor(private eventService: EventService,
     private permMan: PermissionManager,

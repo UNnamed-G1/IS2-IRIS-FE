@@ -45,8 +45,10 @@ export class FollowsComponent implements OnInit, OnChanges {
           this.setCurrFollowing();
         }
       });
-      this.setFollowing(id);
-      this.setFollowers(id);
+      if (id) {
+        this.setFollowing(id);
+        this.setFollowers(id);
+      }
     });
   }
 

@@ -34,8 +34,9 @@ export class EventsComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({});
-      this.page.actual = +params.page || 1;
+      this.page = Object.assign({
+        actual: +params.page || 1
+      });
       this.eventService.getAll(this.page.actual).subscribe(
         (response: { events: Event[], total_pages: number }) => {
           response.events.map(e => {

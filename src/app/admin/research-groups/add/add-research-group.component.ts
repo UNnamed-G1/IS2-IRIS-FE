@@ -25,6 +25,8 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
   researchGroup: ResearchGroup = new ResearchGroup();
   rgForm: FormGroup;
   classifications: string[] = ['A', 'B', 'C', 'D'];
+  minDate = new Date(1900, 0);  // 1900/01/01
+  maxDate = new Date();         // Actual date
 
   constructor(private permMan: PermissionManager,
     private researchGroupService: ResearchGroupService,

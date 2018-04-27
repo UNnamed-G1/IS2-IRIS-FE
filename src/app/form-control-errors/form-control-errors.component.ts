@@ -14,6 +14,8 @@ export class FormControlErrorsComponent {
   @Input() pattern: string;
   @Input() minLength: string;
   @Input() maxLength: string;
+  @Input() owlDateTimeMin: string;
+  @Input() owlDateTimeMax: string;
 
   constructor() { }
 

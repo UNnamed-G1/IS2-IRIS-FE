@@ -1,6 +1,7 @@
 // Modules
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 import { NgHttpLoaderModule } from 'ng-http-loader/ng-http-loader.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,6 +13,8 @@ import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
 import { FileUploadModule } from 'ng2-file-upload';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -78,16 +81,17 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './documents/documents.component';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
 import { FollowsComponent } from './public/profile/follows/follows.component';
 
+// Directives
+import { FilePreviewDirective } from './directives/file-preview.directive';
+
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
 import { EventComponent } from './public/events/event/event.component';
-
 
 export const appRoutes: Routes = [
   {
@@ -209,6 +213,7 @@ export const appRoutes: Routes = [
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     SweetAlert2Module.forRoot({
       buttonsStyling: false,
@@ -223,7 +228,9 @@ export const appRoutes: Routes = [
     NgHttpLoaderModule,
     NgReduxModule,
     PdfViewerModule,
-    FileUploadModule
+    FileUploadModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
   ],
   declarations: [
     AppComponent,
@@ -261,7 +268,8 @@ export const appRoutes: Routes = [
     FormControlErrorsComponent,
     DocumentsComponent,
     FollowsComponent,
-    EventComponent
+    EventComponent,
+    FilePreviewDirective
   ],
   providers: [
     {
@@ -314,14 +322,13 @@ export class AppModule {
               Object.assign(data, { photo: environment.api_url + data.photo.picture });
             }
             this.ngRedux.dispatch({
-              type: ADD_SESSION, session:
-              Object.assign({}, {
+              type: ADD_SESSION, session: {
                 id: data.id,
                 name: data.full_name,
                 type: data.user_type,
                 username: data.username,
                 photo: data.photo
-              })
+              }
             });
           },
           (error: HttpErrorResponse) => {

@@ -16,11 +16,13 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (this.permMan.loggedUser()) {
-      let token: string;
-      this.sessionToken.subscribe((tkn: string) => token = tkn);
-      req = req.clone({
-        setHeaders: {
-          Authorization: token
+      this.sessionToken.subscribe((tkn: string) => {
+        if (tkn) {
+          req = req.clone({
+            setHeaders: {
+              Authorization: tkn
+            }
+          });
         }
       });
     }

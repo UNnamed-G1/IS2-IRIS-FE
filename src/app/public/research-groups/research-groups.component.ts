@@ -34,8 +34,9 @@ export class ResearchGroupsComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({});
-      this.page.actual = +params.page || 1;
+      this.page = Object.assign({
+        actual: +params.page || 1
+      });
       this.researchGroupService.getAll(this.page.actual).subscribe(
         (response: { research_groups: ResearchGroup[], total_pages: number }) => {
           response.research_groups.map(rg => {

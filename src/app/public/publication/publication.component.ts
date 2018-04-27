@@ -56,8 +56,9 @@ export class PublicationComponent implements OnInit, AfterContentInit {
 
   ngAfterContentInit() {
     this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({});
-      this.page.actual = +params.page || 1;
+      this.page = Object.assign({
+        actual: +params.page || 1
+      });
       this.getPublications();
     });
   }

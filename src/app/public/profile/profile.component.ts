@@ -7,7 +7,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ISession } from 'app/redux/session';
-import { REMOVE_AUXILIAR, ADD_SESSION } from 'app/redux/actions';
+import { REMOVE_AUXILIAR, ADD_SESSION, ADD_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 
 import { environment } from 'environments/environment';
@@ -39,6 +39,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   followingCount: number;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
+  allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
 
   constructor(private userService: UserService,
     private facultyService: FacultyService,
@@ -52,21 +53,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.queryParams.subscribe((params: { username: string }) => {
       if (params.username) {
-        this.requestUser(this.userService.getByUsername(params.username));
+        this.requestUser(this.userService.getByUsername(params.username), true);
       } else {
         this.userID.subscribe((userID: number) => {
           if (userID) {
             this.requestUser(this.userService.get(userID));
           } else if (this.permMan.validateLogged()) {
             this.sessionID.subscribe((id) => {
-              this.requestUser(this.userService.get(id));
+              this.requestUser(this.userService.get(id), true);
             });
           }
         });
       }
     });
-    this.setFaculties();
-    this.uploader = new FileUploader({ queueLimit: 1 });
+    this.userID.subscribe((userID: number) => {
+      this.sessionID.subscribe((id) => {
+        this.setFaculties();
+        this.uploader = new FileUploader({ queueLimit: 1, allowedMimeType: this.allowedTypes });
+      });
+    });
   }
 
   ngOnDestroy() {
@@ -124,9 +129,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.user.career_id = career.id;
   }
 
-  requestUser(req) {
+  requestUser(req, saveID?: boolean) {
     req.subscribe(
       (response: { user: User }) => {
+        if (saveID) {
+          this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: response.user.id } });
+        }
         this.setUser(response.user);
       },
       (error: HttpErrorResponse) => {
@@ -138,7 +146,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   setUser(u: User) {
-    this.user = u;
+    this.user = Object.assign({}, this.user, u);
     if (u.photo) {
       Object.assign(this.user, { photo: environment.api_url + this.user.photo.picture });
     }
@@ -152,21 +160,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
   setSessionUser(u: User) {
     this.ngRedux.dispatch({
       type: ADD_SESSION,
-      session:
-        Object.assign({}, {
-          name: u.full_name,
-          type: u.user_type,
-          username: u.username,
-          photo: u.photo
-        })
+      session: {
+        id: u.id,
+        name: u.full_name,
+        type: u.user_type,
+        username: u.username,
+        photo: environment.api_url + u.photo.picture
+      }
     });
   }
 
   setFaculties() {
     this.facultyService.get().subscribe(
       (response: { faculties: Array<Faculty> }) => {
-        response.faculties.forEach(function (faculty) {
-          this.faculties.push(Object.assign(new Faculty(), faculty));
+        response.faculties.forEach(function (faculty: Faculty) {
+          this.faculties.push(faculty);
         }, this);
       },
       (error: HttpErrorResponse) => {
@@ -181,8 +189,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   setDepartments(idFaculty: number) {
     this.departmentService.getByFaculty(idFaculty).subscribe(
       (response: { departments: Array<Department> }) => {
-        response.departments.forEach(function (department) {
-          this.departments.push(Object.assign(new Department(), department));
+        response.departments.forEach(function (department: Department) {
+          this.departments.push(department);
         }, this);
       },
       (error: HttpErrorResponse) => {
@@ -198,8 +206,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   setCareers(idDepartment: number) {
     this.careerService.getByDepartment(idDepartment).subscribe(
       (response: { careers: Array<Career> }) => {
-        response.careers.forEach(function (career) {
-          this.careers.push(Object.assign(new Career(), career));
+        response.careers.forEach(function (career: Career) {
+          this.careers.push(career);
         }, this);
       },
       (error: HttpErrorResponse) => {
@@ -231,8 +239,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   // File drop zone
-  fileOverBase(e: any): void {
+  fileOverBase(e: boolean) {
     this.hasBaseDropZoneOver = e;
+  }
+
+  loadedImage(e: FileList) {
+    if (this.allowedTypes.includes(e[0].type)) {
+      this.uploader.clearQueue();
+      this.uploader.addToQueue([e[0]]);
+    } else {
+      this.errSwal.title = 'El tipo de archivo es inválido';
+      this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
+      this.errSwal.show();
+    }
   }
 
   // Form creation
