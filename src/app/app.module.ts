@@ -60,6 +60,7 @@ import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
 import { ReportsComponent } from './public/reports/reports.component';
 import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
+import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -265,7 +266,8 @@ export const appRoutes: Routes = [
     FormControlErrorsComponent,
     DocumentsComponent,
     FollowsComponent,
-    FilePreviewDirective
+    FilePreviewDirective,
+    ImageCropperComponent
   ],
   providers: [
     {
