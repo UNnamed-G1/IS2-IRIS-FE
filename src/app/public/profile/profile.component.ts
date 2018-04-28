@@ -2,7 +2,6 @@ import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -37,9 +36,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileForm: FormGroup;
   followersCount: number;
   followingCount: number;
-  uploader: FileUploader;
-  hasBaseDropZoneOver = false;
+  uploadedImage: File;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
+  imageChangedEvent: Event;
+  displayCropperDialog = false;
 
   constructor(private userService: UserService,
     private facultyService: FacultyService,
@@ -69,7 +69,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.userID.subscribe((userID: number) => {
       this.sessionID.subscribe((id) => {
         this.setFaculties();
-        this.uploader = new FileUploader({ queueLimit: 1, allowedMimeType: this.allowedTypes });
       });
     });
   }
@@ -79,11 +78,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   updateProfile() {
-    if (this.profileForm.pristine && this.uploader.queue.length === 0) {
+    if (this.profileForm.pristine && this.uploadedImage === undefined) {
       this.toggleShowForm();
       return;
     }
-    const fd = new FormData();
     const u = new User();
     if (this.profileForm.pristine) {
       u.username = this.user.username;
@@ -101,18 +99,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
         delete u['passwords'];
       }
     }
+    const fd = new FormData();
     for (const key of Object.keys(u)) {
       fd.append('user[' + key + ']', u[key]);
     }
-    if (this.uploader.queue.length === 1) {
-      fd.append('picture', this.uploader.queue[0].file.rawFile);
+    if (this.uploadedImage) {
+      fd.append('picture', this.uploadedImage);
     }
     this.userService.update(this.user.id, fd).subscribe(
       (response: { user: User }) => {
         this.sucSwal.title = 'Tu perfil ha sido actualizado';
         this.sucSwal.show();
         this.toggleShowForm();
-        this.uploader.clearQueue();
         this.setUser(response.user);
         this.setSessionUser(response.user);
       },
@@ -157,6 +155,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.createProfileForm();
   }
 
+  // On edited sets session too
   setSessionUser(u: User) {
     this.ngRedux.dispatch({
       type: ADD_SESSION,
@@ -238,20 +237,34 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.followingCount = count;
   }
 
-  // File drop zone
-  fileOverBase(e: boolean) {
-    this.hasBaseDropZoneOver = e;
+  // Loaded file event
+  fileChangeEvent(event: any) {
+    const file = event.target.files[0];
+    // Verify file loaded (Select file cancel will throw undefined file)
+    if (file) {
+      // Verify type
+      if (this.allowedTypes.includes(file.type)) {
+        // Open ImageCropper dialog
+        this.displayCropperDialog = true;
+        this.imageChangedEvent = event;
+      } else {
+        this.errSwal.title = 'El tipo de archivo es inválido';
+        this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
+        this.errSwal.show();
+      }
+    }
   }
 
-  loadedImage(e: FileList) {
-    if (this.allowedTypes.includes(e[0].type)) {
-      this.uploader.clearQueue();
-      this.uploader.addToQueue([e[0]]);
-    } else {
-      this.errSwal.title = 'El tipo de archivo es inválido';
-      this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
-      this.errSwal.show();
-    }
+  // Sets on image cropped event
+  croppedImage(image: File) {
+    this.displayCropperDialog = false;
+    this.uploadedImage = image;
+  }
+
+  notCroppedImage() {
+    this.displayCropperDialog = false;
+    // Reset FileList of images of the input
+    this.imageChangedEvent.target['value'] = '';
   }
 
   // Form creation
