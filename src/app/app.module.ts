@@ -89,7 +89,7 @@ import { AddPublicationComponent } from './public/publication/add/add-publicatio
 import { FollowsComponent } from './public/profile/follows/follows.component';
 
 // Directives
-import { FilePreviewDirective } from './directives/file-preview.directive';
+import { MediaPreviewDirective } from './directives/media-preview.directive';
 
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
@@ -271,7 +271,7 @@ export const appRoutes: Routes = [
     FormControlErrorsComponent,
     DocumentsComponent,
     FollowsComponent,
-    FilePreviewDirective,
+    MediaPreviewDirective,
     ImageCropperComponent,
     EventComponent
   ],

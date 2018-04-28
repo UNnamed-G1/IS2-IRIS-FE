@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, ElementRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -23,6 +23,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  @ViewChild('inputImage') private inputImg: ElementRef;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['auxiliarID', 'user']) userID;
@@ -36,9 +37,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileForm: FormGroup;
   followersCount: number;
   followingCount: number;
-  uploadedImage: File;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
-  imageChangedEvent: Event;
+  imageEncoded: string;
+  imageEncodedCropped: string;
   displayCropperDialog = false;
 
   constructor(private userService: UserService,
@@ -78,7 +79,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   updateProfile() {
-    if (this.profileForm.pristine && this.uploadedImage === undefined) {
+    if (this.profileForm.pristine && this.imageEncodedCropped === undefined) {
       this.toggleShowForm();
       return;
     }
@@ -103,8 +104,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     for (const key of Object.keys(u)) {
       fd.append('user[' + key + ']', u[key]);
     }
-    if (this.uploadedImage) {
-      fd.append('picture', this.uploadedImage);
+    if (this.imageEncodedCropped) {
+      fd.append('picture', this.base64toFile(this.imageEncodedCropped, 'File'));
     }
     this.userService.update(this.user.id, fd).subscribe(
       (response: { user: User }) => {
@@ -244,9 +245,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (file) {
       // Verify type
       if (this.allowedTypes.includes(file.type)) {
-        // Open ImageCropper dialog
-        this.displayCropperDialog = true;
-        this.imageChangedEvent = event;
+        // Verify size
+        const reader = new FileReader();
+        const img = new Image;
+        const _this = this;
+        reader.onloadend = () => {
+          img.onload = () => {
+            if (img.width >= 20 && img.height >= 20) {
+              // Open ImageCropper dialog
+              _this.displayCropperDialog = true;
+              _this.imageEncoded = img.src;
+            } else {
+              _this.errSwal.title = 'La imagen es demasiado pequeña';
+              _this.errSwal.text = 'Asegurate de que el tamaño sea de al menos 20x20 pixeles';
+              _this.errSwal.show();
+            }
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
       } else {
         this.errSwal.title = 'El tipo de archivo es inválido';
         this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
@@ -256,15 +273,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   // Sets on image cropped event
-  croppedImage(image: File) {
+  croppedImage(image: string) {
     this.displayCropperDialog = false;
-    this.uploadedImage = image;
+    this.imageEncodedCropped = image;
   }
 
   notCroppedImage() {
     this.displayCropperDialog = false;
     // Reset FileList of images of the input
-    this.imageChangedEvent.target['value'] = '';
+    this.inputImg.nativeElement['value'] = '';
   }
 
   // Form creation
@@ -312,4 +329,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   get passwords() { return this.profileForm.get('passwords'); }
   get password() { return this.profileForm.get('passwords.password'); }
   get passwordConf() { return this.profileForm.get('passwords.password_confirmation'); }
+
+  // Convert b64 to file
+  base64toFile(base64: string, filename: string): File {
+    const arr = base64.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    for (let i = n; i >= 0; i--) {
+      u8arr[i] = bstr.charCodeAt(i);
+    }
+    return new File([u8arr], filename + '.' + mime.split('/')[1], { type: mime });
+  }
 }

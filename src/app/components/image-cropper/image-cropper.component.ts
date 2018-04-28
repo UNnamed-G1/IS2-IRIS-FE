@@ -11,11 +11,12 @@ export class ImageCropperComponent implements OnChanges {
   @ViewChild('openCropperModal') private openBtn: ElementRef;
   @ViewChild('closeCropperModal') private closeBtn: ElementRef;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  @Input() event: Event;
+  @Input() imageEncoded: string;
   @Input() display: boolean;
-  @Output() croppedImage = new EventEmitter<File>();
+  @Output() croppedImage = new EventEmitter<string>();
   @Output() canceled = new EventEmitter();
-  private uploadedImageEncoded: string;
+  private imgToCrop = '';
+  private imageCropped: string;
 
   constructor() { }
 
@@ -23,15 +24,17 @@ export class ImageCropperComponent implements OnChanges {
     // Open of modal if display changed to true
     if (changes.display && changes.display.currentValue) {
       this.openBtn.nativeElement.click();
+      setTimeout(() => {
+        this.imgToCrop = this.imageEncoded;
+      }, 150);
     }
   }
 
   onCropped() {
     window.dispatchEvent(new Event('resize'));
-    const file: File = this.dataURLtoFile(this.uploadedImageEncoded, 'file');
-    if (file) {
+    if (this.imageCropped) {
       // Send image cropped and close modal
-      this.croppedImage.emit(file);
+      this.croppedImage.emit(this.imageCropped);
       this.closeModal();
     } else {
       // Cropped image area invalid
@@ -57,26 +60,14 @@ export class ImageCropperComponent implements OnChanges {
 
   closeModal() {
     this.closeBtn.nativeElement.click();
-    this.uploadedImageEncoded = undefined;
+    this.imageCropped = undefined;
+    setTimeout(() => {
+      this.imgToCrop = '';
+    }, 150);
   }
 
   // Sets on image cropped
-  imageCropped(image: string) {
-    this.uploadedImageEncoded = image;
-  }
-
-  // Convert b64 to file
-  dataURLtoFile(dataurl: string, filename: string): File {
-    if (!dataurl) {
-      return undefined;
-    }
-    const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename + '.' + mime.split('/')[1], { type: mime });
+  onImageCrop(image: string) {
+    this.imageCropped = image;
   }
 }

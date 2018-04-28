@@ -8,7 +8,7 @@
       </div>
 
       <div class="modal-body">
-        <image-cropper [imageChangedEvent]="event" [resizeToWidth]="512" [onlyScaleDown]="true" (imageCropped)="imageCropped($event)"></image-cropper>
+        <image-cropper [imageBase64]="imgToCrop" [resizeToWidth]="512" [onlyScaleDown]="true" (imageCropped)="onImageCrop($event)"></image-cropper>
       </div>
 
       <div class="modal-footer">

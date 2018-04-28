@@ -60,9 +60,9 @@
               <!-- Dropper -->
               Suelta tu imagen aquí
               <img src="{{ user?.photo ? user.photo : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/user.png';" class="img-responsive profile-image"
-                filePreview [media]="uploadedImage" />
+                mediaPreview [base64]="imageEncodedCropped"/>
             </div>
-            <input type="file" (change)="fileChangeEvent($event)" accept="image/png,image/gif,image/jpeg" />
+            <input #inputImage type="file" (change)="fileChangeEvent($event)" accept="image/png,image/gif,image/jpeg" />
           </div>
           <div class="col-sm-5 col-md-5">
 
@@ -267,4 +267,4 @@
 <swal #errSwal title text type="error"></swal>
 
 <app-follows [displayFollowers]="displayFollowers" (setFollowersCount)="setFollowersCount($event)" (setFollowingCount)="setFollowingCount($event)"></app-follows>
-<app-image-cropper [display]="displayCropperDialog" [event]="imageChangedEvent" (croppedImage)="croppedImage($event)" (canceled)="notCroppedImage()"></app-image-cropper>
+<app-image-cropper [display]="displayCropperDialog" [imageEncoded]="imageEncoded" (croppedImage)="croppedImage($event)" (canceled)="notCroppedImage()"></app-image-cropper>
