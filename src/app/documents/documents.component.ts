@@ -75,7 +75,7 @@ export class DocumentsComponent implements OnInit {
         saveAs(response, 'file.pdf');
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Grupo de investigación no añadido';
+        this.errSwal.title = 'Publicación no localizada';
         this.errSwal.text = 'Mensaje de error: ' + error.message;
         this.errSwal.show();
       }

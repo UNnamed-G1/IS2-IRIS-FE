@@ -93,6 +93,7 @@ import { FilePreviewDirective } from './directives/file-preview.directive';
 
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
+import { EventComponent } from './public/events/event/event.component';
 
 export const appRoutes: Routes = [
   {
@@ -184,6 +185,10 @@ export const appRoutes: Routes = [
     component: RgComponent
   },
   {
+    path: 'event',
+    component: EventComponent
+  },
+  {
     path: 'reports',
     component: ReportsComponent
   },
@@ -267,7 +272,8 @@ export const appRoutes: Routes = [
     DocumentsComponent,
     FollowsComponent,
     FilePreviewDirective,
-    ImageCropperComponent
+    ImageCropperComponent,
+    EventComponent
   ],
   providers: [
     {

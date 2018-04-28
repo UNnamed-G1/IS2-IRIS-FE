@@ -4,13 +4,11 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
-
 import { Publication, ResearchGroup, ResearchSubject } from 'app/classes/_models';
 import { ResearchGroupService } from 'app/services/research-group.service';
 
