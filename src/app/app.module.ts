@@ -15,6 +15,7 @@ import { HttpModule } from '@angular/http';
 import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { ImageCropperModule } from './modules/ngx-image-cropper/image-cropper.module';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -225,7 +226,8 @@ export const appRoutes: Routes = [
     PdfViewerModule,
     FileUploadModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlNativeDateTimeModule,
+    ImageCropperModule
   ],
   declarations: [
     AppComponent,
