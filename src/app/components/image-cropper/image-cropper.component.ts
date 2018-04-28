@@ -13,7 +13,7 @@ export class ImageCropperComponent implements OnChanges {
   @Input() imageEncoded: string;
   @Output() croppedImage = new EventEmitter<string>();
   @Output() canceled = new EventEmitter();
-  private imgToCrop = '';
+  imgToCrop = '';
   private imageCropped: string;
 
   constructor() { }
