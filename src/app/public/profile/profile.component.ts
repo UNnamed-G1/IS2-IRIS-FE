@@ -1,4 +1,5 @@
-import { Component, ViewChild, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, ElementRef, NgZone } from '@angular/core';
+import { UploadEvent, UploadFile, FileSystemFileEntry } from 'ngx-file-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -40,7 +41,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
   imageEncoded: string;
   imageEncodedCropped: string;
-  displayCropperDialog = false;
 
   constructor(private userService: UserService,
     private facultyService: FacultyService,
@@ -49,7 +49,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private ngRedux: NgRedux<AppState>,
     private permMan: PermissionManager,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private zone: NgZone) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params: { username: string }) => {
@@ -239,8 +240,26 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   // Loaded file event
-  fileChangeEvent(event: any) {
-    const file = event.target.files[0];
+  fileChangeEvent(event: Event) {
+    this.checkFile(event.target['files'][0]);
+    this.inputImg.nativeElement['value'] = '';
+  }
+
+  droppedEvent(event: UploadEvent) {
+    if (event.files.length === 1) {
+      const droppedFile: UploadFile = event.files[0];
+      if (droppedFile.fileEntry.isFile) {
+        const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+        fileEntry.file((file: File) => this.checkFile(file));
+      }
+    } else {
+      this.errSwal.title = 'Estás subiendo múltiples archivos';
+      this.errSwal.text = 'Selecciona sólo la imagen que deseas subir y suéltala en el área de nuevo';
+      this.errSwal.show();
+    }
+  }
+
+  checkFile(file: File) {
     // Verify file loaded (Select file cancel will throw undefined file)
     if (file) {
       // Verify type
@@ -252,9 +271,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         reader.onloadend = () => {
           img.onload = () => {
             if (img.width >= 20 && img.height >= 20) {
-              // Open ImageCropper dialog
-              _this.displayCropperDialog = true;
-              _this.imageEncoded = img.src;
+              // Open ImageCropper dialog setting imageEncoded
+              _this.zone.run(() => _this.imageEncoded = img.src);
             } else {
               _this.errSwal.title = 'La imagen es demasiado pequeña';
               _this.errSwal.text = 'Asegurate de que el tamaño sea de al menos 20x20 pixeles';
@@ -266,7 +284,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         reader.readAsDataURL(file);
       } else {
         this.errSwal.title = 'El tipo de archivo es inválido';
-        this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
+        this.errSwal.text = 'Sólo se permiten imágenes .jpg, .png o .gif';
         this.errSwal.show();
       }
     }
@@ -274,14 +292,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   // Sets on image cropped event
   croppedImage(image: string) {
-    this.displayCropperDialog = false;
     this.imageEncodedCropped = image;
+    this.imageEncoded = '';
   }
 
   notCroppedImage() {
-    this.displayCropperDialog = false;
     // Reset FileList of images of the input
-    this.inputImg.nativeElement['value'] = '';
+    this.imageEncoded = '';
   }
 
   // Form creation

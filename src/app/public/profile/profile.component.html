@@ -57,10 +57,11 @@
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
             <div>
-              <!-- Dropper -->
-              Suelta tu imagen aquí
-              <img src="{{ user?.photo ? user.photo : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/user.png';" class="img-responsive profile-image"
-                mediaPreview [base64]="imageEncodedCropped"/>
+              <file-drop (onFileDrop)="droppedEvent($event)">
+                <span>Suelta tu imagen aquí</span>
+                <img src="{{ user?.photo ? user.photo : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/user.png';" class="img-responsive profile-image"
+                  mediaPreview [base64]="imageEncodedCropped" />
+              </file-drop>
             </div>
             <input #inputImage type="file" (change)="fileChangeEvent($event)" accept="image/png,image/gif,image/jpeg" />
           </div>
@@ -267,4 +268,4 @@
 <swal #errSwal title text type="error"></swal>
 
 <app-follows [displayFollowers]="displayFollowers" (setFollowersCount)="setFollowersCount($event)" (setFollowingCount)="setFollowingCount($event)"></app-follows>
-<app-image-cropper [display]="displayCropperDialog" [imageEncoded]="imageEncoded" (croppedImage)="croppedImage($event)" (canceled)="notCroppedImage()"></app-image-cropper>
+<app-image-cropper [imageEncoded]="imageEncoded" (croppedImage)="croppedImage($event)" (canceled)="notCroppedImage()"></app-image-cropper>

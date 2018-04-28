@@ -7,12 +7,10 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
   styleUrls: ['./image-cropper.component.css']
 })
 export class ImageCropperComponent implements OnChanges {
-  @ViewChild('cropperModal') private modal: ElementRef;
   @ViewChild('openCropperModal') private openBtn: ElementRef;
   @ViewChild('closeCropperModal') private closeBtn: ElementRef;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @Input() imageEncoded: string;
-  @Input() display: boolean;
   @Output() croppedImage = new EventEmitter<string>();
   @Output() canceled = new EventEmitter();
   private imgToCrop = '';
@@ -21,8 +19,8 @@ export class ImageCropperComponent implements OnChanges {
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Open of modal if display changed to true
-    if (changes.display && changes.display.currentValue) {
+    // Open of modal if imageEncoded changed to a new value
+    if (changes.imageEncoded && changes.imageEncoded.currentValue) {
       this.openBtn.nativeElement.click();
       setTimeout(() => {
         this.imgToCrop = this.imageEncoded;
@@ -31,7 +29,6 @@ export class ImageCropperComponent implements OnChanges {
   }
 
   onCropped() {
-    window.dispatchEvent(new Event('resize'));
     if (this.imageCropped) {
       // Send image cropped and close modal
       this.croppedImage.emit(this.imageCropped);
@@ -44,15 +41,13 @@ export class ImageCropperComponent implements OnChanges {
   }
 
   onCancel() {
-    if (this.display) {
-      // Close modal
-      this.canceled.emit();
-      this.closeModal();
-    }
+    // Close modal
+    this.canceled.emit();
+    this.closeModal();
   }
 
-  // On modal close clicking out of the modal-dialog (Fade)
-  modalClicked(e: MouseEvent) {
+  // On modal close clicking out of the modal-dialog (backdrop)
+  backdropClicked(e: MouseEvent) {
     if (e.target === e.currentTarget) {
       this.onCancel();
     }

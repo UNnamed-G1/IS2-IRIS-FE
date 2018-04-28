@@ -12,9 +12,10 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
-import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { FileUploadModule } from 'ng2-file-upload';
+import { FileDropModule } from 'ngx-file-drop';
 import { ImageCropperModule } from './modules/ngx-image-cropper/image-cropper.module';
 
 // Redux imports
@@ -229,10 +230,11 @@ export const appRoutes: Routes = [
     HttpModule,
     NgHttpLoaderModule,
     NgReduxModule,
-    PdfViewerModule,
-    FileUploadModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    PdfViewerModule,
+    FileUploadModule,
+    FileDropModule,
     ImageCropperModule
   ],
   declarations: [
