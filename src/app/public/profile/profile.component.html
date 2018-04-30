@@ -56,14 +56,14 @@
       <div class="row" [hidden]="!showForm">
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
-            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)"
-              [uploader]="uploader" (onFileDrop)="loadedImage($event)" class="well my-drop-zone">
-              Suelta tu imagen aquí
-              <img src="{{ user?.photo ? user.photo : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/user.png';" class="img-responsive profile-image"
-                filePreview [media]="uploader?.queue[0]?._file" />
+            <div>
+              <file-drop (onFileDrop)="droppedEvent($event)">
+                <span>Suelta tu imagen aquí</span>
+                <img src="{{ user?.photo ? user.photo : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/user.png';" class="img-responsive profile-image"
+                  mediaPreview [base64]="imageEncodedCropped" />
+              </file-drop>
             </div>
-            <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelect)="loadedImage($event)" accept="image/png,image/gif,image/jpeg"
-            />
+            <input #inputImage type="file" (change)="fileChangeEvent($event)" accept="image/png,image/gif,image/jpeg" />
           </div>
           <div class="col-sm-5 col-md-5">
 
@@ -268,3 +268,4 @@
 <swal #errSwal title text type="error"></swal>
 
 <app-follows [displayFollowers]="displayFollowers" (setFollowersCount)="setFollowersCount($event)" (setFollowingCount)="setFollowingCount($event)"></app-follows>
+<app-image-cropper [imageEncoded]="imageEncoded" (croppedImage)="croppedImage($event)" (canceled)="notCroppedImage()"></app-image-cropper>

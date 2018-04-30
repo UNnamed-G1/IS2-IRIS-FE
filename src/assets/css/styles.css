@@ -24,7 +24,7 @@ app-root {
   line-height: 1.42857143;
 }
 
-app-login {
+.main-content {
   -webkit-box-flex: 1;
   -webkit-flex: 1 0 auto;
   -moz-box-flex: 1;

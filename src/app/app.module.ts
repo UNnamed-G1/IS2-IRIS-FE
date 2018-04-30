@@ -12,9 +12,11 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
-import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { FileUploadModule } from 'ng2-file-upload';
+import { FileDropModule } from 'ngx-file-drop';
+import { ImageCropperModule } from './modules/ngx-image-cropper/image-cropper.module';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -59,6 +61,7 @@ import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
 import { ReportsComponent } from './public/reports/reports.component';
 import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
+import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -87,7 +90,7 @@ import { AddPublicationComponent } from './public/publication/add/add-publicatio
 import { FollowsComponent } from './public/profile/follows/follows.component';
 
 // Directives
-import { FilePreviewDirective } from './directives/file-preview.directive';
+import { MediaPreviewDirective } from './directives/media-preview.directive';
 
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
@@ -227,10 +230,12 @@ export const appRoutes: Routes = [
     HttpModule,
     NgHttpLoaderModule,
     NgReduxModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
     PdfViewerModule,
     FileUploadModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    FileDropModule,
+    ImageCropperModule
   ],
   declarations: [
     AppComponent,
@@ -268,8 +273,9 @@ export const appRoutes: Routes = [
     FormControlErrorsComponent,
     DocumentsComponent,
     FollowsComponent,
-    EventComponent,
-    FilePreviewDirective
+    MediaPreviewDirective,
+    ImageCropperComponent,
+    EventComponent
   ],
   providers: [
     {
