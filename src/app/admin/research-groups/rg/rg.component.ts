@@ -60,7 +60,7 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
           (response: { events: Event[] }) => {
             this.events = response.events;
           }, (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se han podido obtener los eventos del grupo de ivnestigación';
+            this.errSwal.title = 'No se han podido obtener los eventos del grupo de investigación';
             this.errSwal.text = 'Mensaje de error: ' + error.message;
             this.errSwal.show();
           }

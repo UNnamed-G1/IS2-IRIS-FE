@@ -1,3 +1,135 @@
-<p>
-  event works!
-</p>
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Grupos de Investigación</span></div>
+  <div *ngIf="researchGroup" class="container-fluid main-container">
+    <div class="container-fluid">
+      <div class="row container-fluid" [hidden]="showInput">
+        <br><h2>{{event.topic}} </h2><br>
+        <div class="container-fluid">
+          <div class="col-sm-8 col-md-8">
+            <div class="media">
+              <div class="media-left media-middle">
+                <img src="{{event?.photos[0] ? event.photos[0] : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+                />
+              </div>
+
+              <div class="media-body">
+                <h4><b>Tipo:</b></h4>
+                {{ event.type_ev }}
+                <h4><b>Duración:</b></h4>
+                {{ event.duration }}
+                <h4><b>Fecha:</b></h4>
+                {{ event.date }}
+                <h4><b>Frecuencia:</b></h4>
+                {{ event.frequence }}
+                <h4><b>Estado:</b></h4>
+                {{ event.state }}
+              </div>
+            </div><br>
+
+            <h3><b>Descripción</b></h3>
+            <div class="field">
+              <h4>{{ event.description }}</h4>
+            </div>
+          </div>
+
+          <div class="col-sm-4 col-md-4">
+            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isInvited" (click)="requestJoin()">Asistir</button>
+            <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isMember" (click)="leave()">Abandonar</button>-->
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #555;color: white;">
+                <div class="row">
+                  <div class="col-sm-1 col-md-1">
+                    <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
+                  </div>
+                  <div class="col-sm-11 col-md-11">
+                    <h3>Invitados</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 200px; ">
+                <div class="users">
+                  <div *ngFor="let invited of event.users" class="field">
+                    <div class=" media">
+                      <div class="media-left media-middle">
+                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                      </div>
+
+                      <div class="media-body">
+                        <h4>{{invited.user.full_name}}</h4>
+                        <a href="#">Ver perfil</a>
+                      </div>
+                    </div>
+                    <hr style="border:1px dotted black;">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr style="border:1px dotted black;">
+
+
+      <button class="btn btn-primary" *ngIf="(sessionType | async) == 'Admin'" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
+    </div>
+
+      <div class="row" [hidden]="!showInput">
+        <form (ngSubmit)="onSubmit()">
+            <div class="col-sm-2 col-md-2">
+            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)"
+              [uploader]="uploader" (onFileDrop)="loadedImage($event)" class="well my-drop-zone">
+                Suelta tu imagen aquí
+              <img src="{{ event?.photos ? event.photos : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/event.png';" class="img-responsive event-image"
+              filePreview [media]="uploader?.queue[0]?._file" />
+            </div>
+            <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelect)="loadedImage($event)" accept="image/png,image/gif,image/jpeg"
+              />
+              </div>
+
+        <div class="col-sm-5 col-md-5">
+          <div class="row">
+              <div class="col-md-6">
+                <label for="inputTopic">Tópico</label>
+                <input id="inputTopic" type="text" class="form-control" required [(ngModel)]="event.topic" name="Topic" />
+              </div>
+              
+              <div class="col-md-6">
+                <label for="inputDescription">Descripción</label>
+                <input id="inputDescription" type="text" class="form-control" required [(ngModel)]="event.description" name="description" />
+              </div>
+              <label for="inputDuration">Duración</label>
+              <textarea id="inputDuration" type="text" class="form-control" required [(ngModel)]="event.duration" name="duration" rows="3"></textarea>
+              <label for="inputType_ev">Tipo de evento</label>
+              <textarea id="inputType_ev" type="text" class="form-control" required [(ngModel)]="event.type_ev" name="type_ev" rows="3"></textarea>
+              <div class="col-md-6">
+                <label for="inputDate">Fecha del evento</label>
+                <input id="inputDate" type="text" class="form-control" required [(ngModel)]="event.date" name="date">
+              </div>
+              <div class="col-md-6">
+                <label for="inputFrequence">Frecuencia</label>
+                <input id="inputFrequence" type="text" class="form-control" required [(ngModel)]="event.frequence" name="frequence" >
+              </div>
+              <div class="col-md-6">
+                <label for="inputDateClassification">Fecha de Clasificación</label>
+                <input id="inputDateClassification" type="text" class="form-control" required [(ngModel)]="researchGroup.date_classification" name="date_classification">
+                </div>
+              <div class="col-md-6">
+                <label for="inputState">Estado</label>
+                <input id="inputState" type="text" class="form-control" required [(ngModel)]="event.state" name="state">
+              </div>
+            </div>
+            <br><br>
+            <div class="btn-group">
+              <button type="submit" class="btn btn-primary" (click)="updateGroup()">Guardar</button>
+              <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
+            </div>
+          </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<swal #sucSwal title type="success"></swal>
+<swal #errSwal title text type="error"></swal>
