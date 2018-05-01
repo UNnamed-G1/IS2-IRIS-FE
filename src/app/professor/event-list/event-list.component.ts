@@ -20,8 +20,8 @@ export class EventListComponent implements OnInit, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
-  headers: Array<string> = ['Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
-  keys: Array<string> = ['topic', 'description', 'date', 'research_group_id']; // 'research_group_name'];
+  headers: Array<string> = ['Nombre','Tema', 'Descripción', 'Fecha', 'Grupo de investigación'];
+  keys: Array<string> = ['name','topic', 'description', 'date', 'research_group']; // 'research_group_name'];
   events: Array<Event>;
 
   page: {
@@ -77,6 +77,7 @@ export class EventListComponent implements OnInit, AfterContentInit {
       (response: { events: Event[], total_pages: number }) => {
         this.events = response.events;
         this.page.total = response.total_pages;
+        
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se han podido obtener los eventos';

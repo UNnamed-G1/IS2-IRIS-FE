@@ -95,6 +95,7 @@ import { MediaPreviewDirective } from './directives/media-preview.directive';
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
 import { EventComponent } from './public/events/event/event.component';
+import { AgmCoreModule } from '@agm/core';
 
 export const appRoutes: Routes = [
   {
@@ -216,6 +217,9 @@ export const appRoutes: Routes = [
 @NgModule({
   imports: [
     BrowserModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBJ5090JokhcDdoO-ycXZx8Ik2wUcIiPs0'
+    }),
     BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     SweetAlert2Module.forRoot({

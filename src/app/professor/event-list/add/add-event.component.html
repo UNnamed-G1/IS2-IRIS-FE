@@ -10,6 +10,13 @@
         <div class="col-md-6">
           <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
 
+            <!-- Name -->
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+              <app-form-control-errors [control]="name"></app-form-control-errors>
+            </div>
+
             <!-- Topic -->
             <div class="form-group">
               <label class="form-label">Tema</label>
@@ -69,11 +76,23 @@
               <app-form-control-errors [control]="state"></app-form-control-errors>
             </div>
 
+            <!-- ResearchGroup -->
+            <div class="form-group">
+              <label class="form-label">Grupos de investigación</label>
+              <select class="form-control" formControlName="research_group_id">
+                <option *ngFor="let rg of rgsUser" [ngValue]="rg.id">{{ rg.name }}</option>
+              </select>
+
+            </div>
             <div>
               <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Submit</button>
               <button type="button" class="btn btn-danger" routerLink="/event-list">Volver</button>
             </div>
           </form>
+          <div class="gMaps-container">
+            <agm-map class="gMaps-container" [latitude]="lat" [longitude]="lng"></agm-map>
+          </div>
+
         </div>
       </div>
     </div>

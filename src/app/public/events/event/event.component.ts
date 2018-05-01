@@ -9,7 +9,7 @@ import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
-import { Event } from 'app/classes/_models';
+import { Event} from 'app/classes/_models';
 import { EventService } from 'app/services/event.service';
 
 @Component({

@@ -1,6 +1,6 @@
 <main class="detalle">
   <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Grupos de Investigación</span></div>
-  <div *ngIf="researchGroup" class="container-fluid main-container">
+  <div *ngIf="event" class="container-fluid main-container">
     <div class="container-fluid">
       <div class="row container-fluid" [hidden]="showInput">
         <br><h2>{{event.name}} </h2><br>
@@ -14,7 +14,7 @@
 
               <div class="media-body">
                 <h4><b>Tipo:</b></h4>
-                {{ event.type_ev }}
+                {{ event.event_type }}
                 <h4><b>Duración:</b></h4>
                 {{ event.duration }}
                 <h4><b>Fecha:</b></h4>
@@ -25,7 +25,10 @@
                 {{ event.state }}
               </div>
             </div><br>
-
+            <h3><b>Tema</b></h3>
+            <div class="field">
+              <h4>{{ event.topic }}</h4>
+            </div>
             <h3><b>Descripción</b></h3>
             <div class="field">
               <h4>{{ event.description }}</h4>
@@ -34,7 +37,7 @@
 
           <div class="col-sm-4 col-md-4">
             <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isInvited" (click)="requestJoin()">Asistir</button>
-            <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isMember" (click)="leave()">Abandonar</button>-->
+            <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isJoined" (click)="leave()">Abandonar</button>-->
             <div class="panel panel-default">
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
@@ -70,7 +73,7 @@
         <hr style="border:1px dotted black;">
 
 
-      <button class="btn btn-primary" *ngIf="(sessionType | async) == 'Admin'" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Profesor'" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
     </div>
 
@@ -82,19 +85,23 @@
 
         <div class="col-sm-5 col-md-5">
           <div class="row">
-              <div class="col-md-6">
-                <label for="inputTopic">Tópico</label>
-                <input id="inputTopic" type="text" class="form-control" required [(ngModel)]="event.topic" name="Topic" />
-              </div>
 
+              <!-- Name -->
               <div class="col-md-6">
-                <label for="inputDescription">Descripción</label>
-                <input id="inputDescription" type="text" class="form-control" required [(ngModel)]="event.description" name="description" />
+                <label for="inputName">Nombre</label>
+                <input id="inputName" type="text" class="form-control" required [(ngModel)]="event.name" name="name">
               </div>
-              <label for="inputDuration">Duración</label>
-              <textarea id="inputDuration" type="text" class="form-control" required [(ngModel)]="event.duration" name="duration" rows="3"></textarea>
-              <label for="inputType_ev">Tipo de evento</label>
-              <textarea id="inputType_ev" type="text" class="form-control" required [(ngModel)]="event.type_ev" name="type_ev" rows="3"></textarea>
+              
+              <label for="inputTopic">Tema</label>
+              <textarea id="inputTopic" type="text" class="form-control" required [(ngModel)]="event.topic" name="topic" rows="3"></textarea>
+              <div class="col-md-6">
+                <label for="inputType_ev">Tipo</label>
+                <input id="inputType_ev" type="text" class="form-control" required [(ngModel)]="event.type_ev" name="type_ev" />
+              </div>
+              <div class="col-md-6">
+                <label for="inputDuration">Duración</label>
+                <input id="inputDuration" type="text" class="form-control" required [(ngModel)]="event.duration" name="duration">
+              </div>
               <div class="col-md-6">
                 <label for="inputDate">Fecha del evento</label>
                 <input id="inputDate" type="text" class="form-control" required [(ngModel)]="event.date" name="date">
@@ -104,13 +111,13 @@
                 <input id="inputFrequence" type="text" class="form-control" required [(ngModel)]="event.frequence" name="frequence" >
               </div>
               <div class="col-md-6">
-                <label for="inputDateClassification">Fecha de Clasificación</label>
-                <input id="inputDateClassification" type="text" class="form-control" required [(ngModel)]="researchGroup.date_classification" name="date_classification">
-                </div>
-              <div class="col-md-6">
                 <label for="inputState">Estado</label>
                 <input id="inputState" type="text" class="form-control" required [(ngModel)]="event.state" name="state">
               </div>
+              <br><br>
+              <label for="inputDescription">Descripción</label>
+              <textarea id="inputDescription" type="text" class="form-control" required [(ngModel)]="event.description" name="description" rows="3"></textarea>
+
             </div>
             <br><br>
             <div class="btn-group">
