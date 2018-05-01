@@ -6,7 +6,7 @@ import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-u
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
-import { REMOVE_AUXILIAR } from 'app/redux/actions';
+import { REMOVE_AUXILIAR, ADD_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
 import { Publication, ResearchGroup, ResearchSubject } from 'app/classes/_models';
@@ -235,7 +235,11 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
       this.errSwal.show();
     }
   }
+  viewProfile(id){
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: id } });
+    this.router.navigateByUrl('/profile');
 
+  }
   private createRGForm() {
     this.rgForm = this.formBuilder.group({
       name: [this.researchGroup.name,

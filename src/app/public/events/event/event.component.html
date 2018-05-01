@@ -3,7 +3,7 @@
   <div *ngIf="researchGroup" class="container-fluid main-container">
     <div class="container-fluid">
       <div class="row container-fluid" [hidden]="showInput">
-        <br><h2>{{event.topic}} </h2><br>
+        <br><h2>{{event.name}} </h2><br>
         <div class="container-fluid">
           <div class="col-sm-8 col-md-8">
             <div class="media">
@@ -77,14 +77,7 @@
       <div class="row" [hidden]="!showInput">
         <form (ngSubmit)="onSubmit()">
             <div class="col-sm-2 col-md-2">
-            <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver, 'file-loaded': uploader.queue.length}" (fileOver)="fileOverBase($event)"
-              [uploader]="uploader" (onFileDrop)="loadedImage($event)" class="well my-drop-zone">
-                Suelta tu imagen aquí
-              <img src="{{ event?.photos ? event.photos : 'assets/images/user.png' }}" onerror="this.src = 'assets/images/event.png';" class="img-responsive event-image"
-              filePreview [media]="uploader?.queue[0]?._file" />
-            </div>
-            <input type="file" ng2FileSelect [uploader]="uploader" (onFileSelect)="loadedImage($event)" accept="image/png,image/gif,image/jpeg"
-              />
+              !image here!
               </div>
 
         <div class="col-sm-5 col-md-5">
@@ -93,7 +86,7 @@
                 <label for="inputTopic">Tópico</label>
                 <input id="inputTopic" type="text" class="form-control" required [(ngModel)]="event.topic" name="Topic" />
               </div>
-              
+
               <div class="col-md-6">
                 <label for="inputDescription">Descripción</label>
                 <input id="inputDescription" type="text" class="form-control" required [(ngModel)]="event.description" name="description" />

@@ -26,6 +26,7 @@ export class Career {
 
 export class Event {
   id: number;
+  name: string;
   topic: string;
   description: string;
   date: Date;
