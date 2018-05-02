@@ -263,11 +263,18 @@
         </div>
       </div>
     </div>
+    <div *ngIf="statistics" class="row">
+      <h4>
+        Estadísticas
+      </h4>
+      <div *ngIf="publTypesChart.data.length" class="col-md-6">
+        <nvd3 [options]="publTypesChart.options" [data]="publTypesChart.data"></nvd3>
+      </div>
+    </div>
   </div>
 </main>
 
 <swal #sucSwal title type="success"></swal>
 <swal #errSwal title text type="error"></swal>
 
-<div><nvd3 [options]="options" [data]="data"></nvd3></div>
 <app-follows [displayFollowers]="displayFollowers" (setFollowersCount)="setFollowersCount($event)" (setFollowingCount)="setFollowingCount($event)"></app-follows>

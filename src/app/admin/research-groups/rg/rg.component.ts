@@ -1,13 +1,14 @@
-import { Component, ViewChild, OnInit, AfterContentInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as d3 from 'd3';
 
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
-import { REMOVE_AUXILIAR } from 'app/redux/actions';
+import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
 
@@ -19,8 +20,7 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   templateUrl: './rg.component.html',
   styleUrls: ['./rg.component.css']
 })
-
-export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
+export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @Output() detailsEmitter = new EventEmitter<number>();
@@ -42,18 +42,50 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
 
+  /*
+   * Charts
+   */
+  statistics: number;
+  publTypesChart = { options: { chart: {} }, data: [] };
+  publOverallChart = { options: { chart: {} }, data: [] };
+
   constructor(private researchGroupService: ResearchGroupService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
     private acRoute: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder) { }
-
-  ngOnInit() {
-    this.uploader = new FileUploader({ queueLimit: 1 });
+    private formBuilder: FormBuilder) {
+    this.publTypesChart.options.chart = {
+      type: 'pieChart',
+      height: 250,
+      x: d => d.label,
+      y: d => d.value,
+      valueFormat: d => d3.format('f')(d),
+      showLegend: false,
+    };
+    this.publOverallChart.options.chart = {
+      type: 'discreteBarChart',
+      height: 250,
+      x: d => d.label,
+      y: d => d.value,
+      xAxis: {
+        axisLabel: 'Usuario',
+      },
+      yAxis: {
+        axisLabel: 'Cantidad de publicaciones',
+        axisLabelDistance: -10,
+        tickFormat: d => d3.format('f')(d),
+      },
+      callback: (chart) => {
+        d3.selectAll('.nv-bar').on('click', (barData) => {
+          this.viewProfile(barData.id);
+          d3.selectAll('.nvtooltip').remove();
+        });
+      },
+    };
   }
 
-  ngAfterContentInit() {
+  ngOnInit() {
     this.researchGroupID.subscribe((id: number) => {
       if (id) {
         this.rgReportUrl += id;
@@ -84,11 +116,55 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
             this.errSwal.show();
           }
         );
+        this.researchGroupService.getOverallPublications(id).subscribe(
+          (response: { overall_num_pubs_by_users_in_rg: any }) => {
+            const publicationsOverall = response.overall_num_pubs_by_users_in_rg;
+            const data = new Array<any>();
+            for (const user of publicationsOverall) {
+              if (user.pubs_count > 0) {
+                data.push({
+                  label: user.name + ' ' + user.lastname,
+                  value: user.pubs_count,
+                  id: user.id
+                });
+              }
+            }
+            this.publOverallChart.data.push({ key: 'Usuarios', values: data });
+          }, error => {
+            this.errSwal.title = 'Estadísticas no disponibles';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
+        this.researchGroupService.publicationsByRGAndType(id).subscribe(
+          (response: { num_publications_by_rg_and_type: any }) => {
+            const publicationsAmount = response.num_publications_by_rg_and_type;
+            const data = new Array<any>();
+            for (const pub_type of Object.getOwnPropertyNames(publicationsAmount)) {
+              if (publicationsAmount[pub_type] > 0) {
+                data.push({ label: pub_type, value: publicationsAmount[pub_type] });
+              }
+            }
+            this.publTypesChart.data = data;
+          }, error => {
+            this.errSwal.title = 'Estadísticas no disponibles';
+            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.show();
+          }
+        );
         this.requestRG(id);
+        this.uploader = new FileUploader({ queueLimit: 1 });
       } else {
         this.router.navigateByUrl('/');
       }
     });
+  }
+
+  ngAfterContentChecked() {
+    this.statistics = Object.getOwnPropertyNames(this)
+      .filter((name: string) => name.endsWith('Chart'))
+      .map((key: string) => this[key].data.length)
+      .reduce((v1, v2) => v1 + v2);
   }
 
   ngOnDestroy() {
@@ -219,6 +295,11 @@ export class RgComponent implements OnInit, AfterContentInit, OnDestroy {
         this.errSwal.show();
       }
     );
+  }
+
+  viewProfile(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: id } });
+    this.router.navigateByUrl('/profile');
   }
 
   fileOverBase(e: any): void {

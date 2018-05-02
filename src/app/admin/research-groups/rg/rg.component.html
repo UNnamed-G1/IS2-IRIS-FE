@@ -179,7 +179,15 @@
           </div>
         </div>
         <hr style="border:1px dotted black;">
-
+        <div *ngIf="statistics" class="row">
+          <h3>Estadísticas</h3>
+          <div *ngIf="publTypesChart.data.length" class="col-md-6">
+            <nvd3 [options]="publTypesChart.options" [data]="publTypesChart.data"></nvd3>
+          </div>
+          <div *ngIf="publOverallChart.data.length" class="col-md-6">
+            <nvd3 [options]="publOverallChart.options" [data]="publOverallChart.data"></nvd3>
+          </div>
+        </div>
       <button class="btn btn-primary" *ngIf="(sessionType | async) == 'Admin'" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
     </div>
