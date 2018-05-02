@@ -33,7 +33,7 @@ export class PaginationComponent implements OnInit, AfterContentInit {
   }
 
   getPages(): Array<number>[] {
-    const a = Array.apply(null, { length: 5 })
+    return Array.apply(null, { length: 5 })
       .map(Number.call, Number)
       .map(v => {
         v += this.page.actual - 2;
@@ -43,8 +43,9 @@ export class PaginationComponent implements OnInit, AfterContentInit {
           v -= 5;
         }
         return v;
-      }).filter(v => v > 0 && v <= this.page.total).sort();
-    return a;
+      })
+      .filter(v => v > 0 && v <= this.page.total)
+      .sort((a, b) => a - b);
   }
 
   onPage(p: number): void {
