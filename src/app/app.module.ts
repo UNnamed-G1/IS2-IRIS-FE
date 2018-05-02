@@ -12,9 +12,12 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
-import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { NvD3Module } from 'ngx-nvd3';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { FileUploadModule } from 'ng2-file-upload';
+import { FileDropModule } from 'ngx-file-drop';
+import { ImageCropperModule } from './modules/ngx-image-cropper/image-cropper.module';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -59,6 +62,7 @@ import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
 import { ReportsComponent } from './public/reports/reports.component';
 import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
+import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -81,15 +85,18 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { CrudComponent } from './crud/crud.component';
 import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './documents/documents.component';
-import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
 import { FollowsComponent } from './public/profile/follows/follows.component';
 
+// Directives
+import { MediaPreviewDirective } from './directives/media-preview.directive';
+
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
-
+import { EventComponent } from './public/events/event/event.component';
+import { AgmCoreModule } from '@agm/core';
 
 export const appRoutes: Routes = [
   {
@@ -181,6 +188,10 @@ export const appRoutes: Routes = [
     component: RgComponent
   },
   {
+    path: 'event',
+    component: EventComponent
+  },
+  {
     path: 'reports',
     component: ReportsComponent
   },
@@ -207,6 +218,9 @@ export const appRoutes: Routes = [
 @NgModule({
   imports: [
     BrowserModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBJ5090JokhcDdoO-ycXZx8Ik2wUcIiPs0'
+    }),
     BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     SweetAlert2Module.forRoot({
@@ -221,10 +235,12 @@ export const appRoutes: Routes = [
     HttpModule,
     NgHttpLoaderModule,
     NgReduxModule,
-    PdfViewerModule,
-    FileUploadModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    PdfViewerModule,
+    FileUploadModule,
+    FileDropModule,
+    ImageCropperModule,
     NvD3Module
   ],
   declarations: [
@@ -262,7 +278,10 @@ export const appRoutes: Routes = [
     AddPublicationComponent,
     FormControlErrorsComponent,
     DocumentsComponent,
-    FollowsComponent
+    FollowsComponent,
+    MediaPreviewDirective,
+    ImageCropperComponent,
+    EventComponent
   ],
   providers: [
     {

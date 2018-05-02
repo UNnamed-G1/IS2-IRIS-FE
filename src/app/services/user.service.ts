@@ -18,6 +18,10 @@ export class UserService extends CommonService {
     return this.applyRequestPath(this.get, 'users/current/');
   }
 
+  public getCurrentUserRGS() {
+    return this.applyRequestPath(this.get, 'rgs_by_current_user');
+  }
+
   /*
    *  Follows
    */

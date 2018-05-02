@@ -13,7 +13,9 @@ export class EventService extends CommonService {
   public getNews() {
     return this.applyRequestPath(this.get, 'events_news');
   }
-
+  public sendInvitationEvent(id: number, ids=[]){
+    return this.applyRequestPath(this.create, 'events/invite_users', [id , [ids]]);
+  }
   public getAllEditable(page: number) {
     return this.applyRequestPath(this.get, 'events_by_editable?page=' + page);
   }

@@ -11,7 +11,6 @@ import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
-
 import { Publication, ResearchGroup, ResearchSubject } from 'app/classes/_models';
 import { ResearchGroupService } from 'app/services/research-group.service';
 
@@ -41,6 +40,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   rgForm: FormGroup;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
+  allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
 
   /*
    * Charts
@@ -93,7 +93,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
           (response: { events: Event[] }) => {
             this.events = response.events;
           }, (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se han podido obtener los eventos del grupo de ivnestigación';
+            this.errSwal.title = 'No se han podido obtener los eventos del grupo de investigación';
             this.errSwal.text = 'Mensaje de error: ' + error.message;
             this.errSwal.show();
           }
@@ -177,7 +177,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     }
     const rg = new ResearchGroup();
     if (this.rgForm.pristine) {
-      rg.id = this.researchGroup.id;
+      rg.name = this.researchGroup.name;
     } else {
       for (const k in this.rgForm.controls) {
         if (this.rgForm.get(k).dirty) {
@@ -187,8 +187,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     }
     const fd = new FormData();
     for (const key of Object.keys(rg)) {
-      fd.append('research_group[' + key + ']', rg
-      [key]);
+      fd.append('research_group[' + key + ']', rg[key]);
     }
     if (this.uploader.queue.length) {
       fd.append('picture', this.uploader.queue[0].file.rawFile);
@@ -223,14 +222,16 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   setRG(rg: ResearchGroup) {
-    this.researchGroup = rg;
+    this.researchGroup = Object.assign({}, this.researchGroup, rg);
     if (rg.photo) {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
     this.createRGForm();
-    this.sessionUsername.subscribe((username: string) => {
-      this.isMember = this.researchGroup.members.map(u => u.user.username).includes(username);
-    });
+    if (rg.members) {
+      this.sessionUsername.subscribe((username: string) => {
+        this.isMember = rg.members.map(u => u.user.username).includes(username);
+      });
+    }
   }
 
   toggleShowInput() {
@@ -297,13 +298,24 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     );
   }
 
+  fileOverBase(e: any): void {
+    this.hasBaseDropZoneOver = e;
+  }
+
+  loadedImage(e: FileList) {
+    if (this.allowedTypes.includes(e[0].type)) {
+      this.uploader.clearQueue();
+      this.uploader.addToQueue([e[0]]);
+    } else {
+      this.errSwal.title = 'El tipo de archivo es inválido';
+      this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
+      this.errSwal.show();
+    }
+  }
+
   viewProfile(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: id } });
     this.router.navigateByUrl('/profile');
-  }
-
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
   }
 
   private createRGForm() {

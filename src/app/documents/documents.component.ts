@@ -3,7 +3,6 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { select } from '@angular-redux/store';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import { ResponseContentType } from '@angular/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 @Component({
@@ -76,7 +75,7 @@ export class DocumentsComponent implements OnInit {
         saveAs(response, 'file.pdf');
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Grupo de investigación no añadido';
+        this.errSwal.title = 'Publicación no localizada';
         this.errSwal.text = 'Mensaje de error: ' + error.message;
         this.errSwal.show();
       }

@@ -1,8 +1,8 @@
-import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, ElementRef, NgZone } from '@angular/core';
+import { UploadEvent, UploadFile, FileSystemFileEntry } from 'ngx-file-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import * as d3 from 'd3';
 
 import { select, NgRedux } from '@angular-redux/store';
@@ -25,6 +25,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy {
+  @ViewChild('inputImage') private inputImg: ElementRef;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['auxiliarID', 'user']) userID;
@@ -38,8 +39,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   profileForm: FormGroup;
   followersCount: number;
   followingCount: number;
-  uploader: FileUploader;
-  hasBaseDropZoneOver = false;
+  allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
+  imageEncoded: string;
+  imageEncodedCropped: string;
 
   /*
   * Charts
@@ -57,7 +59,8 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     private ngRedux: NgRedux<AppState>,
     private permMan: PermissionManager,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private zone: NgZone) {
     this.publTypesChart.options.chart = {
       type: 'pieChart',
       height: 250,
@@ -96,14 +99,17 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
             );
           } else if (this.permMan.validateLogged()) {
             this.sessionID.subscribe((id) => {
-              this.requestUser(this.userService.get(id));
+              this.requestUser(this.userService.get(id), true);
             });
           }
         });
       }
     });
-    this.setFaculties();
-    this.uploader = new FileUploader({ queueLimit: 1 });
+    this.userID.subscribe((userID: number) => {
+      this.sessionID.subscribe((id) => {
+        this.setFaculties();
+      });
+    });
   }
 
   ngAfterContentChecked() {
@@ -118,11 +124,10 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   updateProfile() {
-    if (this.profileForm.pristine && this.uploader.queue.length === 0) {
+    if (this.profileForm.pristine && this.imageEncodedCropped === undefined) {
       this.toggleShowForm();
       return;
     }
-    const fd = new FormData();
     const u = new User();
     if (this.profileForm.pristine) {
       u.username = this.user.username;
@@ -140,18 +145,18 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         delete u['passwords'];
       }
     }
+    const fd = new FormData();
     for (const key of Object.keys(u)) {
       fd.append('user[' + key + ']', u[key]);
     }
-    if (this.uploader.queue.length === 1) {
-      fd.append('picture', this.uploader.queue[0].file.rawFile);
+    if (this.imageEncodedCropped) {
+      fd.append('picture', this.base64toFile(this.imageEncodedCropped, 'File'));
     }
     this.userService.update(this.user.id, fd).subscribe(
       (response: { user: User }) => {
         this.sucSwal.title = 'Tu perfil ha sido actualizado';
         this.sucSwal.show();
         this.toggleShowForm();
-        this.uploader.clearQueue();
         this.setUser(response.user);
         this.setSessionUser(response.user);
       },
@@ -185,7 +190,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   setUser(u: User) {
-    this.user = u;
+    this.user = Object.assign({}, this.user, u);
     if (u.photo) {
       Object.assign(this.user, { photo: environment.api_url + this.user.photo.picture });
     }
@@ -196,14 +201,16 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     this.createProfileForm();
   }
 
+  // On edited sets session too
   setSessionUser(u: User) {
     this.ngRedux.dispatch({
       type: ADD_SESSION,
       session: {
+        id: u.id,
         name: u.full_name,
         type: u.user_type,
         username: u.username,
-        photo: u.photo
+        photo: environment.api_url + u.photo.picture
       }
     });
   }
@@ -276,9 +283,66 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     this.followingCount = count;
   }
 
-  // File drop zone
-  fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
+  // Loaded file event
+  fileChangeEvent(event: Event) {
+    this.checkFile(event.target['files'][0]);
+    this.inputImg.nativeElement['value'] = '';
+  }
+
+  droppedEvent(event: UploadEvent) {
+    if (event.files.length === 1) {
+      const droppedFile: UploadFile = event.files[0];
+      if (droppedFile.fileEntry.isFile) {
+        const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+        fileEntry.file((file: File) => this.checkFile(file));
+      }
+    } else {
+      this.errSwal.title = 'Estás subiendo múltiples archivos';
+      this.errSwal.text = 'Selecciona sólo la imagen que deseas subir y suéltala en el área de nuevo';
+      this.errSwal.show();
+    }
+  }
+
+  checkFile(file: File) {
+    // Verify file loaded (Select file cancel will throw undefined file)
+    if (file) {
+      // Verify type
+      if (this.allowedTypes.includes(file.type)) {
+        // Verify size
+        const reader = new FileReader();
+        const img = new Image;
+        const _this = this;
+        reader.onloadend = () => {
+          img.onload = () => {
+            if (img.width >= 20 && img.height >= 20) {
+              // Open ImageCropper dialog setting imageEncoded
+              _this.zone.run(() => _this.imageEncoded = img.src);
+            } else {
+              _this.errSwal.title = 'La imagen es demasiado pequeña';
+              _this.errSwal.text = 'Asegurate de que el tamaño sea de al menos 20x20 pixeles';
+              _this.errSwal.show();
+            }
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.errSwal.title = 'El tipo de archivo es inválido';
+        this.errSwal.text = 'Sólo se permiten imágenes .jpg, .png o .gif';
+        this.errSwal.show();
+      }
+    }
+  }
+
+  // Sets on image cropped event
+  croppedImage(image: string) {
+    this.imageEncodedCropped = image;
+    this.imageEncoded = '';
+  }
+
+  notCroppedImage() {
+    // Reset FileList of images of the input
+    this.imageEncoded = '';
   }
 
   // Form creation
@@ -326,4 +390,14 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   get passwords() { return this.profileForm.get('passwords'); }
   get password() { return this.profileForm.get('passwords.password'); }
   get passwordConf() { return this.profileForm.get('passwords.password_confirmation'); }
+
+  // Convert b64 to file
+  base64toFile(base64: string, filename: string): File {
+    const arr = base64.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    for (let i = n; i >= 0; i--) {
+      u8arr[i] = bstr.charCodeAt(i);
+    }
+    return new File([u8arr], filename + '.' + mime.split('/')[1], { type: mime });
+  }
 }
