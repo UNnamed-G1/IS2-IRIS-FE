@@ -205,6 +205,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         this.errSwal.title = 'Estadísticas no disponibles';
         this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
+        this.publLastPeriodChart.data = [];
       }
     );
     this.userService.publicationsByUserAndType(id).subscribe(
@@ -222,6 +223,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         this.errSwal.title = 'Estadísticas no disponibles';
         this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
+        this.publTypesChart.data = [];
       }
     );
   }
