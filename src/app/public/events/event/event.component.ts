@@ -46,6 +46,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
   lat: number = 4.63858;
   lng: number = -74.0841;
   // coords to send
+  test: number;
   latP: number;
   lngP: number;
   label:string;
@@ -69,6 +70,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
       this.eventID.subscribe((id: number) => {
           this.setInvitedU(id);
         });
+      this.test=this.eventID.latitude;
     }
 
     ngAfterContentInit() {

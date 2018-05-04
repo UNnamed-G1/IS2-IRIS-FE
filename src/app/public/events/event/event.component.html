@@ -30,7 +30,7 @@
             </div>
           </div>
           <!-- Maps -->
-
+          {{test}}
           <div class="gMaps-container">
             <agm-map class="gMaps-container"
                 [latitude]="lat"
@@ -39,7 +39,7 @@
                 [disableDefaultUI]="false"
                 [zoomControl]="false"
                 (mapClick)="mapClicked($event)">
-                
+
                 <agm-marker [latitude]="event.latitude" [longitude]="event.longitude" [label]="event.address"> </agm-marker>
 
               </agm-map>

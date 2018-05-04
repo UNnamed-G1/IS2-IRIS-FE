@@ -2,7 +2,7 @@
   <div class="breadcrumb-class">Está en:
     <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
     <a routerLink="/event-list" target="_self" title="Inicio">Lista de eventos</a>/
-    <span>{{ (eventID | async) ? 'Editar evento' : 'Añadir evento' }}</span>
+    <span>{{ (eventUpdateID | async) ? 'Editar evento' : 'Añadir evento' }}</span>
   </div>
   <div class="container-fluid">
     <div class="container-fluid main-container">
