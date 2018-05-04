@@ -42,6 +42,10 @@ export class ResearchGroupService extends CommonService {
     return this.applyRequestPath(this.get, 'statistics/num_publications_by_rg_and_type?id=' + id);
   }
 
+  publicationsLastPeriod(id: number) {
+    return this.applyRequestPath(this.get, 'statistics/num_publications_by_rg_in_a_period?id=' + id);
+  }
+
   getOverallPublications(id: number): any {
     return this.applyRequestPath(this.get, 'statistics/overall_num_pubs_by_users_in_rg?id=' + id);
   }

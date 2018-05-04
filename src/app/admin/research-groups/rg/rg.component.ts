@@ -47,6 +47,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
    */
   statistics: number;
   publTypesChart = { options: { chart: {} }, data: [] };
+  publLastPeriodChart = { options: { chart: {} }, data: [] };
   publOverallChart = { options: { chart: {} }, data: [] };
 
   constructor(private researchGroupService: ResearchGroupService,
@@ -61,7 +62,28 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
       x: d => d.label,
       y: d => d.value,
       valueFormat: d => d3.format('f')(d),
+      title: true,
       showLegend: false,
+    };
+    this.publLastPeriodChart.options.chart = {
+      type: 'lineChart',
+      height: 250,
+      x: d => d.label,
+      y: d => d.value,
+      useInteractiveGuideline: true,
+      showLegend: false,
+      xAxis: {
+        axisLabel: 'Fecha',
+        rotateLabels: -5,
+        tickFormat: d => d3.time.format('%b %Y')(new Date(d)),
+        tickValues: serie => serie[0].values.map((v) => v.label),
+      },
+      yAxis: {
+        axisLabel: 'Cantidad de publicaciones',
+        axisLabelDistance: -10,
+        tickFormat: d => d3.format('f')(d),
+        tickValues: serie => Array.from({ length: Math.max(...serie[0].values.map((v) => v.value)) }, (v, k) => k),
+      },
     };
     this.publOverallChart.options.chart = {
       type: 'discreteBarChart',
@@ -123,7 +145,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
             for (const user of publicationsOverall) {
               if (user.pubs_count > 0) {
                 data.push({
-                  label: user.name + ' ' + user.lastname,
+                  label: user.fullname,
                   value: user.pubs_count,
                   id: user.id
                 });
@@ -132,7 +154,22 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
             this.publOverallChart.data.push({ key: 'Usuarios', values: data });
           }, error => {
             this.errSwal.title = 'Estadísticas no disponibles';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.text = 'Mensaje de error: ' + error.error.message;
+            this.errSwal.show();
+          }
+        );
+        this.researchGroupService.publicationsLastPeriod(id).subscribe(
+          (response: { num_publications_of_users_in_a_period: any }) => {
+            const publicationsDated = response.num_publications_of_users_in_a_period;
+            const data = new Array<any>();
+            for (const date of Object.getOwnPropertyNames(publicationsDated)) {
+              const dateValues = date.split('-').map(Number);
+              data.push({ label: new Date(dateValues[0], dateValues[1] - 1), value: publicationsDated[date] });
+            }
+            this.publLastPeriodChart.data.push({ key: 'Publicaciones', values: data });
+          }, error => {
+            this.errSwal.title = 'Estadísticas no disponibles';
+            this.errSwal.text = 'Mensaje de error: ' + error.error.message;
             this.errSwal.show();
           }
         );
@@ -148,7 +185,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
             this.publTypesChart.data = data;
           }, error => {
             this.errSwal.title = 'Estadísticas no disponibles';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
+            this.errSwal.text = 'Mensaje de error: ' + error.error.message;
             this.errSwal.show();
           }
         );

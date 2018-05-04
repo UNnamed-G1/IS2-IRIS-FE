@@ -18,3 +18,7 @@
 .file-loaded {
     border: dotted 3px lightgreen;
 }
+
+.statistics {
+    background: white;
+}
