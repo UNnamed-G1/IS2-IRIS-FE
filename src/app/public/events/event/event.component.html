@@ -36,7 +36,7 @@
           </div>
 
           <div class="col-sm-4 col-md-4">
-            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isInvited" (click)="requestJoin()">Asistir</button>
+            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isInvited" (click)="sendInvitation()">Invitar</button>
             <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isJoined" (click)="leave()">Abandonar</button>-->
             <div class="panel panel-default">
               <div class="panel-heading" style="background: #555;color: white;">
@@ -49,16 +49,17 @@
                   </div>
                 </div>
               </div>
+
               <div class="panel-body" style="overflow-y: auto; height: 200px; ">
                 <div class="users">
-                  <div *ngFor="let invited of event.users" class="field">
+                  <div *ngFor="let user of invited" class="field">
                     <div class=" media">
                       <div class="media-left media-middle">
                         <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
                       </div>
 
                       <div class="media-body">
-                        <h4>{{invited.user.full_name}}</h4>
+                        <h4>{{user.full_name}}</h4>
                         <a href="#">Ver perfil</a>
                       </div>
                     </div>
@@ -91,7 +92,7 @@
                 <label for="inputName">Nombre</label>
                 <input id="inputName" type="text" class="form-control" required [(ngModel)]="event.name" name="name">
               </div>
-              
+
               <label for="inputTopic">Tema</label>
               <textarea id="inputTopic" type="text" class="form-control" required [(ngModel)]="event.topic" name="topic" rows="3"></textarea>
               <div class="col-md-6">

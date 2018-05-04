@@ -9,7 +9,7 @@ import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
-import { Event} from 'app/classes/_models';
+import { Event,User} from 'app/classes/_models';
 import { EventService } from 'app/services/event.service';
 
 @Component({
@@ -26,13 +26,14 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
   @select(['auxiliarID', 'event']) eventID;
   @select() isLogged;
   event: Event;
+  user: User[] = new Array<User>();
   showInput = false;
   isInvited: boolean;
   eventForm: FormGroup;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
-
+  invited:Array<User>;
   constructor(private eventService: EventService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
@@ -43,17 +44,21 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
 
     ngOnInit() {
       this.uploader = new FileUploader({ allowedMimeType: this.allowedTypes });
-    }
+      this.eventID.subscribe((id: number) => {
+          this.setInvitedU(id);
+        });
+      }
+
     ngAfterContentInit() {
-        console.log(this.eventID);
         this.eventID.subscribe((id: number) => {
           if (id) {
+            console.log(id);
             this.requestEvent(id);
           } else {
             this.router.navigateByUrl('/');
           }
         });
-      }
+    }
 
     ngOnDestroy() {
     this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'event' });
@@ -120,10 +125,28 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
         });
       }
     }
+
+    setInvitedU(id:number){
+      this.eventService.getInvitedUsers(id).subscribe(
+        (response: { users: Array<User> }) => {
+          (this.invited=response.users);
+            console.log(this.invited);
+            //console.log(response);
+        },
+        (error: HttpErrorResponse) => {
+          this.errSwal.title = 'No se han podido obtener los invitados';
+          this.errSwal.text = 'Mensaje de error: ' + error.message;
+          this.errSwal.show();
+        }
+      );
+      this.user =new Array<User>();
+    }
+
     requestEvent(id: number) {
       this.eventService.get(id).subscribe(
         (response: { event: Event }) => {
           this.setEvent(response.event);
+          //console.log(response);
         },
         (error: HttpErrorResponse) => {
           this.errSwal.title = 'No se ha podido obtener el evento';
@@ -170,19 +193,6 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
       this.createEventForm();
 
     }
-    private createEventForm() {
-      this.eventForm = this.formBuilder.group({
-        topic: [this.event.topic,
-        [Validators.required, Validators.maxLength(5000)]],
-        description: [this.event.description,
-        [Validators.required, Validators.maxLength(5000)]],
-        date: [this.event.date, [Validators.required]],
-        duration: [this.event.duration, [Validators.required]],
-        type_ev: [this.event.event_type, [Validators.required]],
-        frequence: [this.event.frequence, [Validators.required]],
-        state: [this.event.state, [Validators.required]],
-        });
-    }
     /*leave() {
       this.eventService.leaveEvent({ id: this.event.id }).subscribe(
         (response) => {
@@ -197,11 +207,31 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
         }
       );
     }*/
+
+
+    private createEventForm() {
+      this.eventForm = this.formBuilder.group({
+        name: [this.event.name, Validators.required],
+        topic: [this.event.topic,
+        [Validators.required, Validators.maxLength(5000)]],
+        description: [this.event.description,
+        [Validators.required, Validators.maxLength(5000)]],
+        event_type: [this.event.event_type, Validators.required],
+        date: [this.event.date, Validators.required],
+        research_group_id: [this.event.research_group, Validators.required],
+        frequence: [this.event.frequence, Validators.required],
+        duration: [this.event.duration, Validators.required],
+        state: [this.event.state, Validators.required],
+      });
+    }
+    get research_group_id() {return this.eventForm.get('research_group_id');}
+    get name() { return this.eventForm.get('name'); }
     get topic() { return this.eventForm.get('topic'); }
     get description() { return this.eventForm.get('description'); }
+    get event_type() { return this.eventForm.get('event_type'); }
     get date() { return this.eventForm.get('date'); }
-    get duration() { return this.eventForm.get('duration'); }
-    get type_ev() { return this.eventForm.get('type_ev'); }
     get frequence() { return this.eventForm.get('frequence'); }
+    get duration() { return this.eventForm.get('duration'); }
     get state() { return this.eventForm.get('state'); }
+
 }
