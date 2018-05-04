@@ -1,8 +1,9 @@
-import { Component, ViewChild, OnInit, OnDestroy, ElementRef, NgZone } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, ElementRef, NgZone } from '@angular/core';
 import { UploadEvent, UploadFile, FileSystemFileEntry } from 'ngx-file-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as d3 from 'd3';
 
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -23,7 +24,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChild('inputImage') private inputImg: ElementRef;
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
@@ -42,6 +43,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
   imageEncoded: string;
   imageEncodedCropped: string;
 
+  /*
+  * Charts
+  */
+  statistics: number;
+  publTypesChart = { options: { chart: {} }, data: [] };
+  publLastPeriodChart = { options: { chart: {} }, data: [] };
+
   constructor(private userService: UserService,
     private facultyService: FacultyService,
     private departmentService: DepartmentService,
@@ -50,16 +58,47 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private permMan: PermissionManager,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private zone: NgZone) { }
+    private zone: NgZone) {
+    this.publLastPeriodChart.options.chart = {
+      type: 'lineChart',
+      height: 250,
+      x: d => d.label,
+      y: d => d.value,
+      useInteractiveGuideline: true,
+      showLegend: false,
+      xAxis: {
+        axisLabel: 'Fecha',
+        rotateLabels: -5,
+        tickFormat: d => d3.time.format('%b %Y')(new Date(d)),
+        tickValues: serie => serie[0].values.map((v) => v.label),
+      },
+      yAxis: {
+        axisLabel: 'Cantidad de publicaciones',
+        axisLabelDistance: -10,
+        tickFormat: d => d3.format('f')(d),
+        tickValues: serie => Array.from({ length: Math.max(...serie[0].values.map((v) => v.value)) }, (v, k) => k),
+      },
+    };
+    this.publTypesChart.options.chart = {
+      type: 'pieChart',
+      height: 250,
+      x: d => d.label,
+      y: d => d.value,
+      valueFormat: d => d3.format('f')(d),
+      showLegend: false,
+      duration: 500
+    };
+  }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params: { username: string }) => {
       if (params.username) {
         this.requestUser(this.userService.getByUsername(params.username), true);
       } else {
-        this.userID.subscribe((userID: number) => {
-          if (userID) {
-            this.requestUser(this.userService.get(userID));
+        this.userID.subscribe((id: number) => {
+          if (id) {
+            this.requestUser(this.userService.get(id));
+            this.requestStatistics(id);
           } else if (this.permMan.validateLogged()) {
             this.sessionID.subscribe((id) => {
               this.requestUser(this.userService.get(id), true);
@@ -73,6 +112,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.setFaculties();
       });
     });
+  }
+
+  ngAfterContentChecked() {
+    this.statistics = Object.getOwnPropertyNames(this)
+      .filter((name: string) => name.endsWith('Chart'))
+      .map((key: string) => this[key].data.length)
+      .reduce((v1, v2) => v1 + v2);
   }
 
   ngOnDestroy() {
@@ -145,6 +191,43 @@ export class ProfileComponent implements OnInit, OnDestroy {
     );
   }
 
+  requestStatistics(id: number) {
+    console.log(id)
+    this.userService.publicationsLastPeriod(id).subscribe(
+      (response: { num_publications_of_users_in_a_period: any }) => {
+        const publicationsDated = response.num_publications_of_users_in_a_period;
+        console.log(publicationsDated)
+        const data = new Array<any>();
+        for (const date of Object.getOwnPropertyNames(publicationsDated)) {
+          const dateValues = date.split('-').map(Number);
+          data.push({ label: new Date(dateValues[0], dateValues[1] - 1), value: publicationsDated[date] });
+        }
+        this.publLastPeriodChart.data = [{ key: 'Publicaciones', values: data }];
+      }, (error: HttpErrorResponse) => {
+        this.errSwal.title = 'Estadísticas no disponibles';
+        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
+        this.errSwal.show();
+      }
+    );
+    this.userService.publicationsByUserAndType(id).subscribe(
+      (response: { num_publications_by_user_and_type: any }) => {
+        const res = response.num_publications_by_user_and_type;
+        const data = new Array<any>();
+        Object.getOwnPropertyNames(res)
+          .map((key: string) => {
+            if (res[key] > 0) {
+              data.push({ label: key, value: res[key] });
+            }
+          });
+        this.publTypesChart.data = data;
+      }, (error: HttpErrorResponse) => {
+        this.errSwal.title = 'Estadísticas no disponibles';
+        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
+        this.errSwal.show();
+      }
+    );
+  }
+  
   setUser(u: User) {
     this.user = Object.assign({}, this.user, u);
     if (u.photo) {

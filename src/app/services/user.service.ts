@@ -17,9 +17,14 @@ export class UserService extends CommonService {
   public getCurrentUser() {
     return this.applyRequestPath(this.get, 'users/current/');
   }
-  public getCurrentUserRGS(){
+
+  public getCurrentUserRGS() {
     return this.applyRequestPath(this.get, 'rgs_by_current_user');
   }
+
+  /*
+   *  Follows
+   */
   public getCurrFollowing() {
     return this.applyRequestPath(this.get, 'curr_following');
   }
@@ -39,11 +44,25 @@ export class UserService extends CommonService {
   }
 
   public follow(id: number) {
-    return this.applyRequestPath(this.create, 'follow ', [{ id_followed: id }]);
+    return this.applyRequestPath(this.create, 'follow', [{ id_followed: id }]);
   }
 
   public unfollow(id: number) {
-    return this.applyRequestPath(this.create, 'unfollow ', [{ id_followed: id }]);
+    return this.applyRequestPath(this.create, 'unfollow', [{ id_followed: id }]);
   }
 
+  /*
+   *  Statistics
+   */
+  publicationsByUser(id: number) {
+    return this.applyRequestPath(this.get, 'statistics/num_publications_by_user_and_time?id=' + id);
+  }
+
+  publicationsByUserAndType(id: number) {
+    return this.applyRequestPath(this.get, 'statistics/num_publications_by_user_and_type?id=' + id);
+  }
+
+  publicationsLastPeriod(id: number) {
+    return this.applyRequestPath(this.get, 'statistics/num_publications_by_user_in_a_period?id=' + id);
+  }
 }

@@ -13,6 +13,7 @@ import { NgRedux, NgReduxModule, select } from '@angular-redux/store';
 import * as persistState from 'redux-localstorage';
 import { HttpModule } from '@angular/http';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { NvD3Module } from 'ngx-nvd3';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileDropModule } from 'ngx-file-drop';
@@ -239,7 +240,8 @@ export const appRoutes: Routes = [
     PdfViewerModule,
     FileUploadModule,
     FileDropModule,
-    ImageCropperModule
+    ImageCropperModule,
+    NvD3Module
   ],
   declarations: [
     AppComponent,
