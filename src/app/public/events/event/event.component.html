@@ -1,17 +1,12 @@
 <main class="detalle">
   <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Grupos de Investigación</span></div>
-  <div *ngIf="event" class="container-fluid main-container">
+  <div *ngIf="event" class="container main-container">
     <div class="container-fluid">
       <div class="row container-fluid" [hidden]="showInput">
         <br><h2>{{event.name}} </h2><br>
         <div class="container-fluid">
           <div class="col-sm-8 col-md-8">
             <div class="media">
-              <div class="media-left media-middle">
-                <img src="{{event?.photos[0] ? event.photos[0] : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
-                />
-              </div>
-
               <div class="media-body">
                 <h4><b>Tipo:</b></h4>
                 {{ event.event_type }}
@@ -34,7 +29,22 @@
               <h4>{{ event.description }}</h4>
             </div>
           </div>
+          <!-- Maps -->
 
+          <div class="gMaps-container">
+            <agm-map class="gMaps-container"
+                [latitude]="lat"
+                [longitude]="lng"
+                [zoom]="zoom"
+                [disableDefaultUI]="false"
+                [zoomControl]="false"
+                (mapClick)="mapClicked($event)">
+                
+                <agm-marker [latitude]="event.latitude" [longitude]="event.longitude" [label]="event.address"> </agm-marker>
+
+              </agm-map>
+          </div>
+          <br><br>
           <div class="col-sm-4 col-md-4">
             <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isInvited" (click)="sendInvitation()">Invitar</button>
             <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isJoined" (click)="leave()">Abandonar</button>-->
@@ -71,62 +81,144 @@
           </div>
         </div>
 
+      <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Profesor'" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" routerLink="/event-list" role="button">Volver</button>
+
+      </div>
         <hr style="border:1px dotted black;">
 
 
-      <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Profesor'" (click)="toggleShowInput()">Editar</button>
-      <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
-    </div>
-
       <div class="row" [hidden]="!showInput">
-        <form (ngSubmit)="onSubmit()">
-            <div class="col-sm-2 col-md-2">
-              !image here!
-              </div>
-
-        <div class="col-sm-5 col-md-5">
-          <div class="row">
+        <div class="col-md-6">
+            <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
 
               <!-- Name -->
-              <div class="col-md-6">
-                <label for="inputName">Nombre</label>
-                <input id="inputName" type="text" class="form-control" required [(ngModel)]="event.name" name="name">
+              <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+                <app-form-control-errors [control]="name"></app-form-control-errors>
               </div>
 
-              <label for="inputTopic">Tema</label>
-              <textarea id="inputTopic" type="text" class="form-control" required [(ngModel)]="event.topic" name="topic" rows="3"></textarea>
-              <div class="col-md-6">
-                <label for="inputType_ev">Tipo</label>
-                <input id="inputType_ev" type="text" class="form-control" required [(ngModel)]="event.type_ev" name="type_ev" />
+              <!-- Topic -->
+              <div class="form-group">
+                <label class="form-label">Tema</label>
+                <textarea type="text" class="form-control" formControlName="topic" placeholder="Tema" rows="3"></textarea>
+                <app-form-control-errors [control]="topic"></app-form-control-errors>
               </div>
-              <div class="col-md-6">
-                <label for="inputDuration">Duración</label>
-                <input id="inputDuration" type="text" class="form-control" required [(ngModel)]="event.duration" name="duration">
+
+              <!-- Description -->
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+                <textarea  type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
+                <app-form-control-errors [control]="description"></app-form-control-errors>
               </div>
-              <div class="col-md-6">
-                <label for="inputDate">Fecha del evento</label>
-                <input id="inputDate" type="text" class="form-control" required [(ngModel)]="event.date" name="date">
+
+              <!-- Event type -->
+              <div class="form-group">
+                <label class="form-label">Tipo de evento</label>
+                <select class="form-control" formControlName="event_type">
+                  <option *ngFor="let et of event_types" [ngValue]="et">{{ et }}</option>
+                </select>
+                <app-form-control-errors [control]="event_type"></app-form-control-errors>
               </div>
-              <div class="col-md-6">
-                <label for="inputFrequence">Frecuencia</label>
-                <input id="inputFrequence" type="text" class="form-control" required [(ngModel)]="event.frequence" name="frequence" >
+
+              <!-- Date -->
+              <div class="form-group has-feedback">
+                <label class="form-label">Fecha del evento</label>
+                <input [owlDateTime]="eventDatepicker" [min]="minDate" class="form-control control-datetime" formControlName="date" placeholder="Fecha del evento">
+                <span [owlDateTimeTrigger]="eventDatepicker" class="datetime-trigger">
+                  <i class="glyphicon glyphicon-calendar"></i>
+                </span>
+                <owl-date-time #eventDatepicker></owl-date-time>
+                <app-form-control-errors [control]="date" [owlDateTimeMin]="'La fecha debe ser posterior a la actual.'"></app-form-control-errors>
               </div>
-              <div class="col-md-6">
-                <label for="inputState">Estado</label>
-                <input id="inputState" type="text" class="form-control" required [(ngModel)]="event.state" name="state">
+
+              <!-- Frequence -->
+              <div class="form-group">
+                <label class="form-label">Frecuencia</label>
+                <select class="form-control" formControlName="frequence">
+                  <option *ngFor="let ft of frequence_types" [ngValue]="ft">{{ ft }}</option>
+                </select>
+                <app-form-control-errors [control]="frequence"></app-form-control-errors>
+              </div>
+
+              <!-- Duration -->
+              <div class="form-group">
+                <label class="form-label">Duración</label>
+                <input type="text" class="form-control" formControlName="duration" placeholder="Duración">
+                <app-form-control-errors [control]="duration"></app-form-control-errors>
+              </div>
+
+              <!-- State -->
+              <div class="form-group">
+                <label class="form-label">Estado</label>
+                <select class="form-control" formControlName="state">
+                  <option *ngFor="let st of state_types" [ngValue]="st">{{ st }}</option>
+                </select>
+                <app-form-control-errors [control]="state"></app-form-control-errors>
+              </div>
+
+
+            </form>
+          </div>
+        <div class="col-md-6">
+            <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+
+
+              <!-- address-->
+              <div class="form-group">
+                <label class="form-label">Lugar</label>
+                <input type="text" class="form-control" formControlName="address" placeholder="Coloca el nombre del lugar">
+              </div>
+
+              <strong>Mueve el marcador hasta el lugar del evento</strong>
+              <br><br>
+              <!-- Maps -->
+              <div class="gMaps-container">
+                <agm-map class="gMaps-container"
+                    [latitude]="lat"
+                    [longitude]="lng"
+                    [zoom]="zoom"
+                    [disableDefaultUI]="false"
+                    [zoomControl]="false"
+                    (mapClick)="mapClicked($event)">
+
+                    <agm-marker
+                        *ngFor="let m of markers; let i = index"
+                        (markerClick)="clickedMarker(m.label, i)"
+                        [latitude]="m.lat"
+                        [longitude]="m.lng"
+                        [label]="m.label"
+                        [markerDraggable]="m.draggable"
+                        (dragEnd)="markerDragEnd(m, $event)">
+
+                    </agm-marker>
+
+                  </agm-map>
               </div>
               <br><br>
-              <label for="inputDescription">Descripción</label>
-              <textarea id="inputDescription" type="text" class="form-control" required [(ngModel)]="event.description" name="description" rows="3"></textarea>
 
-            </div>
-            <br><br>
-            <div class="btn-group">
-              <button type="submit" class="btn btn-primary" (click)="updateGroup()">Guardar</button>
-              <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
-            </div>
+              <div class="form-group row">
+                <!-- latitude -->
+                 <div class="col-xs-3" hidden>
+                   <label class="form-label">Latitud</label>
+                   <input type="text" class="form-control" formControlName="latitude" value={{latP}} dirty>
+                 </div>
+                 <!-- longitude -->
+                 <div class="col-xs-3" hidden>
+                   <label class="form-label">Longitud</label>
+                   <input type="text" class="form-control" formControlName="longitude" value={{lngP}} dirty>
+                 </div>
+              </div>
+              <br><br>
+
+              <div>
+                <button type="submit" class="btn btn-primary" (click)="updateGroup()" [disabled]="eventForm.invalid">Guardar</button>
+                <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
+              </div>
+
+            </form>
           </div>
-          </form>
       </div>
     </div>
   </div>

@@ -22,7 +22,7 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
-  @select(['auxiliarID', 'eventUpdate']) eventID;
+  @select(['auxiliarID', 'eventUpdate']) eventUpdateID;
   @select(['session', 'id']) userID;
   rgsUser: Array<ResearchGroup>;
   event: Event = new Event();
@@ -36,7 +36,9 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   // initial center position for the map
   lat: number = 4.63858;
   lng: number = -74.0841;
-
+  // coords to send
+  latP: number;
+  lngP: number;
 
   markers: marker[] = [
 	  {
@@ -61,10 +63,12 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
         }
       );
     })
+    this.latP=this.lat;
+    this.lngP=this.lng;
   }
 
   ngAfterContentInit() {
-    this.eventID.subscribe((id: number) => {
+    this.eventUpdateID.subscribe((id: number) => {
       if (id) {
         this.eventService.get(id).subscribe(
           (event: { event: Event }) => {
@@ -90,10 +94,17 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
     if (this.eventForm.pristine) {
       return;
     }
+    for (const k in this.eventForm.controls) {
+        if (this.eventForm.get(k).errors) {
+
+        }
+      }
     const e = new Event();
     for (const k in this.eventForm.controls) {
       if (this.eventForm.get(k).dirty) {
         e[k] = this.eventForm.get(k).value;
+        e.latitude=this.latP;
+        e.longitude=this.lngP;
       }
     }
     if (e.event_type) {
@@ -109,10 +120,11 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
     if (this.event.id) {
       this.eventService.update(this.event.id, { event: e }).subscribe(
         (response: { event: Event }) => {
+          Object.assign(this.event, response.event);
           this.sucSwal.title = 'El evento ha sido actualizado';
           this.sucSwal.show();
-          Object.assign(this.event, response.event);
           this.createEventForm();
+          console.log(response.event);
         },
         (error: HttpErrorResponse) => {
           this.errSwal.title = 'Evento no actualizado';
@@ -139,14 +151,19 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   private createEventForm() {
     this.eventForm = this.formBuilder.group({
       name: [this.event.name, Validators.required],
-      topic: [this.event.topic, Validators.required],
-      description: [this.event.description, Validators.required],
+      topic: [this.event.topic,
+      [Validators.required, Validators.maxLength(5000)]],
+      description: [this.event.description,
+      [Validators.required, Validators.maxLength(5000)]],
       event_type: [this.event.event_type, Validators.required],
       date: [this.event.date, Validators.required],
       research_group_id: [this.event.research_group, Validators.required],
       frequence: [this.event.frequence, Validators.required],
       duration: [this.event.duration, Validators.required],
       state: [this.event.state, Validators.required],
+      address: [this.event.address, Validators.required],
+      latitude: [this.event.latitude],
+      longitude: [this.event.longitude],
     });
   }
   get research_group_id() {return this.eventForm.get('research_group_id');}
@@ -158,9 +175,15 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   get frequence() { return this.eventForm.get('frequence'); }
   get duration() { return this.eventForm.get('duration'); }
   get state() { return this.eventForm.get('state'); }
+  get latitude(){return this.eventForm.get('latitude'); }
+  get longitude(){return this.eventForm.get('longitude'); }
+  get address(){return this.eventForm.get('address'); }
 
   markerDragEnd(m: marker, $event: MouseEvent) {
     console.log('dragEnd', m, $event);
+    this.latP=$event.coords.lat;
+    this.lngP=$event.coords.lng;
+
   }
 
   clickedMarker(label: string, index: number) {
@@ -168,11 +191,14 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   mapClicked($event: MouseEvent) {
-    this.markers.push({
+    this.markers[0].lat = $event.coords.lat;
+    this.markers[0].lng = $event.coords.lng;
+
+    /*this.markers.push({
       lat: $event.coords.lat,
       lng: $event.coords.lng,
       draggable: true
-    });
+    });*/
   }
 
 }

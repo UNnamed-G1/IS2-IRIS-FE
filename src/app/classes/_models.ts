@@ -36,6 +36,10 @@ export class Event {
   type_ev: string;     // Send
   frequence: string;
   state: string;
+  //places
+  latitude: number;
+  longitude: number;
+  address:string;
   // Relations
   research_group: ResearchGroup;
   users: Array<User>;

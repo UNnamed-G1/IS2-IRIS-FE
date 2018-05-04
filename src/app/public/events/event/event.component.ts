@@ -9,8 +9,10 @@ import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
-import { Event,User} from 'app/classes/_models';
+import { Event,User,ResearchGroup} from 'app/classes/_models';
 import { EventService } from 'app/services/event.service';
+import { ADD_AUXILIAR } from 'app/redux/actions';
+import { MouseEvent } from '@agm/core';
 
 @Component({
   selector: 'app-event',
@@ -30,10 +32,30 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
   showInput = false;
   isInvited: boolean;
   eventForm: FormGroup;
+  event_types: string[] = ['Publico', 'Privado'];
+  frequence_types: string[] = ['Unico', 'Repetitivo'];
+  state_types: string[] = ['Activo', 'Inactivo'];
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
   invited:Array<User>;
+  rgsUser: Array<ResearchGroup>;
+
+  zoom: number = 16;
+  // initial center position for the map
+  lat: number = 4.63858;
+  lng: number = -74.0841;
+  // coords to send
+  latP: number;
+  lngP: number;
+  label:string;
+  markers: marker[] = [
+	  {
+		  lat: 4.63858,
+		  lng: -74.0841,
+		  draggable: true
+	  }
+  ];
   constructor(private eventService: EventService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
@@ -47,7 +69,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
       this.eventID.subscribe((id: number) => {
           this.setInvitedU(id);
         });
-      }
+    }
 
     ngAfterContentInit() {
         this.eventID.subscribe((id: number) => {
@@ -69,11 +91,13 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
       }
       const event = new Event();
       if (this.eventForm.pristine) {
-        event.topic = this.event.topic;
+          event.topic = this.event.topic;
       } else {
         for (const k in this.eventForm.controls) {
           if (this.eventForm.get(k).dirty) {
             event[k] = this.eventForm.get(k).value;
+            event.latitude=this.latP;
+            event.longitude=this.lngP;
           }
         }
       }
@@ -108,6 +132,8 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
     for (const key in this.eventForm.controls) {
       if (this.eventForm.get(key).dirty) {
         event[key] = this.eventForm.get(key).value;
+        event.latitude=this.latP;
+        event.longitude=this.lngP;
       }
     }
     if (this.event.id) {
@@ -130,7 +156,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
       this.eventService.getInvitedUsers(id).subscribe(
         (response: { users: Array<User> }) => {
           (this.invited=response.users);
-            console.log(this.invited);
+            //console.log(this.invited);
             //console.log(response);
         },
         (error: HttpErrorResponse) => {
@@ -191,7 +217,6 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
     setEvent(event: Event) {
       this.event = Object.assign({}, this.event, event);
       this.createEventForm();
-
     }
     /*leave() {
       this.eventService.leaveEvent({ id: this.event.id }).subscribe(
@@ -218,10 +243,13 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
         [Validators.required, Validators.maxLength(5000)]],
         event_type: [this.event.event_type, Validators.required],
         date: [this.event.date, Validators.required],
-        research_group_id: [this.event.research_group, Validators.required],
+        research_group_id: [this.event.research_group],
         frequence: [this.event.frequence, Validators.required],
         duration: [this.event.duration, Validators.required],
         state: [this.event.state, Validators.required],
+        address: [this.event.address, Validators.required],
+        latitude: [this.event.latitude],
+        longitude: [this.event.longitude],
       });
     }
     get research_group_id() {return this.eventForm.get('research_group_id');}
@@ -233,5 +261,38 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
     get frequence() { return this.eventForm.get('frequence'); }
     get duration() { return this.eventForm.get('duration'); }
     get state() { return this.eventForm.get('state'); }
+    get latitude(){return this.eventForm.get('latitude'); }
+    get longitude(){return this.eventForm.get('longitude'); }
+    get address(){return this.eventForm.get('address'); }
 
+    markerDragEnd(m: marker, $event: MouseEvent) {
+      console.log('dragEnd', m, $event);
+      this.latP=$event.coords.lat;
+      this.lngP=$event.coords.lng;
+
+    }
+
+    clickedMarker(label: string, index: number) {
+      console.log(`clicked the marker: ${label || index}`)
+    }
+
+    mapClicked($event: MouseEvent) {
+      this.markers[0].lat = $event.coords.lat;
+      this.markers[0].lng = $event.coords.lng;
+
+      /*this.markers.push({
+        lat: $event.coords.lat,
+        lng: $event.coords.lng,
+        draggable: true
+      });*/
+    }
+
+}
+
+// just an interface for type safety.
+interface marker {
+	lat: number;
+	lng: number;
+	label?: string;
+	draggable: boolean;
 }

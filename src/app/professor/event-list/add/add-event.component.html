@@ -20,14 +20,14 @@
             <!-- Topic -->
             <div class="form-group">
               <label class="form-label">Tema</label>
-              <input type="text" class="form-control" formControlName="topic" placeholder="Tema">
+              <textarea type="text" class="form-control" formControlName="topic" placeholder="Tema" rows="3"></textarea>
               <app-form-control-errors [control]="topic"></app-form-control-errors>
             </div>
 
             <!-- Description -->
             <div class="form-group">
               <label class="form-label">Descripción</label>
-              <input type="text" class="form-control" formControlName="description" placeholder="Descripción">
+              <textarea  type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
               <app-form-control-errors [control]="description"></app-form-control-errors>
             </div>
 
@@ -76,46 +76,71 @@
               <app-form-control-errors [control]="state"></app-form-control-errors>
             </div>
 
+
+          </form>
+        </div>
+        <div class="col-md-6">
+          <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+
             <!-- ResearchGroup -->
             <div class="form-group">
               <label class="form-label">Grupos de investigación</label>
               <select class="form-control" formControlName="research_group_id">
                 <option *ngFor="let rg of rgsUser" [ngValue]="rg.id">{{ rg.name }}</option>
               </select>
-
             </div>
+
+
+            <!-- address-->
+            <div class="form-group">
+              <label class="form-label">Lugar</label>
+              <input type="text" class="form-control" formControlName="address" placeholder="Coloca el nombre del lugar">
+            </div>
+
+            <strong>Mueve el marcador hasta el lugar del evento</strong>
+            <br><br>
+            <!-- Maps -->
+            <div class="gMaps-container">
+              <agm-map class="gMaps-container"
+                  [latitude]="lat"
+                  [longitude]="lng"
+                  [zoom]="zoom"
+                  [disableDefaultUI]="false"
+                  [zoomControl]="false"
+                  (mapClick)="mapClicked($event)">
+
+                  <agm-marker
+                      *ngFor="let m of markers; let i = index"
+                      (markerClick)="clickedMarker(m.label, i)"
+                      [latitude]="m.lat"
+                      [longitude]="m.lng"
+                      [label]="m.label"
+                      [markerDraggable]="m.draggable"
+                      (dragEnd)="markerDragEnd(m, $event)">
+
+                  </agm-marker>
+
+                </agm-map>
+            </div>
+            <br><br>
+            <div class="form-group row">
+              <!-- latitude -->
+               <div class="col-xs-3" hidden>
+                 <label class="form-label">Latitud</label>
+                 <input type="text" class="form-control" formControlName="latitude" value={{latP}} dirty>
+               </div>
+               <!-- longitude -->
+               <div class="col-xs-3" hidden>
+                 <label class="form-label">Longitud</label>
+                 <input type="text" class="form-control" formControlName="longitude" value={{lngP}} dirty>
+               </div>
+            </div>
+            <br><br>
             <div>
-              <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Submit</button>
+              <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid" >Submit</button>
               <button type="button" class="btn btn-danger" routerLink="/event-list">Volver</button>
             </div>
           </form>
-          <div class="gMaps-container">
-            <agm-map class="gMaps-container"
-                [latitude]="lat"
-                [longitude]="lng"
-                [zoom]="zoom"
-                [disableDefaultUI]="false"
-                [zoomControl]="false"
-                (mapClick)="mapClicked($event)">
-
-                <agm-marker
-                    *ngFor="let m of markers; let i = index"
-                    (markerClick)="clickedMarker(m.label, i)"
-                    [latitude]="m.lat"
-                    [longitude]="m.lng"
-                    [label]="m.label"
-                    [markerDraggable]="m.draggable"
-                    (dragEnd)="markerDragEnd(m, $event)">
-
-                  <agm-info-window>
-                    <strong>InfoWindow content</strong>
-                  </agm-info-window>
-
-                </agm-marker>
-
-              </agm-map>
-          </div>
-
         </div>
       </div>
     </div>
