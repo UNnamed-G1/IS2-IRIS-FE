@@ -61,4 +61,8 @@ export class UserService extends CommonService {
   publicationsByUserAndType(id: number) {
     return this.applyRequestPath(this.get, 'statistics/num_publications_by_user_and_type?id=' + id);
   }
+
+  publicationsLastPeriod(id: number) {
+    return this.applyRequestPath(this.get, 'statistics/num_publications_by_user_in_a_period?id=' + id);
+  }
 }

@@ -56,15 +56,6 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     private acRoute: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder) {
-    this.publTypesChart.options.chart = {
-      type: 'pieChart',
-      height: 250,
-      x: d => d.label,
-      y: d => d.value,
-      valueFormat: d => d3.format('f')(d),
-      title: true,
-      showLegend: false,
-    };
     this.publLastPeriodChart.options.chart = {
       type: 'lineChart',
       height: 250,
@@ -84,6 +75,14 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
         tickFormat: d => d3.format('f')(d),
         tickValues: serie => Array.from({ length: Math.max(...serie[0].values.map((v) => v.value)) }, (v, k) => k),
       },
+    };
+    this.publTypesChart.options.chart = {
+      type: 'pieChart',
+      height: 250,
+      x: d => d.label,
+      y: d => d.value,
+      valueFormat: d => d3.format('f')(d),
+      showLegend: false,
     };
     this.publOverallChart.options.chart = {
       type: 'discreteBarChart',
@@ -138,57 +137,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
             this.errSwal.show();
           }
         );
-        this.researchGroupService.getOverallPublications(id).subscribe(
-          (response: { overall_num_pubs_by_users_in_rg: any }) => {
-            const publicationsOverall = response.overall_num_pubs_by_users_in_rg;
-            const data = new Array<any>();
-            for (const user of publicationsOverall) {
-              if (user.pubs_count > 0) {
-                data.push({
-                  label: user.fullname,
-                  value: user.pubs_count,
-                  id: user.id
-                });
-              }
-            }
-            this.publOverallChart.data.push({ key: 'Usuarios', values: data });
-          }, error => {
-            this.errSwal.title = 'Estadísticas no disponibles';
-            this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-            this.errSwal.show();
-          }
-        );
-        this.researchGroupService.publicationsLastPeriod(id).subscribe(
-          (response: { num_publications_of_users_in_a_period: any }) => {
-            const publicationsDated = response.num_publications_of_users_in_a_period;
-            const data = new Array<any>();
-            for (const date of Object.getOwnPropertyNames(publicationsDated)) {
-              const dateValues = date.split('-').map(Number);
-              data.push({ label: new Date(dateValues[0], dateValues[1] - 1), value: publicationsDated[date] });
-            }
-            this.publLastPeriodChart.data.push({ key: 'Publicaciones', values: data });
-          }, error => {
-            this.errSwal.title = 'Estadísticas no disponibles';
-            this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-            this.errSwal.show();
-          }
-        );
-        this.researchGroupService.publicationsByRGAndType(id).subscribe(
-          (response: { num_publications_by_rg_and_type: any }) => {
-            const publicationsAmount = response.num_publications_by_rg_and_type;
-            const data = new Array<any>();
-            for (const pub_type of Object.getOwnPropertyNames(publicationsAmount)) {
-              if (publicationsAmount[pub_type] > 0) {
-                data.push({ label: pub_type, value: publicationsAmount[pub_type] });
-              }
-            }
-            this.publTypesChart.data = data;
-          }, error => {
-            this.errSwal.title = 'Estadísticas no disponibles';
-            this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-            this.errSwal.show();
-          }
-        );
+        this.requestStatistics(id);
         this.requestRG(id);
         this.uploader = new FileUploader({ queueLimit: 1 });
       } else {
@@ -253,6 +202,60 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
         this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
+  }
+
+  requestStatistics(id: number) {
+    this.researchGroupService.getOverallPublications(id).subscribe(
+      (response: { overall_num_pubs_by_users_in_rg: any }) => {
+        const publicationsOverall = response.overall_num_pubs_by_users_in_rg;
+        const data = new Array<any>();
+        for (const user of publicationsOverall) {
+          if (user.pubs_count > 0) {
+            data.push({
+              label: user.fullname,
+              value: user.pubs_count,
+              id: user.id
+            });
+          }
+        }
+        this.publOverallChart.data = [{ key: 'Usuarios', values: data }];
+      }, error => {
+        this.errSwal.title = 'Estadísticas no disponibles';
+        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
+        this.errSwal.show();
+      }
+    );
+    this.researchGroupService.publicationsLastPeriod(id).subscribe(
+      (response: { num_publications_of_users_in_a_period: any }) => {
+        const publicationsDated = response.num_publications_of_users_in_a_period;
+        const data = new Array<any>();
+        for (const date of Object.getOwnPropertyNames(publicationsDated)) {
+          const dateValues = date.split('-').map(Number);
+          data.push({ label: new Date(dateValues[0], dateValues[1] - 1), value: publicationsDated[date] });
+        }
+        this.publLastPeriodChart.data = [{ key: 'Publicaciones', values: data }];
+      }, error => {
+        this.errSwal.title = 'Estadísticas no disponibles';
+        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
+        this.errSwal.show();
+      }
+    );
+    this.researchGroupService.publicationsByRGAndType(id).subscribe(
+      (response: { num_publications_by_rg_and_type: any }) => {
+        const publicationsAmount = response.num_publications_by_rg_and_type;
+        const data = new Array<any>();
+        for (const pub_type of Object.getOwnPropertyNames(publicationsAmount)) {
+          if (publicationsAmount[pub_type] > 0) {
+            data.push({ label: pub_type, value: publicationsAmount[pub_type] });
+          }
+        }
+        this.publTypesChart.data = data;
+      }, error => {
+        this.errSwal.title = 'Estadísticas no disponibles';
+        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
       }
     );
