@@ -31,28 +31,17 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
   frequence_types: string[] = ['Unico', 'Repetitivo'];
   state_types: string[] = ['Activo', 'Inactivo'];
   minDate = new Date();         // Actual date
-  zoom: number = 8;
+  zoom: number = 16;
 
   // initial center position for the map
-  lat: number = 51.673858;
-  lng: number = 7.815982;
+  lat: number = 4.63858;
+  lng: number = -74.0841;
+
+
   markers: marker[] = [
 	  {
-		  lat: 51.673858,
-		  lng: 7.815982,
-		  label: 'A',
-		  draggable: true
-	  },
-	  {
-		  lat: 51.373858,
-		  lng: 7.215982,
-		  label: 'B',
-		  draggable: false
-	  },
-	  {
-		  lat: 51.723858,
-		  lng: 7.895982,
-		  label: 'C',
+		  lat: 4.63858,
+		  lng: -74.0841,
 		  draggable: true
 	  }
   ];
@@ -69,7 +58,6 @@ export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
       this.userService.get(id).subscribe(
         (response: any) => {
           this.rgsUser= response.user.research_groups;
-          console.log(response.user.research_groups);
         }
       );
     })
