@@ -104,22 +104,16 @@
               <agm-map class="gMaps-container"
                   [latitude]="lat"
                   [longitude]="lng"
-                  [zoom]="zoom"
-                  [disableDefaultUI]="false"
-                  [zoomControl]="false"
-                  (mapClick)="mapClicked($event)">
+                  [zoom]="16"
+                  (mapClick)="setCoords($event)">
 
                   <agm-marker
-                      *ngFor="let m of markers; let i = index"
-                      (markerClick)="clickedMarker(m.label, i)"
-                      [latitude]="m.lat"
-                      [longitude]="m.lng"
-                      [label]="m.label"
-                      [markerDraggable]="m.draggable"
-                      (dragEnd)="markerDragEnd(m, $event)">
-
+                  [latitude]="latitude.value"
+                  [longitude]="longitude.value"
+                  [label]="address.value"
+                  [markerDraggable]="true"
+                  (dragEnd)="setCoords($event)">
                   </agm-marker>
-
                 </agm-map>
             </div>
             <br><br>
@@ -147,5 +141,6 @@
   </div>
 </main>
 
-<swal #errSwal title text type="error"></swal>
 <swal #sucSwal title type="success"></swal>
+<swal #warnSwal title text type="warning"></swal>
+<swal #errSwal title text type="error"></swal>

@@ -192,11 +192,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   requestStatistics(id: number) {
-    console.log(id)
     this.userService.publicationsLastPeriod(id).subscribe(
       (response: { num_publications_of_users_in_a_period: any }) => {
         const publicationsDated = response.num_publications_of_users_in_a_period;
-        console.log(publicationsDated)
         const data = new Array<any>();
         for (const date of Object.getOwnPropertyNames(publicationsDated)) {
           const dateValues = date.split('-').map(Number);

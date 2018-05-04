@@ -41,6 +41,7 @@ export class Event {
   longitude: number;
   address:string;
   // Relations
+  research_group_id: number;
   research_group: ResearchGroup;
   users: Array<User>;
   photos: Array<Photo>;
