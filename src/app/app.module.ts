@@ -17,7 +17,7 @@ import { NvD3Module } from 'ngx-nvd3';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileDropModule } from 'ngx-file-drop';
-import { ImageCropperModule } from './modules/ngx-image-cropper/image-cropper.module';
+import { ImageCropperModule } from 'ngx-image-cropper'
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
