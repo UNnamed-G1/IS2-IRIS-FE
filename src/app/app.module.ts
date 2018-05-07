@@ -29,9 +29,9 @@ import { PermissionManager } from 'app/permission-manager';
 
 // Components
 import { AppComponent } from './app.component';
-import { AppHeaderComponent } from './template/app-header/app-header.component';
-import { AppFooterComponent } from './template/app-footer/app-footer.component';
-import { AppServicesComponent } from './template/app-services/app-services.component';
+import { AppHeaderComponent } from './components/template/app-header/app-header.component';
+import { AppFooterComponent } from './components/template/app-footer/app-footer.component';
+import { AppServicesComponent } from './components/template/app-services/app-services.component';
 // Admin
 import { ManageComponent } from './admin/manage/manage.component';
 import { AddUserComponent } from './admin/users/add/add-user.component';
