@@ -18,6 +18,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileDropModule } from 'ngx-file-drop';
 import { ImageCropperModule } from 'ngx-image-cropper'
+import { AgmCoreModule } from '@agm/core';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -63,6 +64,10 @@ import { TimeLineComponent } from './public/time-line/time-line.component';
 import { ReportsComponent } from './public/reports/reports.component';
 import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
 import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
+import { PublicationComponent } from './public/publication/publication.component';
+import { AddPublicationComponent } from './public/publication/add/add-publication.component';
+import { FollowsComponent } from './public/profile/follows/follows.component';
+import { EventComponent } from './public/events/event/event.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -81,22 +86,18 @@ import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 import { ReportService } from './services/report.service';
 import { ResearchSubjectService } from './services/research-subject.service';
+
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { CrudComponent } from './components/crud/crud.component';
 import { FormControlErrorsComponent } from './components/form-control-errors/form-control-errors.component';
 import { DocumentsComponent } from './components/documents/documents.component';
-
-import { PublicationComponent } from './public/publication/publication.component';
-import { AddPublicationComponent } from './public/publication/add/add-publication.component';
-import { FollowsComponent } from './public/profile/follows/follows.component';
+import { GenericSwalComponent } from './components/generic-swal/generic-swal.component';
 
 // Directives
 import { MediaPreviewDirective } from './directives/media-preview.directive';
 
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
-import { EventComponent } from './public/events/event/event.component';
-import { AgmCoreModule } from '@agm/core';
 
 export const appRoutes: Routes = [
   {
@@ -281,7 +282,8 @@ export const appRoutes: Routes = [
     FollowsComponent,
     MediaPreviewDirective,
     ImageCropperComponent,
-    EventComponent
+    EventComponent,
+    GenericSwalComponent
   ],
   providers: [
     {
