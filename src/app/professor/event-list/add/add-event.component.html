@@ -7,8 +7,8 @@
   <div class="container-fluid">
     <div class="container-fluid main-container">
       <div class="row">
-        <div class="col-md-6">
-          <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+          <div class="col-md-6">
 
             <!-- Name -->
             <div class="form-group">
@@ -27,7 +27,7 @@
             <!-- Description -->
             <div class="form-group">
               <label class="form-label">Descripción</label>
-              <textarea  type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
+              <textarea type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
               <app-form-control-errors [control]="description"></app-form-control-errors>
             </div>
 
@@ -35,7 +35,7 @@
             <div class="form-group">
               <label class="form-label">Tipo de evento</label>
               <select class="form-control" formControlName="event_type">
-                <option *ngFor="let et of event_types" [ngValue]="et">{{ et }}</option>
+                <option *ngFor="let et of types.event" [ngValue]="et">{{ et }}</option>
               </select>
               <app-form-control-errors [control]="event_type"></app-form-control-errors>
             </div>
@@ -55,7 +55,7 @@
             <div class="form-group">
               <label class="form-label">Frecuencia</label>
               <select class="form-control" formControlName="frequence">
-                <option *ngFor="let ft of frequence_types" [ngValue]="ft">{{ ft }}</option>
+                <option *ngFor="let ft of types.frequence" [ngValue]="ft">{{ ft }}</option>
               </select>
               <app-form-control-errors [control]="frequence"></app-form-control-errors>
             </div>
@@ -71,25 +71,21 @@
             <div class="form-group">
               <label class="form-label">Estado</label>
               <select class="form-control" formControlName="state">
-                <option *ngFor="let st of state_types" [ngValue]="st">{{ st }}</option>
+                <option *ngFor="let st of types.state" [ngValue]="st">{{ st }}</option>
               </select>
               <app-form-control-errors [control]="state"></app-form-control-errors>
             </div>
 
-
-          </form>
-        </div>
-        <div class="col-md-6">
-          <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+          </div>
+          <div class="col-md-6">
 
             <!-- ResearchGroup -->
             <div class="form-group">
               <label class="form-label">Grupos de investigación</label>
               <select class="form-control" formControlName="research_group_id">
-                <option *ngFor="let rg of rgsUser" [ngValue]="rg.id">{{ rg.name }}</option>
+                <option *ngFor="let rg of usrGroups" [ngValue]="rg.id">{{ rg.name }}</option>
               </select>
             </div>
-
 
             <!-- address-->
             <div class="form-group">
@@ -97,50 +93,24 @@
               <input type="text" class="form-control" formControlName="address" placeholder="Coloca el nombre del lugar">
             </div>
 
-            <strong>Mueve el marcador hasta el lugar del evento</strong>
-            <br><br>
             <!-- Maps -->
             <div class="gMaps-container">
-              <agm-map class="gMaps-container"
-                  [latitude]="lat"
-                  [longitude]="lng"
-                  [zoom]="16"
-                  (mapClick)="setCoords($event)">
-
-                  <agm-marker
-                  [latitude]="latitude.value"
-                  [longitude]="longitude.value"
-                  [label]="address.value"
-                  [markerDraggable]="true"
-                  (dragEnd)="setCoords($event)">
-                  </agm-marker>
-                </agm-map>
+              <label class="form-label">Mueve el marcador hasta el lugar del evento</label>
+              <agm-map class="gMaps-container" [latitude]="lat" [longitude]="lng" [zoom]="16" (mapClick)="setCoords($event)">
+                <agm-marker [latitude]="latitude.value" [longitude]="longitude.value" [label]="address.value" [markerDraggable]="true" (dragEnd)="setCoords($event)"></agm-marker>
+              </agm-map>
             </div>
-            <br><br>
-            <div class="form-group row">
-              <!-- latitude -->
-               <div class="col-xs-3" hidden>
-                 <label class="form-label">Latitud</label>
-                 <input type="text" class="form-control" formControlName="latitude" value={{latitude.value}} dirty>
-               </div>
-               <!-- longitude -->
-               <div class="col-xs-3" hidden>
-                 <label class="form-label">Longitud</label>
-                 <input type="text" class="form-control" formControlName="longitude" value={{longitude.value}} dirty>
-               </div>
-            </div>
-            <br><br>
+            <br>
+            <br>
             <div>
-              <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid" >Submit</button>
+              <button type="submit" class="btn btn-primary" [ngClass]="{ disabled: eventForm.invalid || eventForm.pristine }">Submit</button>
               <button type="button" class="btn btn-danger" routerLink="/event-list">Volver</button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </main>
 
-<swal #sucSwal title type="success"></swal>
-<swal #warnSwal title text type="warning"></swal>
-<swal #errSwal title text type="error"></swal>
+<app-generic-swal [options]="swalOpts"></app-generic-swal>
