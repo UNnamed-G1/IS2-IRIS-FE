@@ -81,10 +81,10 @@ import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
 import { ReportService } from './services/report.service';
 import { ResearchSubjectService } from './services/research-subject.service';
-import { PaginationComponent } from './pagination/pagination.component';
-import { CrudComponent } from './crud/crud.component';
-import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
-import { DocumentsComponent } from './documents/documents.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
+import { CrudComponent } from './components/crud/crud.component';
+import { FormControlErrorsComponent } from './components/form-control-errors/form-control-errors.component';
+import { DocumentsComponent } from './components/documents/documents.component';
 
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
