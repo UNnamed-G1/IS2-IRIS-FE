@@ -27,9 +27,6 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'researchGroup']) researchGroupID;
   @select() isLogged;
-  events: Array<Event>;
-  subjects: Array<ResearchSubject>;
-  publications: Array<Publication>;
 
   rgReportUrl = environment.api_url + 'reports/rep_by_rg.pdf?id=';
   PDF = false;
@@ -269,6 +266,9 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     if (rg.photo) {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
+    // if (rg.events) {
+    //   rg.events = rg.events.filter((event) => new Date(event.date) > new Date());
+    // }
     this.createRGForm();
     if (rg.members) {
       this.sessionUsername.subscribe((username: string) => {

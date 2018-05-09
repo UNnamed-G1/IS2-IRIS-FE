@@ -85,7 +85,7 @@
               </div>
               <div class="panel-body" style="overflow-y: auto; height: 300px; ">
                 <div class="research-group">
-                  <div *ngFor="let event of events">
+                  <div *ngFor="let event of researchGroup.events">
                     <div class=" media">
                       <div class="media-left media-middle">
                         <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
@@ -117,7 +117,7 @@
               </div>
               <div class="panel-body" style="overflow-y: auto; height: 300px;">
                 <div class="research-group">
-                  <div *ngFor="let subject of subjects">
+                  <div *ngFor="let subject of researchGroup.research_subjects">
                     <div class="media">
                       <div class="media-left media-middle">
                           <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
@@ -158,7 +158,7 @@
 
             <div class="panel-body" style="overflow-y: auto; height: 300px; ">
               <div class="research-group">
-                <div *ngFor="let publication of publications">
+                <div *ngFor="let publication of researchGroup.publications">
                   <div class=" media">
                     <div class="media-left media-middle">
                       <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
