@@ -9,29 +9,15 @@ export class ResearchGroupService extends CommonService {
     this.url += 'research_groups/';
   }
 
-  public getCurrentGroup() {
-    return this.applyRequestPath(this.get, 'research_groups/1');
-  }
-  public getNews() {
-    return this.applyRequestPath(this.get, 'research_groups_news');
-  }
-  public getEvents(id: number) {
-    return this.applyRequestPath(this.get, 'events_by_rg?id=' + id);
+  getNews() {
+    return this.applyRequestPath(this.get, 'research_groups/news');
   }
 
-  public getSubjects(id: number) {
-    return this.applyRequestPath(this.get, 'rs_by_rg?id=' + id);
-  }
-
-  public getPublications(id: number) {
-    return this.applyRequestPath(this.get, 'publications_by_rg?id=' + id);
-  }
-
-  public requestJoinGroup(id: any): any {
+  requestJoinGroup(id: any): any {
     return this.applyRequestPath(this.create, 'research_groups/join', [id]);
   }
 
-  public leaveGroup(id: any): any {
+  leaveGroup(id: any): any {
     return this.applyRequestPath(this.create, 'research_groups/leave', [id]);
   }
 
@@ -39,15 +25,15 @@ export class ResearchGroupService extends CommonService {
    *  Statistics
    */
   publicationsByRGAndType(id: number) {
-    return this.applyRequestPath(this.get, 'statistics/num_publications_by_rg_and_type?id=' + id);
+    return this.applyRequestPath(this.get, 'statistics/research_groups/' + id + '/num_publications_by_type');
   }
 
   publicationsLastPeriod(id: number) {
-    return this.applyRequestPath(this.get, 'statistics/num_publications_by_rg_in_a_period?id=' + id);
+    return this.applyRequestPath(this.get, 'statistics/research_groups/' + id + '/num_publications_in_a_period');
   }
 
   getOverallPublications(id: number): any {
-    return this.applyRequestPath(this.get, 'statistics/overall_num_pubs_by_users_in_rg?id=' + id);
+    return this.applyRequestPath(this.get, 'statistics/research_groups/' + id + '/overall_num_publications_by_members');
   }
 
 }

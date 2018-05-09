@@ -271,7 +271,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   setDepartments(idFaculty: number) {
-    this.departmentService.getByFaculty(idFaculty).subscribe(
+    this.facultyService.getDepartments(idFaculty).subscribe(
       (response: { departments: Array<Department> }) => {
         response.departments.forEach(function (department: Department) {
           this.departments.push(department);
@@ -288,7 +288,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   setCareers(idDepartment: number) {
-    this.careerService.getByDepartment(idDepartment).subscribe(
+    this.departmentService.getCareers(idDepartment).subscribe(
       (response: { careers: Array<Career> }) => {
         response.careers.forEach(function (career: Career) {
           this.careers.push(career);

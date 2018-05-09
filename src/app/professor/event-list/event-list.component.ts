@@ -76,7 +76,6 @@ export class EventListComponent implements OnInit, AfterContentInit {
     this.eventService.getAllEditable(this.page.actual).subscribe(
       (response: { events: Event[], total_pages: number }) => {
         this.events = response.events;
-        console.log(this.events)
         this.events.map(ev => Object.assign(ev, { research_group_name: ev.research_group.name }));
         this.page.total = response.total_pages;
       },

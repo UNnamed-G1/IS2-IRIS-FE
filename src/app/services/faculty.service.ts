@@ -10,4 +10,8 @@ export class FacultyService extends CommonService {
     this.url += 'faculties/';
   }
 
+  getDepartments(id: number) {
+    return this.applyRequestPath(this.get, 'faculties/' + id + '/departments');
+  }
+
 }

@@ -10,17 +10,20 @@ export class EventService extends CommonService {
     this.url += 'events/';
   }
 
-  public getNews() {
-    return this.applyRequestPath(this.get, 'events_news');
+  getNews() {
+    return this.applyRequestPath(this.get, 'events/news');
   }
-  public getInvitedUsers(id: number){
-    return this.applyRequestPath(this.get, 'events/invited_users?id=' +id);
+
+  getInvitedUsers(id: number) {
+    return this.applyRequestPath(this.get, 'events/' + id + '/invited_users');
   }
-  public sendInvitationEvent(id: number, ids=[]){
-    return this.applyRequestPath(this.create, 'events/invite_users', [id , [ids]]);
+
+  sendInvitationEvent(id: number, ids = []) {
+    return this.applyRequestPath(this.create, 'events/' + id + '/invite_users', [ids]);
   }
-  public getAllEditable(page: number) {
-    return this.applyRequestPath(this.get, 'events_by_editable?page=' + page);
+
+  getAllEditable(page: number) {
+    return this.applyRequestPath(this.get, 'users/current/editable_events?page=' + page);
   }
 
 }
