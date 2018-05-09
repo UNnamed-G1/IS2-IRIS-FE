@@ -43,12 +43,32 @@
             <!-- Date -->
             <div class="form-group has-feedback">
               <label class="form-label">Fecha del evento</label>
-              <input [owlDateTime]="eventDatepicker" [min]="minDate" class="form-control control-datetime" formControlName="date" placeholder="Fecha del evento">
+              <input [owlDateTime]="eventDatepicker" [min]="minDate" (change)="setEndDate()" class="form-control control-datetime" formControlName="date"
+                placeholder="Fecha del evento">
               <span [owlDateTimeTrigger]="eventDatepicker" class="datetime-trigger">
                 <i class="glyphicon glyphicon-calendar"></i>
               </span>
               <owl-date-time #eventDatepicker></owl-date-time>
               <app-form-control-errors [control]="date" [owlDateTimeMin]="'La fecha debe ser posterior a la actual.'"></app-form-control-errors>
+            </div>
+
+            <!-- End date -->
+            <div class="form-group has-feedback">
+              <label class="form-label">Fecha de finalización del evento</label>
+              <input [owlDateTime]="eventEndDatepicker" [min]="date.value" (change)="setDuration()" class="form-control control-datetime"
+                formControlName="end_date" placeholder="Fecha de finalización del evento">
+              <span [owlDateTimeTrigger]="eventEndDatepicker" class="datetime-trigger">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </span>
+              <owl-date-time #eventEndDatepicker></owl-date-time>
+              <app-form-control-errors [control]="end_date" [owlDateTimeMin]="'La fecha debe ser posterior a la de inicio del evento.'"></app-form-control-errors>
+            </div>
+
+            <!-- Duration -->
+            <div class="form-group">
+              <label class="form-label">Duración</label>
+              <input type="text" class="form-control" formControlName="duration" placeholder="Duración" (change)="setEndDate()">
+              <app-form-control-errors [control]="duration"></app-form-control-errors>
             </div>
 
             <!-- Frequence -->
@@ -58,13 +78,6 @@
                 <option *ngFor="let ft of types.frequence" [ngValue]="ft">{{ ft }}</option>
               </select>
               <app-form-control-errors [control]="frequence"></app-form-control-errors>
-            </div>
-
-            <!-- Duration -->
-            <div class="form-group">
-              <label class="form-label">Duración</label>
-              <input type="text" class="form-control" formControlName="duration" placeholder="Duración">
-              <app-form-control-errors [control]="duration"></app-form-control-errors>
             </div>
 
             <!-- State -->
@@ -83,7 +96,7 @@
             <div class="form-group">
               <label class="form-label">Grupos de investigación</label>
               <select class="form-control" formControlName="research_group_id">
-                <option *ngFor="let rg of usrGroups" [ngValue]="rg.id">{{ rg.name }}</option>
+                <option *ngFor="let rg of userGroups" [ngValue]="rg.id">{{ rg.name }}</option>
               </select>
             </div>
 

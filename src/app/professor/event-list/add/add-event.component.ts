@@ -19,12 +19,11 @@ import { Router } from '@angular/router';
   styleUrls: ['./add-event.component.css']
 })
 export class AddEventComponent implements OnInit {
-
   @select(['auxiliarID', 'eventUpdate']) eventUpdateID;
   @select(['session', 'id']) userID;
 
   private eventId: number;
-  usrGroups: Array<ResearchGroup>;
+  userGroups: Array<ResearchGroup>;
   eventForm: FormGroup;
   types: { [Key: string]: string[] } = {
     event: ['Publico', 'Privado'],
@@ -52,7 +51,7 @@ export class AddEventComponent implements OnInit {
       this.userID.subscribe(id => {
         this.userService.get(id).subscribe(
           (response: any) => {
-            this.usrGroups = response.user.research_groups;
+            this.userGroups = response.user.research_groups;
           },
           (error: HttpErrorResponse) => {
             this.swalOpts = { title: 'No se ha podido obtener tus grupos de investigación', text: error.message, type: 'error' };
@@ -94,7 +93,7 @@ export class AddEventComponent implements OnInit {
     }
     const e = new Event();
     for (const k in this.eventForm.controls) {
-      if (this.eventForm.get(k).dirty) {
+      if (this.eventForm.get(k).dirty && k != 'end_date') {
         e[k] = this.eventForm.get(k).value;
         if (k === 'event_type' || k === 'frequence' || k === 'state') {
           e[k] = e[k].toLowerCase();
@@ -128,18 +127,35 @@ export class AddEventComponent implements OnInit {
     }
   }
 
+  setEndDate() {
+    this.end_date.setValue(new Date(this.date.value.getTime() + this.durationToMili()));
+    this.end_date.markAsDirty();
+  }
+  
+  setDuration() {
+    const time: Date = new Date(this.end_date.value.getTime() - this.date.value.getTime());
+    this.duration.setValue(time.getHours() + ':' + time.getMinutes());
+    this.duration.markAsDirty();
+  }
+  
+  durationToMili(): number {
+    const [mins, secs] = this.duration.value.split(':').map((n) => parseInt(n));
+    return (mins * 60 + secs) * 60 * 1000;
+  }
+  
   setEvent(event: Event) {
     event.research_group_id = event.research_group.id;
     this.createEventForm(event);
+    this.end_date.setValue(new Date(this.date.value.getTime() + this.durationToMili()));
     this.lat = event.latitude;
     this.lng = event.longitude;
   }
 
   // Maps events
-  setCoords($event: MouseEvent) {
-    this.latitude.setValue($event.coords.lat);
+  setCoords(event: MouseEvent) {
+    this.latitude.setValue(event.coords.lat);
     this.latitude.markAsDirty();
-    this.longitude.setValue($event.coords.lng);
+    this.longitude.setValue(event.coords.lng);
     this.longitude.markAsDirty();
   }
 
@@ -149,7 +165,8 @@ export class AddEventComponent implements OnInit {
       topic: [ev.topic, [Validators.required, Validators.maxLength(5000)]],
       description: [ev.description, [Validators.required, Validators.maxLength(5000)]],
       event_type: [ev.event_type, Validators.required],
-      date: [ev.date, Validators.required],
+      date: [new Date(ev.date), Validators.required],
+      end_date: ['', Validators.required],
       research_group_id: [ev.research_group_id, Validators.required],
       frequence: [ev.frequence, Validators.required],
       duration: [ev.duration, Validators.required],
@@ -165,6 +182,7 @@ export class AddEventComponent implements OnInit {
   get description() { return this.eventForm.get('description'); }
   get event_type() { return this.eventForm.get('event_type'); }
   get date() { return this.eventForm.get('date'); }
+  get end_date() { return this.eventForm.get('end_date'); }
   get research_group_id() { return this.eventForm.get('research_group_id'); }
   get frequence() { return this.eventForm.get('frequence'); }
   get duration() { return this.eventForm.get('duration'); }
