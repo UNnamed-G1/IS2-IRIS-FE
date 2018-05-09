@@ -328,7 +328,7 @@ export class AppModule {
   verifyValidSession() {
     this.isLogged.subscribe((logged: boolean) => {
       if (logged) {
-        this.userService.getCurrentUser().subscribe(
+        this.userService.getCurrent().subscribe(
           (response: { user: User }) => {
             // Update data
             const data = response.user;

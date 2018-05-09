@@ -18,8 +18,20 @@ export class EventService extends CommonService {
     return this.applyRequestPath(this.get, 'events/' + id + '/invited_users');
   }
 
-  sendInvitationEvent(id: number, ids = []) {
-    return this.applyRequestPath(this.create, 'events/' + id + '/invite_users', [ids]);
+  getAttendees(id: number) {
+    return this.applyRequestPath(this.get, 'events/' + id + '/attendees');
+  }
+
+  getAuthors(id: number) {
+    return this.applyRequestPath(this.get, 'events/' + id + '/authors');
+  }
+
+  sendInvitation(id: number, userIds: Array<number>) {
+    return this.applyRequestPath(this.create, 'events/' + id + '/invite_users', [{ users_id: userIds}]);
+  }
+
+  removeInvitation(id: number, userId: number) {
+    return this.applyRequestPath(this.create, 'events/' + id + '/remove_invitation', [{ user_id: id }]);
   }
 
   getAllEditable(page: number) {

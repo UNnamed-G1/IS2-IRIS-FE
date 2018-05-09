@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
         let session: ISession;
         session = Object.assign({ token: response.jwt });
         this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
-        this.userService.getCurrentUser().subscribe(
+        this.userService.getCurrent().subscribe(
           (res: { user: User }) => {
             const data = res.user;
             if (data.photo) {

@@ -10,4 +10,8 @@ export class CareerService extends CommonService {
     this.url += 'careers/';
   }
 
+  getResearchGroups(id: number) {
+    this.applyRequestPath(this.get, 'careers/' + id + '/research_groups');
+  }
+
 }

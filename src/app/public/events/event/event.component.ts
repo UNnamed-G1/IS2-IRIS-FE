@@ -183,8 +183,8 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
         }
       );
     }
-    sendInvitation(id,ids) {
-      this.eventService.sendInvitationEvent( (this.event.id)).subscribe(
+    sendInvitation(ids: Array<number>) {
+      this.eventService.sendInvitation(this.event.id, ids).subscribe(
         (response) => {
           this.sucSwal.title = 'Invitaciones enviadas';
           this.sucSwal.show();

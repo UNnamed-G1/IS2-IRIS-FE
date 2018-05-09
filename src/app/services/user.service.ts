@@ -14,12 +14,16 @@ export class UserService extends CommonService {
     return this.applyRequestPath(this.get, 'users/get_user/' + username);
   }
 
-  getCurrentUser() {
+  getCurrent() {
     return this.applyRequestPath(this.get, 'users/current/');
   }
 
-  getCurrentUserRGS() {
+  getCurrentResearchGroups() {
     return this.applyRequestPath(this.get, 'users/current/research_groups');
+  }
+
+  getCurrentSchedule() {
+    return this.applyRequestPath(this.get, 'users/current/schedule');
   }
 
   /*
@@ -29,20 +33,20 @@ export class UserService extends CommonService {
     return this.applyRequestPath(this.get, 'users/current/following');
   }
 
-  getFollowing(page: number, id?: number) {
-    return this.applyRequestPath(this.get, 'users/' + id + '/following?page=' + page);
-  }
-
-  getFollowers(page: number, id?: number) {
-    return this.applyRequestPath(this.get, 'users/' + id + '/followers?page=' + page);
-  }
-
   follow(id: number) {
     return this.applyRequestPath(this.create, 'users/current/follow', [{ id_followed: id }]);
   }
 
   unfollow(id: number) {
     return this.applyRequestPath(this.create, 'users/current/unfollow', [{ id_followed: id }]);
+  }
+
+  getFollowing(page: number, id?: number) {
+    return this.applyRequestPath(this.get, 'users/' + id + '/following?page=' + page);
+  }
+
+  getFollowers(page: number, id?: number) {
+    return this.applyRequestPath(this.get, 'users/' + id + '/followers?page=' + page);
   }
 
   /*
