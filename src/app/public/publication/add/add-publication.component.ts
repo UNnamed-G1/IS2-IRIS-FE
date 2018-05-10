@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterContentInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -18,23 +18,16 @@ import { Publication } from 'app/classes/_models';
   styleUrls: ['./add-publication.component.css']
 })
 
-export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentInit {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
+export class AddPublicationComponent implements OnInit, OnDestroy {
   @select(['auxiliarID', 'publicationUpdate']) publicationID;
 
-  fileName: string;
-  fileList: FileList;
-  file: File;
-  fileReader: FileReader = new FileReader();
-  uploadPublicationResponse$;
-  uploadRequested = false;
-
-  uploadForm: FormGroup;
-  publication: Publication = new Publication();
+  publicationForm: FormGroup;
+  publicationId: number;
+  uploadedFile: File;
   type_pubs: string[] = ['Monografia', 'Patente', 'Libro', 'Articulo', 'Tesis', 'Software'];
   minDate = new Date(1900, 0);  // 1900/01/01
   maxDate = new Date();         // Actual date
+  swalOpts: any;
 
   constructor(private publicationService: PublicationService,
     private router: Router,
@@ -44,25 +37,20 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
 
   ngOnInit() {
     this.permMan.validateSession(['Admin']);
-  }
-
-  ngAfterContentInit() {
     this.publicationID.subscribe((id: number) => {
       if (id) {
+        this.publicationId = id;
         this.publicationService.get(id).subscribe(
-          (publication: { publication: Publication }) => {
-            this.publication = publication.publication;
-            this.createRGForm();
+          (response: { publication: Publication }) => {
+            this.createRGForm(response.publication);
           },
           (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
+            this.swalOpts = { title: 'No se ha podido obtener el grupo de investigación', text: error.message, type: 'error' };
           }
         );
       }
     });
-    this.createRGForm();
+    this.createRGForm(new Publication());
   }
 
   ngOnDestroy() {
@@ -70,74 +58,70 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
   }
 
   fileChange(event) {
-    this.fileList = event.target.files;
-    if (this.fileList.length > 0) {
-      this.file = this.fileList[0];
-      this.fileName = this.file.name;
+    if (event.target.files.length > 0) {
+      this.uploadedFile = event.target.files[0];
     }
   }
 
   onSubmit() {
-    if (this.uploadForm.pristine) {
+    if (this.publicationForm.pristine) {
       return;
     }
     const publication = new Publication();
-    for (const k in this.uploadForm.controls) {
-      if (this.uploadForm.get(k).dirty) {
-        publication[k] = this.uploadForm.get(k).value;
+    for (const k in this.publicationForm.controls) {
+      if (this.publicationForm.get(k).dirty) {
+        publication[k] = this.publicationForm.get(k).value;
+        if (k === 'document') {
+          publication[k] = this.uploadedFile;
+        }
+        if (k === 'type_pub') {
+          publication[k] = publication[k].toLowerCase();
+        }
       }
     }
-    if (publication.type_pub) {
-      publication.type_pub = publication.type_pub.toLowerCase();
+    const fd = new FormData();
+    for (const key of Object.keys(publication)) {
+      fd.append('publication[' + key + ']', publication[key]);
     }
-    if (this.publication.id) {
-      this.publicationService.update(this.publication.id, publication).subscribe(
+    if (this.publicationId) {
+      this.publicationService.update(this.publicationId, fd).subscribe(
         (response: { publication: Publication }) => {
-          Object.assign(this.publication, response.publication);
-          this.sucSwal.title = 'La publicación ha sido actualizada';
-          this.sucSwal.show();
-          this.createRGForm();
+          this.swalOpts = { title: 'La publicación ha sido actualizada', type: 'success' };
+          this.createRGForm(response.publication);
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Publicación no actualizada';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'Publicación no actualizada', text: error.message, type: 'error' };
         }
       );
     } else {
-      this.uploadPublicationResponse$ = this.publicationService.uploadPublication(publication, this.file);
-      this.uploadRequested = true;
-      this.uploadPublicationResponse$.subscribe(
+      this.publicationService.create(fd).subscribe(
         (response: { publication: Publication }) => {
-          this.sucSwal.title = 'El grupo de investigación ha sido añadido';
-          this.sucSwal.show();
-          this.uploadForm.reset();
+          this.swalOpts = { title: 'El grupo de investigación ha sido añadido', type: 'success' };
+          this.publicationForm.reset();
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Publicación no añadida';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'Publicación no añadida', text: error.message, type: 'error' };
         }
       );
     }
   }
 
-  private createRGForm() {
-    this.uploadForm = this.formBuilder.group({
-      name: [this.publication.name, [Validators.required, Validators.maxLength(100)]],
-      date: [this.publication.date, [Validators.required]],
-      abstract: [this.publication.abstract, [Validators.required, Validators.maxLength(1000)]],
-      brief_description: [this.publication.brief_description, [Validators.required, Validators.maxLength(1000)]],
-      type_pub: [this.publication.publication_type, [Validators.required]],
-      document: [undefined]
+  private createRGForm(publication: Publication) {
+    this.publicationForm = this.formBuilder.group({
+      name: [publication.name, [Validators.required, Validators.maxLength(100)]],
+      date: [publication.date, [Validators.required]],
+      abstract: [publication.abstract, [Validators.required, Validators.maxLength(1000)]],
+      brief_description: [publication.brief_description, [Validators.required, Validators.maxLength(1000)]],
+      type_pub: [publication.publication_type, [Validators.required]],
+      document: ['']
     });
   }
 
-  get name() { return this.uploadForm.get('name'); }
-  get date() { return this.uploadForm.get('date'); }
-  get abstract() { return this.uploadForm.get('abstract'); }
-  get brief_description() { return this.uploadForm.get('brief_description'); }
-  get type_pub() { return this.uploadForm.get('type_pub'); }
-  get document() { return this.uploadForm.get('document'); }
+  get name() { return this.publicationForm.get('name'); }
+  get date() { return this.publicationForm.get('date'); }
+  get abstract() { return this.publicationForm.get('abstract'); }
+  get brief_description() { return this.publicationForm.get('brief_description'); }
+  get type_pub() { return this.publicationForm.get('type_pub'); }
+  get document() { return this.publicationForm.get('document'); }
 
 }

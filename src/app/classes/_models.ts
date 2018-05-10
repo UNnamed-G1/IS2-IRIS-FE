@@ -118,7 +118,7 @@ export class Publication {
   date: Date;
   abstract: string;
   brief_description: string;
-  document: Array<File>;
+  document: File;
   // Type
   publication_type: string;  // Received
   type_pub: string;          // Send

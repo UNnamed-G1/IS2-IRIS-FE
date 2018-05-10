@@ -130,26 +130,26 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       this.toggleShowForm();
       return;
     }
-    const u = new User();
+    const user = new User();
     if (this.profileForm.pristine) {
-      u.username = this.user.username;
+      user.username = this.user.username;
     } else {
       for (const k in this.profileForm.controls) {
         if (this.profileForm.get(k).dirty) {
-          u[k] = this.profileForm.get(k).value;
+          user[k] = this.profileForm.get(k).value;
         }
       }
-      if (u['passwords']) {
-        Object.assign(u, {
-          password: u['passwords'].password,
-          password_confirmation: u['passwords'].pass
+      if (user['passwords']) {
+        Object.assign(user, {
+          password: user['passwords'].password,
+          password_confirmation: user['passwords'].pass
         });
-        delete u['passwords'];
+        delete user['passwords'];
       }
     }
     const fd = new FormData();
-    for (const key of Object.keys(u)) {
-      fd.append('user[' + key + ']', u[key]);
+    for (const key of Object.keys(user)) {
+      fd.append('user[' + key + ']', user[key]);
     }
     if (this.imageEncodedCropped) {
       fd.append('picture', this.base64toFile(this.imageEncodedCropped, 'File'));

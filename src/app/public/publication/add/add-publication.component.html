@@ -1,4 +1,4 @@
-<main class="detalle" *ngIf="uploadForm">
+<main class="detalle" *ngIf="publicationForm">
   <div class="breadcrumb-class">Está en:
     <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
     <a routerLink="/publications" target="_self" title="Inicio">Publicaciones</a>/
@@ -8,7 +8,7 @@
     <div class="container-fluid main-container">
       <div class="row">
         <div class="col-md-6">
-          <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+          <form [formGroup]="publicationForm" (ngSubmit)="onSubmit()">
             <!-- Name -->
             <div class="form-group">
               <label class="form-label">Nombre</label>
@@ -59,7 +59,7 @@
               <div class="col-md-2"></div>
               <div class="col-md-4">
                 <div>
-                  <button type="submit" class="btn btn-primary" [disabled]="uploadForm.invalid">Submit</button>
+                  <button type="submit" class="btn btn-primary" [disabled]="publicationForm.invalid">Submit</button>
                   <button type="button" class="btn btn-danger" routerLink="/publications">Volver</button>
                 </div>
               </div>
@@ -72,5 +72,4 @@
   </div>
 </main>
 
-<swal #errSwal title text type="error"></swal>
-<swal #sucSwal title type="success"></swal>
+<app-generic-swal [options]="swalOpts"></app-generic-swal>
