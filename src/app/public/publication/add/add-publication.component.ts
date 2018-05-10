@@ -11,7 +11,6 @@ import { PermissionManager } from 'app/permission-manager';
 
 import { PublicationService } from 'app/services/publication.service';
 import { Publication } from 'app/classes/_models';
-import { DataService } from 'app/services/data.service';
 
 @Component({
   selector: 'app-add-publication',
@@ -39,7 +38,6 @@ export class AddPublicationComponent implements OnInit, OnDestroy, AfterContentI
 
   constructor(private publicationService: PublicationService,
     private router: Router,
-    private dataService: DataService,
     private permMan: PermissionManager,
     private formBuilder: FormBuilder,
     private ngRedux: NgRedux<AppState>) { }

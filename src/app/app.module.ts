@@ -61,7 +61,6 @@ import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
-import { ReportsComponent } from './public/reports/reports.component';
 import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
 import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
 import { PublicationComponent } from './public/publication/publication.component';
@@ -80,11 +79,9 @@ import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { PublicationService } from './services/publication.service';
-import { DataService } from './services/data.service';
 
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
-import { ReportService } from './services/report.service';
 import { ResearchSubjectService } from './services/research-subject.service';
 
 import { PaginationComponent } from './components/pagination/pagination.component';
@@ -193,10 +190,6 @@ export const appRoutes: Routes = [
     component: EventComponent
   },
   {
-    path: 'reports',
-    component: ReportsComponent
-  },
-  {
     path: 'research-subjects',
     component: ResearchSubjectsComponent
   },
@@ -273,7 +266,6 @@ export const appRoutes: Routes = [
     PaginationComponent,
     CrudComponent,
     DocumentsComponent,
-    ReportsComponent,
     ResearchSubjectsComponent,
     PublicationComponent,
     AddPublicationComponent,
@@ -309,8 +301,6 @@ export const appRoutes: Routes = [
     ResearchGroupService,
     UserService,
     PublicationService,
-    DataService,
-    ReportService,
     ResearchSubjectService
   ],
   bootstrap: [AppComponent]
