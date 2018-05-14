@@ -1,0 +1,10 @@
+.author-element {
+  display: flex;
+  margin-bottom: 0.2em;
+}
+
+.author-image {
+  width: 18px;
+  height: 18px;
+  margin-right: 0.3em;
+}

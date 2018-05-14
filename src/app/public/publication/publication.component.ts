@@ -1,173 +1,139 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { PdfViewerComponent } from 'ng2-pdf-viewer';
 
-import { NgRedux } from '@angular-redux/store';
+import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 
 import { environment } from 'environments/environment';
-import { PermissionManager } from 'app/permission-manager';
 import { PublicationService } from 'app/services/publication.service';
-import { Publication } from 'app/classes/_models';
+import { Publication, User } from 'app/classes/_models';
 
 @Component({
   selector: 'app-publication',
   templateUrl: './publication.component.html',
   styleUrls: ['./publication.component.css']
 })
-export class PublicationComponent implements OnInit, AfterContentInit {
-  @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
-  PDFpage = 1;
-  totalPages: number;
-  isLoaded = true;
-  stickToPage = false;
-  showAll = false;
-  zoom = 1.0;
-  originalSize = true;
-  rotate = 0;
-  headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',
-    'Corta descripción', 'Tipo de Publicación', 'Fecha Creación'];
-  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
-  publications: Array<Publication>;
-  pub: Publication = new Publication();
-  pdfLoaded = false;
-  pdfSrc;
-  pdfName;
-  page: {
-    actual: number,
-    total: number
-  };
+export class PublicationComponent implements OnInit {
+  @select(['auxiliarID', 'publication']) publicationID;
+  @select(['session', 'type']) sessionType;
+  publication: Publication = new Publication();
+  citesKeys: Array<String>;
+  cites: any;
+  swalOpts: any;
 
-  constructor(private permMan: PermissionManager,
+  constructor(private ngRedux: NgRedux<AppState>,
     private publicationService: PublicationService,
-    private ngRedux: NgRedux<AppState>,
-    private route: ActivatedRoute,
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Admin']);
-  }
-
-
-  ngAfterContentInit() {
-    this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({
-        actual: +params.page || 1
-      });
-      this.getPublications();
+    this.publicationID.subscribe((id) => {
+      if (id) {
+        this.publicationService.get(id).subscribe(
+          (response: { publication: Publication }) => {
+            this.setPublication(response.publication);
+          },
+          (error: HttpErrorResponse) => {
+            this.swalOpts = { title: 'La publicación no ha podido ser obtenida', message: error.message, type: 'error' };
+          }
+        )
+      } else {
+        this.router.navigateByUrl('/');
+      }
     });
   }
 
-  update(id: number) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publicationUpdate: id } });
-    this.router.navigateByUrl('/publications/add');
+  viewAuthor(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: id } });
+    this.router.navigateByUrl('/profile')
   }
 
-  details(id: number) {
-    // this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: id } });
-    // this.router.navigateByUrl('/publication');
-    this.publicationService.get(id).subscribe(
-      (response: { publication: Publication }) => {
-        this.pub = response.publication;
-        this.pdfSrc = environment.api_url + this.pub.document;
-        this.pdfName = this.pub.name + '.pdf';
-        this.pdfLoaded = !this.pdfLoaded;
-      },
-      (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener la Publicación';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
-      }
-    );
+  private setPublication(publication: Publication) {
+    if (publication.document) {
+      publication.document = environment.api_url + publication.document;
+    }
+    publication.users.map((user: User) => Object.assign(user, { photo: environment.api_url + user.photo.picture }));
+    this.publication = publication;
+    this.setCites();
   }
 
-  delete(id: number) {
-    this.publicationService.delete(id).subscribe(
-      (response: { publication: Publication }) => {
-        this.getPublications();
-        this.sucSwal.title = 'La publicación ha sido eliminado';
-        this.sucSwal.show();
-      },
-      (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Publicación no eliminada';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
-      }
-    );
+  // Citation methods
+  private setCites() {
+    this.cites = {
+      APA: this.apaCitation(),
+      MLA: this.ieeeCitation(),
+      TeX: this.texCitation(),
+    };
+    this.citesKeys = Object.keys(this.cites);
   }
 
-  getPublication(id) {
-    this.publicationService.get(id).subscribe(
-      (response: { publication: Publication }) => {
-        this.pub = response.publication;
-      },
-      (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido obtener la Publicación';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
-      }
-    );
+  private apaCitation(): string {
+    let authors: string, date: string, title: string;
+    authors = this.apaCitationNames();
+    date = this.apaCitationDate();
+    title = this.publication.name;
+    return authors + ' ' + date + ' <i>' + title + '</i>.';
   }
 
-  getPublications() {
-    this.publicationService.getAll(this.page.actual).subscribe(
-      (response: { publications: Publication[], total_pages: number }) => {
-        this.publications = response.publications;
-        this.page.total = response.total_pages;
-      },
-      (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener las publicaciones';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
-      }
-    );
-  }
-  search(stringToSearch: string) {
-    this.pdfComponent.pdfFindController.executeCommand('find', {
-      caseSensitive: false, findPrevious: undefined, highlightAll: true, phraseSearch: true, query: stringToSearch
+  private apaCitationNames(): string {
+    const names: Array<string> = new Array<string>();
+    this.publication.users.forEach((author) => {
+      names.push(author.lastname.split(' ')[0] + ', ' + author.name.split(' ').map((name: string) => name[0] + '.').join(' '));
     });
-  }
-  afterLoadComplete(pdfData: any) {
-    this.totalPages = pdfData.numPages;
-    this.isLoaded = true;
-  }
-
-  nextPage() {
-    this.PDFpage++;
-  }
-
-  prevPage() {
-    this.PDFpage--;
-  }
-  onAfterLoad(event: any) {
+    let last_author = ' & ' + names[names.length - 1];
+    if (this.publication.users.length >= 8) {
+      last_author = '...' + last_author;
+      names.slice(0, 6);
+    } else {
+      names.pop();
+    }
+    return names.join(', ') + last_author
   }
 
-  switchSticky() {
-    this.stickToPage = !this.stickToPage;
+  private apaCitationDate(): string {
+    const publicationDate: string[] = new Date(this.publication.date).toString().split(' ');
+    return '(' + publicationDate[3] + ', ' + publicationDate[1] + ' ' + publicationDate[2] + ').';
   }
 
-  switchShowAll() {
-    this.showAll = !this.showAll;
+  private ieeeCitation(): string {
+    const authors: string = this.ieeeCitationNames(),
+      date: string = new Date(this.publication.date).getFullYear().toString() + '.',
+      title: string = this.publication.name;
+    return authors + ', <i>' + title + '</i>.' + ' ' + date;
   }
 
-  setPage(num: number) {
-    this.PDFpage += num;
+  private ieeeCitationNames(): string {
+    const names: Array<string> = new Array<string>();
+    this.publication.users.forEach((author) => {
+      names.push(author.name.split(' ').map((name: string) => name[0] + '.').join(' ') + ' ' + author.lastname.split(' ')[0]);
+    });
+    const last_author = ' and ' + names[names.length - 1];
+    names.pop();
+    return names.join(', ') + last_author
   }
-  incrementZoom(amount: number) {
-    this.zoom += amount;
+
+  private texCitation(): string {
+    const title: string = this.publication.name,
+      authors: string = this.texCitationNames(),
+      year: string = new Date(this.publication.date).getFullYear().toString(),
+      citename: string = this.publication.name + year;
+    return '@article{' + citename
+      + ', author = {' + authors + '}'
+      + ', title = {' + title + '}'
+      + ', year =' + year
+      + ' }';
   }
-  originalZoom() {
-    this.zoom = 1.0;
+
+  private texCitationNames(): string {
+    const names: Array<string> = new Array<string>();
+    let authors;
+    this.publication.users.forEach((author) => {
+      names.push(author.name + ' ' + author.lastname);
+    });
+    authors = ' and ' + names[names.length - 1];
+    names.pop();
+    return names.join(', ') + authors
   }
-  rotatePdf() {
-    this.rotate += 90;
-  }
-  showPub() {
-    this.pdfLoaded = !this.pdfLoaded;
-  }
+  
 }

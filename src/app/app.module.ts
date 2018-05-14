@@ -198,7 +198,7 @@ export const appRoutes: Routes = [
     component: DocumentsComponent
   },
   {
-    path: 'publications',
+    path: 'publication',
     component: PublicationComponent
   }/*,
   {

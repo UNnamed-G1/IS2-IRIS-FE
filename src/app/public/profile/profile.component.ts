@@ -1,4 +1,5 @@
 import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, ElementRef, NgZone } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UploadEvent, UploadFile, FileSystemFileEntry } from 'ngx-file-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -17,7 +18,6 @@ import { DepartmentService } from 'app/services/department.service';
 import { CareerService } from 'app/services/career.service';
 import { UserService } from 'app/services/user.service';
 import { User, Career, Department, Faculty } from 'app/classes/_models';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -57,6 +57,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     private ngRedux: NgRedux<AppState>,
     private permMan: PermissionManager,
     private formBuilder: FormBuilder,
+    private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone) {
     this.publLastPeriodChart.options.chart = {
@@ -301,6 +302,11 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       }
     );
     this.careers = new Array<Career>();
+  }
+
+  viewPublication(publicationId: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: publicationId } });
+    this.router.navigateByUrl('publication')
   }
 
   // Boolean displays edit form on true

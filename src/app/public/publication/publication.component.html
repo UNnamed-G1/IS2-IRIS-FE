@@ -1,4 +1,60 @@
-<div class="panel panel-default" style="margin-top:10px;">
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <span>Publicaciones / {{ publication.name }}</span>
+  </div>
+  <div class="container-fluid main-container">
+    <div class="container-fluid">
+      <div class="row">
+        <h2>{{ publication.name }} -
+          <a data-toggle="modal" data-target="#modal-cites">Citar</a>
+        </h2>
+        <div>
+          Fecha de publicación: {{ publication.date | date: 'fullDate' }}
+        </div>
+        <div>
+          Tipo de publicacion: {{ publication.publication_type }}
+        </div>
+        <div>
+          Descripción: {{ publication.brief_description }}
+        </div>
+        <div>
+          Abstract: {{ publication.abstract }}
+        </div>
+        <div>
+          Autores:
+          <ul>
+            <li *ngFor="let author of publication.users">
+              <div class="author-element" (click)="viewAuthor(author.id)">
+                <img [src]="author.photo" onerror="this.src = 'assets/images/user.png';" class="rounded-image author-image img-responsive"
+                /> {{ author.full_name }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <app-documents [url]="publication.document"></app-documents>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="modal-cites" class="modal fade hidden-print" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <h2>Citar</h2>
+      <div class="row" *ngFor="let cite of citesKeys">
+        <div class="col-md-2">
+          {{ cite }}
+        </div>
+        <div class="col-md-8" [innerHtml]="cites[cite]">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="panel panel-default" style="margin-top:10px;">
   <div class="panel-heading">
     <h1>Publicaciones</h1>
   </div>
@@ -21,4 +77,4 @@
   </div>
 </div>
 <swal #errSwal title text type="error"></swal>
-<swal #sucSwal title type="success"></swal>
+<swal #sucSwal title type="success"></swal> -->
