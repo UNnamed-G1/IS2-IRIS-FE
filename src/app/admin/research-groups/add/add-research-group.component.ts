@@ -34,7 +34,7 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Admin']);
+    this.permMan.validateSession(['Administrador']);
   }
 
   ngAfterContentInit() {

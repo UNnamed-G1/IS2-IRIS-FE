@@ -36,7 +36,7 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Admin']);
+    this.permMan.validateSession(['Administrador']);
     this.publicationID.subscribe((id: number) => {
       if (id) {
         this.publicationId = id;
@@ -73,9 +73,6 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
         publication[k] = this.publicationForm.get(k).value;
         if (k === 'document') {
           publication[k] = this.uploadedFile;
-        }
-        if (k === 'type_pub') {
-          publication[k] = publication[k].toLowerCase();
         }
       }
     }

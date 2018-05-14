@@ -25,7 +25,7 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
 
   user: User = new User();
   userForm: FormGroup;
-  type: string[] = ['Estudiante', 'Profesor', 'Admin'];
+  type: string[] = ['Estudiante', 'Profesor', 'Administrador'];
 
   constructor(private userService: UserService,
     private permMan: PermissionManager,
@@ -33,7 +33,7 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Admin']);
+    this.permMan.validateSession(['Administrador']);
   }
 
   ngAfterContentInit() {
@@ -78,9 +78,6 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
     }
     if (u.username) {
       u.email = u.username + '@unal.edu.co';
-    }
-    if (u.user_type) {
-      u.user_type = u.user_type.toLowerCase();
     }
     if (this.user.id) {
       this.userService.update(this.user.id, { user: u }).subscribe(

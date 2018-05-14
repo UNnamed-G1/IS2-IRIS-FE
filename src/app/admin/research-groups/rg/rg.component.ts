@@ -48,7 +48,6 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   publOverallChart = { options: { chart: {} }, data: [] };
 
   constructor(private researchGroupService: ResearchGroupService,
-    private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
     private acRoute: ActivatedRoute,
     private router: Router,

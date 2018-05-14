@@ -9,7 +9,7 @@
 					<p>
 						<button class="btn btn-primary btn-lg" routerLink="/about" role="button">Mas información</button>
 						<button *ngIf="!(isLogged | async)" class="btn btn-primary btn-lg" routerLink="/login" role="button">Login</button>
-						<button *ngIf="(sessionType | async) === 'Admin'" class="btn btn-primary btn-lg" routerLink="/admin/manage" role="button">ADMINISTRAR</button>
+						<button *ngIf="(sessionType | async) === 'Administrador'" class="btn btn-primary btn-lg" routerLink="/admin/manage" role="button">ADMINISTRAR</button>
 						<button *ngIf="(sessionType | async) === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">EVENTOS</button>
 						
 					</p>

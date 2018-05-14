@@ -198,7 +198,7 @@
           </div>
         </div>
       </div>
-      <button class="btn btn-primary" *ngIf="(sessionType | async) == 'Admin'" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Administrador'" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
     </div>
 

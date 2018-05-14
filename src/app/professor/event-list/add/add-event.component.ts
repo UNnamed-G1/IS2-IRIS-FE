@@ -26,8 +26,8 @@ export class AddEventComponent implements OnInit {
   userGroups: Array<ResearchGroup>;
   eventForm: FormGroup;
   types: { [Key: string]: string[] } = {
-    event: ['Publico', 'Privado'],
-    frequence: ['Unico', 'Repetitivo'],
+    event: ['Público', 'Privado'],
+    frequence: ['Único', 'Repetitivo'],
     state: ['Activo', 'Inactivo']
   }
   minDate: Date = new Date(); // Actual date for event date
@@ -95,14 +95,7 @@ export class AddEventComponent implements OnInit {
     for (const k in this.eventForm.controls) {
       if (this.eventForm.get(k).dirty && k != 'end_date') {
         e[k] = this.eventForm.get(k).value;
-        if (k === 'event_type' || k === 'frequence' || k === 'state') {
-          e[k] = e[k].toLowerCase();
-        }
       }
-    }
-    if (e.event_type) {
-      e.type_ev = e.event_type;
-      delete e.event_type;
     }
     if (this.eventId) {
       this.eventService.update(this.eventId, { event: e }).subscribe(
