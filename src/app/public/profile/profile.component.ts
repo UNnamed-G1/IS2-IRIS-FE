@@ -104,7 +104,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
               this.requestUser(this.userService.get(id), true);
             });
           }
-        });
+        }).unsubscribe();
       }
     });
     this.userID.subscribe((userID: number) => {
