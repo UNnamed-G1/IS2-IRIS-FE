@@ -32,7 +32,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
   showInput = false;
   isInvited: boolean;
   eventForm: FormGroup;
-  event_types: string[] = ['Publico', 'Privado'];
+  event_types: string[] = ['publico', 'privado'];
   frequence_types: string[] = ['Unico', 'Repetitivo'];
   state_types: string[] = ['Activo', 'Inactivo'];
   uploader: FileUploader;
@@ -70,7 +70,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
       this.eventID.subscribe((id: number) => {
           this.setInvitedU(id);
         });
-      this.test=this.eventID.latitude;
+      this.test=this.eventID.latitude
     }
 
     ngAfterContentInit() {
@@ -92,6 +92,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
         return;
       }
       const event = new Event();
+
       if (this.eventForm.pristine) {
           event.topic = this.event.topic;
       } else {
@@ -102,7 +103,19 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
             event.longitude=this.lngP;
           }
         }
+        if (event.event_type) {
+          event.type_ev = event.event_type.toLowerCase();
+          delete event.event_type;
+        }
+
+        if (event.frequence) {
+          event.frequence = event.frequence.toLowerCase();
+        }
+        if (event.state) {
+          event.state = event.state.toLowerCase();
+        }
       }
+      console.log(event);
       const fd = new FormData();
       for (const key of Object.keys(event)) {
         fd.append('event[' + key + ']', event[key]);
@@ -110,6 +123,7 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
       if (this.uploader.queue.length) {
         fd.append('picture', this.uploader.queue[0].file.rawFile);
       }
+
       this.eventService.update(this.event.id, fd).subscribe(
         (response: { event: Event }) => {
           this.sucSwal.title = 'El grupo ha sido actualizado';
@@ -122,8 +136,10 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
           this.errSwal.title = 'El grupo no ha podido ser actualizado';
           this.errSwal.text = 'Mensaje de error: ' + error.message;
           this.errSwal.show();
+
         }
       );
+
     }
 
     onSubmit() {

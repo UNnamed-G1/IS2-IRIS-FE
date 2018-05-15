@@ -30,11 +30,11 @@
             </div>
           </div>
           <!-- Maps -->
-          {{test}}
+
           <div class="gMaps-container">
             <agm-map class="gMaps-container"
-                [latitude]="lat"
-                [longitude]="lng"
+                [latitude]="event.latitude"
+                [longitude]="event.longitude"
                 [zoom]="zoom"
                 [disableDefaultUI]="false"
                 [zoomControl]="false"
