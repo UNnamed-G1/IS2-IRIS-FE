@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -11,202 +11,176 @@ import { PermissionManager } from 'app/permission-manager';
 import { Event, ResearchGroup } from 'app/classes/_models';
 import { EventService } from 'app/services/event.service';
 import { UserService } from 'app/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-event',
   templateUrl: './add-event.component.html',
   styleUrls: ['./add-event.component.css']
 })
-
-export class AddEventComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
-
+export class AddEventComponent implements OnInit {
   @select(['auxiliarID', 'eventUpdate']) eventUpdateID;
   @select(['session', 'id']) userID;
-  rgsUser: Array<ResearchGroup>;
-  event: Event = new Event();
-  eventForm: FormGroup;
-  event_types: string[] = ['Publico', 'Privado'];
-  frequence_types: string[] = ['Unico', 'Repetitivo'];
-  state_types: string[] = ['Activo', 'Inactivo'];
-  minDate = new Date();         // Actual date
-  zoom: number = 16;
 
-  // initial center position for the map
+  private eventId: number;
+  userGroups: Array<ResearchGroup>;
+  eventForm: FormGroup;
+  types: { [Key: string]: string[] } = {
+    event: ['Público', 'Privado'],
+    frequence: ['Único', 'Repetitivo'],
+    state: ['Activo', 'Inactivo']
+  }
+  minDate: Date = new Date(); // Actual date for event date
+  swalOpts: any;
+  // Initial map position
   lat: number = 4.63858;
   lng: number = -74.0841;
-  // coords to send
-  latP: number;
-  lngP: number;
 
-  markers: marker[] = [
-	  {
-		  lat: 4.63858,
-		  lng: -74.0841,
-		  draggable: true
-	  }
-  ];
-
-  constructor(private eventService: EventService,
+  constructor(
+    private eventService: EventService,
     private userService: UserService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
-    private formBuilder: FormBuilder) { }
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Profesor']);
-    this.userID.subscribe((id) => {
-      this.userService.get(id).subscribe(
-        (response: any) => {
-          this.rgsUser= response.user.research_groups;
-        }
-      );
-    })
-    this.latP=this.lat;
-    this.lngP=this.lng;
-  }
-
-  ngAfterContentInit() {
-    this.eventUpdateID.subscribe((id: number) => {
-      if (id) {
-        this.eventService.get(id).subscribe(
-          (event: { event: Event }) => {
-            this.event = event.event;
-            this.createEventForm();
+    this.createEventForm(new Event());
+    if (this.permMan.validateSession(['Profesor'])) {
+      this.userID.subscribe(id => {
+        this.userService.get(id).subscribe(
+          (response: any) => {
+            this.userGroups = response.user.research_groups;
           },
           (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se ha podido obtener el evento';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
+            this.swalOpts = { title: 'No se ha podido obtener tus grupos de investigación', text: error.message, type: 'error' };
           }
         );
-      }
-    });
-    this.createEventForm();
-  }
-
-  ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'eventUpdate' });
+      });
+      this.eventUpdateID.subscribe((id: number) => {
+        if (id) {
+          this.eventService.get(id).subscribe(
+            (response: { event: Event }) => {
+              this.eventId = response.event.id;
+              this.setEvent(response.event);
+            },
+            (error: HttpErrorResponse) => {
+              this.swalOpts = { title: 'No se ha podido obtener el evento', text: error.message, type: 'error' };
+            }
+          );
+        } else {
+          // No id stored
+          this.router.navigateByUrl('');
+        }
+      });
+    }
   }
 
   onSubmit() {
-    if (this.eventForm.pristine) {
-      return;
-    }
-    for (const k in this.eventForm.controls) {
-        if (this.eventForm.get(k).errors) {
-
+    if (this.eventForm.invalid) {
+      this.swalOpts = { title: 'Hay datos inválidos', text: 'Por favor corrígelos y vuelve a intentarlo', type: 'warning' };
+      for (const k in this.eventForm.controls) {
+        if (this.eventForm.get(k).invalid) {
+          this.eventForm.get(k).markAsDirty;
         }
       }
+      return;
+    }
+    if (this.eventForm.pristine) {
+      this.swalOpts = { title: 'No has realizado cambios', text: 'Los datos no serán actualizados', type: 'warning' };
+      return;
+    }
     const e = new Event();
     for (const k in this.eventForm.controls) {
-      if (this.eventForm.get(k).dirty) {
+      if (this.eventForm.get(k).dirty && k != 'end_date') {
         e[k] = this.eventForm.get(k).value;
-        e.latitude=this.latP;
-        e.longitude=this.lngP;
       }
     }
-    if (e.event_type) {
-      e.type_ev = e.event_type.toLowerCase();
-      delete e.event_type;
-    }
-    if (e.frequence) {
-      e.frequence = e.frequence.toLowerCase();
-    }
-    if (e.state) {
-      e.state = e.state.toLowerCase();
-    }
-    if (this.event.id) {
-      this.eventService.update(this.event.id, { event: e }).subscribe(
+    if (this.eventId) {
+      this.eventService.update(this.eventId, { event: e }).subscribe(
         (response: { event: Event }) => {
-          Object.assign(this.event, response.event);
-          this.sucSwal.title = 'El evento ha sido actualizado';
-          this.sucSwal.show();
-          this.createEventForm();
-          console.log(response.event);
+          this.swalOpts = { title: 'El evento ha sido actualizado', type: 'success' };
+          this.setEvent(response.event);
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Evento no actualizado';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'Evento no actualizado', text: error.message, type: 'error' };
         }
       );
     } else {
       this.eventService.create({ event: e }).subscribe(
         (response: { event: Event }) => {
-          this.sucSwal.title = 'El evento ha sido añadido';
-          this.sucSwal.show();
+          this.swalOpts = { title: 'El evento ha sido añadido', type: 'success' };
           this.eventForm.reset();
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Evento no añadido';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'Evento no añadido', text: error.message, type: 'error' };
         }
       );
     }
   }
 
-  private createEventForm() {
+  setEndDate() {
+    this.end_date.setValue(new Date(this.date.value.getTime() + this.durationToMili()));
+    this.end_date.markAsDirty();
+  }
+  
+  setDuration() {
+    const time: Date = new Date(this.end_date.value.getTime() - this.date.value.getTime());
+    this.duration.setValue(time.getHours() + ':' + time.getMinutes());
+    this.duration.markAsDirty();
+  }
+  
+  durationToMili(): number {
+    const [mins, secs] = this.duration.value.split(':').map((n) => parseInt(n));
+    return (mins * 60 + secs) * 60 * 1000;
+  }
+  
+  setEvent(event: Event) {
+    event.research_group_id = event.research_group.id;
+    this.createEventForm(event);
+    this.end_date.setValue(new Date(this.date.value.getTime() + this.durationToMili()));
+    this.lat = event.latitude;
+    this.lng = event.longitude;
+  }
+
+  // Maps events
+  setCoords(event: MouseEvent) {
+    this.latitude.setValue(event.coords.lat);
+    this.latitude.markAsDirty();
+    this.longitude.setValue(event.coords.lng);
+    this.longitude.markAsDirty();
+  }
+
+  private createEventForm(ev: Event) {
     this.eventForm = this.formBuilder.group({
-      name: [this.event.name, Validators.required],
-      topic: [this.event.topic,
-      [Validators.required, Validators.maxLength(5000)]],
-      description: [this.event.description,
-      [Validators.required, Validators.maxLength(5000)]],
-      event_type: [this.event.event_type, Validators.required],
-      date: [this.event.date, Validators.required],
-      research_group_id: [this.event.research_group, Validators.required],
-      frequence: [this.event.frequence, Validators.required],
-      duration: [this.event.duration, Validators.required],
-      state: [this.event.state, Validators.required],
-      address: [this.event.address, Validators.required],
-      latitude: [this.event.latitude],
-      longitude: [this.event.longitude],
+      name: [ev.name, Validators.required],
+      topic: [ev.topic, [Validators.required, Validators.maxLength(5000)]],
+      description: [ev.description, [Validators.required, Validators.maxLength(5000)]],
+      event_type: [ev.event_type, Validators.required],
+      date: [new Date(ev.date), Validators.required],
+      end_date: ['', Validators.required],
+      research_group_id: [ev.research_group_id, Validators.required],
+      frequence: [ev.frequence, Validators.required],
+      duration: [ev.duration, Validators.required],
+      state: [ev.state, Validators.required],
+      address: [ev.address, Validators.required],
+      latitude: [ev.latitude],
+      longitude: [ev.longitude]
     });
   }
-  get research_group_id() {return this.eventForm.get('research_group_id');}
+
   get name() { return this.eventForm.get('name'); }
   get topic() { return this.eventForm.get('topic'); }
   get description() { return this.eventForm.get('description'); }
   get event_type() { return this.eventForm.get('event_type'); }
   get date() { return this.eventForm.get('date'); }
+  get end_date() { return this.eventForm.get('end_date'); }
+  get research_group_id() { return this.eventForm.get('research_group_id'); }
   get frequence() { return this.eventForm.get('frequence'); }
   get duration() { return this.eventForm.get('duration'); }
   get state() { return this.eventForm.get('state'); }
-  get latitude(){return this.eventForm.get('latitude'); }
-  get longitude(){return this.eventForm.get('longitude'); }
-  get address(){return this.eventForm.get('address'); }
-
-  markerDragEnd(m: marker, $event: MouseEvent) {
-    console.log('dragEnd', m, $event);
-    this.latP=$event.coords.lat;
-    this.lngP=$event.coords.lng;
-
-  }
-
-  clickedMarker(label: string, index: number) {
-    console.log(`clicked the marker: ${label || index}`)
-  }
-
-  mapClicked($event: MouseEvent) {
-    this.markers[0].lat = $event.coords.lat;
-    this.markers[0].lng = $event.coords.lng;
-
-    /*this.markers.push({
-      lat: $event.coords.lat,
-      lng: $event.coords.lng,
-      draggable: true
-    });*/
-  }
-
-}
-
-// just an interface for type safety.
-interface marker {
-	lat: number;
-	lng: number;
-	label?: string;
-	draggable: boolean;
+  get latitude() { return this.eventForm.get('latitude'); }
+  get longitude() { return this.eventForm.get('longitude'); }
+  get address() { return this.eventForm.get('address'); }
 }

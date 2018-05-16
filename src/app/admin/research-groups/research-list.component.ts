@@ -28,7 +28,7 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
     'research_priorities', 'foundation_date', 'classification',
     'date_classification', 'url'];
   researchGroups: Array<ResearchGroup>;
-  historyReportURL = environment.api_url + 'reports/rgs_history.pdf';
+  historyReportURL = environment.api_url + 'reports/research_groups_history.pdf';
   PDF = false;
 
   page: {
@@ -43,7 +43,7 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Admin']);
+    this.permMan.validateSession(['Administrador']);
   }
 
   ngAfterContentInit() {

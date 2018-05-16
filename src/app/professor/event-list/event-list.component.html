@@ -1,18 +1,21 @@
-<div class="panel panel-default" style="margin-top:10px;">
-  <div class="panel-heading">
-    <h1>Eventos</h1>
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Lista de grupos de investigación</span></div>
+  <div class="panel panel-default" style="margin-top:10px;">
+    <div class="panel-heading">
+      <h1>Eventos</h1>
+    </div>
+
+    <div class="panel-body" style="position:relative">
+
+      <button class="btn btn-primary btn-sm" routerLink="/events/add" role="button">Agregar</button>
+      <button class="btn btn-primary btn-sm" routerLink="/" role="button">Volver</button>
+
+      <app-crud [columns]="headers" [keys]="keys" [rows]="events" (onUpdate)="update($event)" (onDetails)="details($event)" (onDelete)="delete($event)"></app-crud>
+      <app-pagination [page]="page"></app-pagination>
+      <button class="btn btn-primary btn-sm" routerLink="/" role="button">Volver</button>
+    </div>
   </div>
+</main>
 
-  <div class="panel-body" style="position:relative">
-
-    <button class="btn btn-primary btn-sm" routerLink="/events/add" role="button">Agregar</button>
-    <button class="btn btn-primary btn-sm" routerLink="/" role="button">Volver</button>
-
-    <app-crud [columns]="headers" [keys]="keys" [rows]="events" (onUpdate)="update($event)" (onDetails)="details($event)" (onDelete)="delete($event)"></app-crud>
-    <app-pagination [page]="page"></app-pagination>
-    <button class="btn btn-primary btn-sm" routerLink="/" role="button">Volver</button>
-  </div>
-</div>
-
-<swal #sucSwal title type="success"></swal>
 <swal #errSwal title text type="error"></swal>
+<swal #sucSwal title type="success"></swal>

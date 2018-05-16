@@ -50,8 +50,41 @@ app-footer {
   border-radius: 6px;
 }
 
+.main-container {
+  padding: 20px;
+  background-color: #eee;
+}
+
 .btn-swal {
   margin: 0 .3125em;
+}
+
+.rounded-image {
+  width: 100%;
+  border-radius: 50%;
+}
+
+.modal {
+  text-align: center;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.modal-content {
+  margin: 5% auto;
+  padding: 5px 20px 13px 20px;
+  background: -moz-linear-gradient(#eee, #fff);
+  background: -webkit-linear-gradient(#eee, #fff);
+  background: -o-linear-gradient(#eee, #fff);
+  background: linear-gradient(#eee, #fff);
+}
+
+.modal-header {
+  text-align: center;
 }
 
 /* Forms validations styles */

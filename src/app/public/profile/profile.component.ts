@@ -104,7 +104,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
               this.requestUser(this.userService.get(id), true);
             });
           }
-        });
+        }).unsubscribe();
       }
     });
     this.userID.subscribe((userID: number) => {
@@ -130,26 +130,26 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       this.toggleShowForm();
       return;
     }
-    const u = new User();
+    const user = new User();
     if (this.profileForm.pristine) {
-      u.username = this.user.username;
+      user.username = this.user.username;
     } else {
       for (const k in this.profileForm.controls) {
         if (this.profileForm.get(k).dirty) {
-          u[k] = this.profileForm.get(k).value;
+          user[k] = this.profileForm.get(k).value;
         }
       }
-      if (u['passwords']) {
-        Object.assign(u, {
-          password: u['passwords'].password,
-          password_confirmation: u['passwords'].pass
+      if (user['passwords']) {
+        Object.assign(user, {
+          password: user['passwords'].password,
+          password_confirmation: user['passwords'].pass
         });
-        delete u['passwords'];
+        delete user['passwords'];
       }
     }
     const fd = new FormData();
-    for (const key of Object.keys(u)) {
-      fd.append('user[' + key + ']', u[key]);
+    for (const key of Object.keys(user)) {
+      fd.append('user[' + key + ']', user[key]);
     }
     if (this.imageEncodedCropped) {
       fd.append('picture', this.base64toFile(this.imageEncodedCropped, 'File'));
@@ -192,11 +192,9 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   requestStatistics(id: number) {
-    console.log(id)
     this.userService.publicationsLastPeriod(id).subscribe(
       (response: { num_publications_of_users_in_a_period: any }) => {
         const publicationsDated = response.num_publications_of_users_in_a_period;
-        console.log(publicationsDated)
         const data = new Array<any>();
         for (const date of Object.getOwnPropertyNames(publicationsDated)) {
           const dateValues = date.split('-').map(Number);
@@ -207,6 +205,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         this.errSwal.title = 'Estadísticas no disponibles';
         this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
+        this.publLastPeriodChart.data = [];
       }
     );
     this.userService.publicationsByUserAndType(id).subscribe(
@@ -224,6 +223,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         this.errSwal.title = 'Estadísticas no disponibles';
         this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
+        this.publTypesChart.data = [];
       }
     );
   }
@@ -271,7 +271,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   setDepartments(idFaculty: number) {
-    this.departmentService.getByFaculty(idFaculty).subscribe(
+    this.facultyService.getDepartments(idFaculty).subscribe(
       (response: { departments: Array<Department> }) => {
         response.departments.forEach(function (department: Department) {
           this.departments.push(department);
@@ -288,7 +288,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   setCareers(idDepartment: number) {
-    this.careerService.getByDepartment(idDepartment).subscribe(
+    this.departmentService.getCareers(idDepartment).subscribe(
       (response: { careers: Array<Career> }) => {
         response.careers.forEach(function (career: Career) {
           this.careers.push(career);

@@ -10,17 +10,32 @@ export class EventService extends CommonService {
     this.url += 'events/';
   }
 
-  public getNews() {
-    return this.applyRequestPath(this.get, 'events_news');
+  getNews() {
+    return this.applyRequestPath(this.get, 'events/news');
   }
-  public getInvitedUsers(id: number){
-    return this.applyRequestPath(this.get, 'events/invited_users?id=' +id);
+
+  getInvitedUsers(id: number) {
+    return this.applyRequestPath(this.get, 'events/' + id + '/invited_users');
   }
-  public sendInvitationEvent(id: number, ids=[]){
-    return this.applyRequestPath(this.create, 'events/invite_users', [id , [ids]]);
+
+  getAttendees(id: number) {
+    return this.applyRequestPath(this.get, 'events/' + id + '/attendees');
   }
-  public getAllEditable(page: number) {
-    return this.applyRequestPath(this.get, 'events_by_editable?page=' + page);
+
+  getAuthors(id: number) {
+    return this.applyRequestPath(this.get, 'events/' + id + '/authors');
+  }
+
+  sendInvitation(id: number, userIds: Array<number>) {
+    return this.applyRequestPath(this.create, 'events/' + id + '/invite_users', [{ users_id: userIds}]);
+  }
+
+  removeInvitation(id: number, userId: number) {
+    return this.applyRequestPath(this.create, 'events/' + id + '/remove_invitation', [{ user_id: id }]);
+  }
+
+  getAllEditable(page: number) {
+    return this.applyRequestPath(this.get, 'users/current/editable_events?page=' + page);
   }
 
 }

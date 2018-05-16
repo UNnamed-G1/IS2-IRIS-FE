@@ -17,7 +17,8 @@ import { NvD3Module } from 'ngx-nvd3';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { FileUploadModule } from 'ng2-file-upload';
 import { FileDropModule } from 'ngx-file-drop';
-import { ImageCropperModule } from './modules/ngx-image-cropper/image-cropper.module';
+import { ImageCropperModule } from 'ngx-image-cropper'
+import { AgmCoreModule } from '@agm/core';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -29,9 +30,9 @@ import { PermissionManager } from 'app/permission-manager';
 
 // Components
 import { AppComponent } from './app.component';
-import { AppHeaderComponent } from './template/app-header/app-header.component';
-import { AppFooterComponent } from './template/app-footer/app-footer.component';
-import { AppServicesComponent } from './template/app-services/app-services.component';
+import { AppHeaderComponent } from './components/template/app-header/app-header.component';
+import { AppFooterComponent } from './components/template/app-footer/app-footer.component';
+import { AppServicesComponent } from './components/template/app-services/app-services.component';
 // Admin
 import { ManageComponent } from './admin/manage/manage.component';
 import { AddUserComponent } from './admin/users/add/add-user.component';
@@ -60,9 +61,12 @@ import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
 import { TimeLineComponent } from './public/time-line/time-line.component';
-import { ReportsComponent } from './public/reports/reports.component';
 import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
 import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
+import { PublicationComponent } from './public/publication/publication.component';
+import { AddPublicationComponent } from './public/publication/add/add-publication.component';
+import { FollowsComponent } from './public/profile/follows/follows.component';
+import { EventComponent } from './public/events/event/event.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -75,28 +79,22 @@ import { LoginService } from './services/login.service';
 import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { PublicationService } from './services/publication.service';
-import { DataService } from './services/data.service';
 
 import { RgComponent } from './admin/research-groups/rg/rg.component';
 import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
-import { ReportService } from './services/report.service';
 import { ResearchSubjectService } from './services/research-subject.service';
-import { PaginationComponent } from './pagination/pagination.component';
-import { CrudComponent } from './crud/crud.component';
-import { FormControlErrorsComponent } from './form-control-errors/form-control-errors.component';
-import { DocumentsComponent } from './documents/documents.component';
 
-import { PublicationComponent } from './public/publication/publication.component';
-import { AddPublicationComponent } from './public/publication/add/add-publication.component';
-import { FollowsComponent } from './public/profile/follows/follows.component';
+import { PaginationComponent } from './components/pagination/pagination.component';
+import { CrudComponent } from './components/crud/crud.component';
+import { FormControlErrorsComponent } from './components/form-control-errors/form-control-errors.component';
+import { DocumentsComponent } from './components/documents/documents.component';
+import { GenericSwalComponent } from './components/generic-swal/generic-swal.component';
 
 // Directives
 import { MediaPreviewDirective } from './directives/media-preview.directive';
 
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
-import { EventComponent } from './public/events/event/event.component';
-import { AgmCoreModule } from '@agm/core';
 
 export const appRoutes: Routes = [
   {
@@ -192,10 +190,6 @@ export const appRoutes: Routes = [
     component: EventComponent
   },
   {
-    path: 'reports',
-    component: ReportsComponent
-  },
-  {
     path: 'research-subjects',
     component: ResearchSubjectsComponent
   },
@@ -272,7 +266,6 @@ export const appRoutes: Routes = [
     PaginationComponent,
     CrudComponent,
     DocumentsComponent,
-    ReportsComponent,
     ResearchSubjectsComponent,
     PublicationComponent,
     AddPublicationComponent,
@@ -281,7 +274,8 @@ export const appRoutes: Routes = [
     FollowsComponent,
     MediaPreviewDirective,
     ImageCropperComponent,
-    EventComponent
+    EventComponent,
+    GenericSwalComponent
   ],
   providers: [
     {
@@ -307,8 +301,6 @@ export const appRoutes: Routes = [
     ResearchGroupService,
     UserService,
     PublicationService,
-    DataService,
-    ReportService,
     ResearchSubjectService
   ],
   bootstrap: [AppComponent]
@@ -326,7 +318,7 @@ export class AppModule {
   verifyValidSession() {
     this.isLogged.subscribe((logged: boolean) => {
       if (logged) {
-        this.userService.getCurrentUser().subscribe(
+        this.userService.getCurrent().subscribe(
           (response: { user: User }) => {
             // Update data
             const data = response.user;

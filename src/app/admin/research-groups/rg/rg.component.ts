@@ -27,11 +27,8 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'researchGroup']) researchGroupID;
   @select() isLogged;
-  events: Array<Event>;
-  subjects: Array<ResearchSubject>;
-  publications: Array<Publication>;
 
-  rgReportUrl = environment.api_url + 'reports/rep_by_rg.pdf?id=';
+  rgReportUrl = environment.api_url + 'reports/research_group/';
   PDF = false;
 
   researchGroup: ResearchGroup;
@@ -51,7 +48,6 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   publOverallChart = { options: { chart: {} }, data: [] };
 
   constructor(private researchGroupService: ResearchGroupService,
-    private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
     private acRoute: ActivatedRoute,
     private router: Router,
@@ -109,34 +105,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   ngOnInit() {
     this.researchGroupID.subscribe((id: number) => {
       if (id) {
-        this.rgReportUrl += id;
-        this.researchGroupService.getEvents(id).subscribe(
-          (response: { events: Event[] }) => {
-            this.events = response.events;
-          }, (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se han podido obtener los eventos del grupo de investigación';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
-        this.researchGroupService.getSubjects(id).subscribe(
-          (response: { research_subjects: ResearchSubject[] }) => {
-            this.subjects = response.research_subjects;
-          }, (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se han podido obtener las lineas de investigación del grupo';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
-        this.researchGroupService.getPublications(id).subscribe(
-          (response: { publications: Publication[] }) => {
-            this.publications = response.publications;
-          }, (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se han podido obtener las publicaciones del grupo de ivnestigación';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
-          }
-        );
+        this.rgReportUrl += id + '/publications_history.pdf';
         this.requestStatistics(id);
         this.requestRG(id);
         this.uploader = new FileUploader({ queueLimit: 1 });
@@ -226,6 +195,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
         this.errSwal.title = 'Estadísticas no disponibles';
         this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
+        this.publOverallChart.data = [];
       }
     );
     this.researchGroupService.publicationsLastPeriod(id).subscribe(
@@ -241,6 +211,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
         this.errSwal.title = 'Estadísticas no disponibles';
         this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
+        this.publLastPeriodChart.data = [];
       }
     );
     this.researchGroupService.publicationsByRGAndType(id).subscribe(
@@ -257,6 +228,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
         this.errSwal.title = 'Estadísticas no disponibles';
         this.errSwal.text = 'Mensaje de error: ' + error.error.message;
         this.errSwal.show();
+        this.publTypesChart.data = [];
       }
     );
   }
@@ -266,6 +238,9 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     if (rg.photo) {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
+    // if (rg.events) {
+    //   rg.events = rg.events.filter((event) => new Date(event.date) > new Date());
+    // }
     this.createRGForm();
     if (rg.members) {
       this.sessionUsername.subscribe((username: string) => {

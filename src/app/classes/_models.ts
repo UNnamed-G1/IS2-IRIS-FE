@@ -32,8 +32,7 @@ export class Event {
   date: Date;
   duration: string;
   // Types
-  event_type: string;  // Received
-  type_ev: string;     // Send
+  event_type: string;
   frequence: string;
   state: string;
   //places
@@ -41,6 +40,7 @@ export class Event {
   longitude: number;
   address:string;
   // Relations
+  research_group_id: number;
   research_group: ResearchGroup;
   users: Array<User>;
   photos: Array<Photo>;
@@ -117,10 +117,9 @@ export class Publication {
   date: Date;
   abstract: string;
   brief_description: string;
-  document: Array<File>;
+  document: File;
   // Type
-  publication_type: string;  // Received
-  type_pub: string;          // Send
+  publication_type: string;
   // Relations
   members: Array<User>;
   research_groups: Array<ResearchGroup>;
@@ -143,8 +142,7 @@ export class User {
   cvlac_link: string;
   full_name: string;
   // Types
-  user_type: string;   // Received
-  type_u: string;      // Send
+  user_type: string;
   // Relations
   career_id: number;
   photo: Photo;
@@ -172,8 +170,7 @@ class Member {
   research_group: ResearchGroup;
   // Types
   state: string;
-  member_type: string;  // Received
-  type_urg: string;     // Send
+  member_type: string;
   // Timestamps
   created_at: Date;
   updated_at: Date;

@@ -13,7 +13,7 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 export class DocumentsComponent implements OnInit {
   @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  @select(['session', 'type']) sessionType;
+  @select() isLogged;
   @Input() url: string;
   page = 1;
   totalPages: number;

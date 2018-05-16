@@ -20,8 +20,8 @@ export class EventListComponent implements OnInit, AfterContentInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
-  headers: Array<string> = ['Nombre','Tema', 'Descripción', 'Fecha', 'Lugar'];
-  keys: Array<string> = ['name','topic', 'description', 'date', 'address']; // 'research_group_name'];
+  headers: Array<string> = ['Nombre', 'Tema', 'Descripción', 'Fecha', 'Lugar', 'Grupo de investigación'];
+  keys: Array<string> = ['name', 'topic', 'description', 'date', 'address', 'research_group_name'];
   events: Array<Event>;
 
   page: {
@@ -76,8 +76,8 @@ export class EventListComponent implements OnInit, AfterContentInit {
     this.eventService.getAllEditable(this.page.actual).subscribe(
       (response: { events: Event[], total_pages: number }) => {
         this.events = response.events;
+        this.events.map(ev => Object.assign(ev, { research_group_name: ev.research_group.name }));
         this.page.total = response.total_pages;
-
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No se han podido obtener los eventos';
