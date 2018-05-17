@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { NgRedux, select } from '@angular-redux/store';
@@ -17,11 +17,9 @@ import { ResearchGroupService } from 'app/services/research-group.service';
 })
 
 export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   @select(['auxiliarID', 'researchGroupUpdate']) researchGroupID;
-
+  swalOpts: any;
   researchGroup: ResearchGroup = new ResearchGroup();
   rgForm: FormGroup;
   classifications: string[] = ['A', 'B', 'C', 'D'];
@@ -31,6 +29,7 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
   constructor(private permMan: PermissionManager,
     private researchGroupService: ResearchGroupService,
     private ngRedux: NgRedux<AppState>,
+    private router: Router,
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
@@ -46,9 +45,7 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
             this.createRGForm();
           },
           (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
+            this.swalOpts = { title: 'No se ha podido obtener el grupo de investigación', text: error.message, type: 'error' };
           }
         );
       }
@@ -75,30 +72,28 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
         .update(this.researchGroup.id, rg).subscribe(
           (response: { research_group: ResearchGroup }) => {
             Object.assign(this.researchGroup, response.research_group);
-            this.sucSwal.title = 'El grupo de investigación ha sido actualizado';
-            this.sucSwal.show();
+            this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success', confirm: this.navList, confirmParams: [this] };
             this.createRGForm();
           },
           (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Grupo de investigación no actualizado';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
+            this.swalOpts = { title: 'Grupo de investigación no actualizado', text: error.message, type: 'error' };
           }
         );
     } else {
+
       this.researchGroupService.create(rg).subscribe(
         (response: { research_group: ResearchGroup }) => {
-          this.sucSwal.title = 'El grupo de investigación ha sido añadido';
-          this.sucSwal.show();
-          this.rgForm.reset();
+          this.swalOpts = { title: 'El grupo de investigación ha sido añadido', type: 'success', confirm: this.navList, confirmParams: [this] };
+
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Grupo de investigación no añadido';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'Grupo de investigación no añadido', text: error.message, type: 'error' };
         }
       );
     }
+  }
+  navList(){
+    this.router.navigateByUrl('research-list');
   }
 
   private createRGForm() {

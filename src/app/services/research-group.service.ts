@@ -13,8 +13,8 @@ export class ResearchGroupService extends CommonService {
     return this.applyRequestPath(this.get, 'research_groups/news');
   }
 
-  requestJoinGroup(id: any): any {
-    return this.applyRequestPath(this.create, 'research_groups/join', [id]);
+  requestJoinGroup(id: number): any {
+    return this.applyRequestPath(this.create, 'research_groups/'+ id + '/join' );
   }
 
   leaveGroup(id: any): any {
