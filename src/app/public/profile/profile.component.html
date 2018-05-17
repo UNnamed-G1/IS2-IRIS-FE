@@ -207,18 +207,17 @@
         <h2>Grupos de investigación</h2>
         <br>
         <div class="row items-row">
-          <div *ngFor="let rg of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card" routerLink="/">
+          <div *ngFor="let group of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card" (click)="viewResearchGroup(group.id)">
               <div class="header-bg"></div>
               <div class="avatar">
-                <img [src]="rg.photo ? rg.photo.link : 'assets/images/user.png'" onerror="this.src='assets/images/user.png';" class="rounded-image img-responsive"
+                <img [src]="group.photo ? group.photo.link : 'assets/images/user.png'" onerror="this.src='assets/images/user.png';" class="rounded-image img-responsive"
                 />
-                <!--img src="{{rg.photo.link}}" alt="" /-->
               </div>
               <div class="content">
                 <p>
-                  <b>{{ rg.name }}</b>
-                  <br> {{ rg.description }}</p>
+                  <b>{{ group.name }}</b>
+                  <br> {{ group.description }}</p>
               </div>
             </div>
           </div>
@@ -249,7 +248,7 @@
         <br>
         <div class="row items-row">
           <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-2">
-            <div class="card" routerLink="/">
+            <div class="card" (click)="viewEvent(ev.id)">
               <div class="header">
                 <b>{{ ev.topic }}</b>
               </div>

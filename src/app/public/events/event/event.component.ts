@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, AfterContentInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -19,7 +19,7 @@ import { MouseEvent } from '@agm/core';
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
-export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
+export class EventComponent implements OnInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
   @Output() detailsEmitter = new EventEmitter<number>();
@@ -32,8 +32,8 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
   showInput = false;
   isInvited: boolean;
   eventForm: FormGroup;
-  event_types: string[] = ['publico', 'privado'];
-  frequence_types: string[] = ['Unico', 'Repetitivo'];
+  event_types: string[] = ['Público', 'Privado'];
+  frequence_types: string[] = ['Único', 'Repetitivo'];
   state_types: string[] = ['Activo', 'Inactivo'];
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
@@ -67,24 +67,20 @@ export class EventComponent implements OnInit, AfterContentInit, OnDestroy {
   ngOnInit() {
     this.uploader = new FileUploader({ allowedMimeType: this.allowedTypes });
     this.eventID.subscribe((id: number) => {
-      this.setInvitedU(id);
-    });
-    this.test = this.eventID.latitude;
-  }
-
-  ngAfterContentInit() {
-    this.eventID.subscribe((id: number) => {
       if (id) {
+        this.setInvitedU(id);
         this.requestEvent(id);
       } else {
         this.router.navigateByUrl('/');
       }
-    });
+    }).unsubscribe();
+    this.test = this.eventID.latitude;
   }
 
   ngOnDestroy() {
     this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'event' });
   }
+
   updateGroup() {
     if (this.eventForm.pristine && this.uploader.queue.length === 0) {
       return;

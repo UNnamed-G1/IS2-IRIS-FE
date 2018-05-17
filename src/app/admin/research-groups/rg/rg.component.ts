@@ -112,7 +112,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
       } else {
         this.router.navigateByUrl('/');
       }
-    });
+    }).unsubscribe();
   }
 
   ngAfterContentChecked() {
