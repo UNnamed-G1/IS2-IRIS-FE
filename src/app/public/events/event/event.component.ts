@@ -2,7 +2,6 @@ import { Component, ViewChild, OnInit, OnDestroy, EventEmitter, Output } from '@
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -22,8 +21,6 @@ import { MouseEvent } from '@agm/core';
 export class EventComponent implements OnInit, OnDestroy {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  @Output() detailsEmitter = new EventEmitter<number>();
-  @select(['session', 'username']) sessionUsername;
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'event']) eventID;
   @select() isLogged;
@@ -35,8 +32,6 @@ export class EventComponent implements OnInit, OnDestroy {
   event_types: string[] = ['Público', 'Privado'];
   frequence_types: string[] = ['Único', 'Repetitivo'];
   state_types: string[] = ['Activo', 'Inactivo'];
-  uploader: FileUploader;
-  hasBaseDropZoneOver = false;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
   invited: Array<User>;
   rgsUser: Array<ResearchGroup>;
@@ -57,6 +52,7 @@ export class EventComponent implements OnInit, OnDestroy {
       draggable: true
     }
   ];
+  
   constructor(private eventService: EventService,
     private ngRedux: NgRedux<AppState>,
     private acRoute: ActivatedRoute,
@@ -65,7 +61,6 @@ export class EventComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.uploader = new FileUploader({ allowedMimeType: this.allowedTypes });
     this.eventID.subscribe((id: number) => {
       if (id) {
         this.setInvitedU(id);
@@ -82,7 +77,9 @@ export class EventComponent implements OnInit, OnDestroy {
   }
 
   updateGroup() {
-    if (this.eventForm.pristine && this.uploader.queue.length === 0) {
+    if (this.eventForm.pristine 
+      // && this.files.length === 0
+    ) {
       return;
     }
     const event = new Event();
@@ -95,32 +92,20 @@ export class EventComponent implements OnInit, OnDestroy {
           event.latitude = this.latP;
           event.longitude = this.lngP;
         }
-        if (event.event_type) {
-          event.event_type = event.event_type.toLowerCase();
-          delete event.event_type;
-        }
-
-        if (event.frequence) {
-          event.frequence = event.frequence.toLowerCase();
-        }
-        if (event.state) {
-          event.state = event.state.toLowerCase();
-        }
       }
     }
     const fd = new FormData();
     for (const key of Object.keys(event)) {
       fd.append('event[' + key + ']', event[key]);
     }
-    if (this.uploader.queue.length) {
-      fd.append('picture', this.uploader.queue[0].file.rawFile);
-    }
+    // if (this.files) {
+    //   fd.append('picture', this.files);
+    // }
     this.eventService.update(this.event.id, fd).subscribe(
       (response: { event: Event }) => {
         this.sucSwal.title = 'El grupo ha sido actualizado';
         this.sucSwal.show();
         this.toggleShowInput();
-        this.uploader.clearQueue();
         this.setEvent(response.event);
       },
       (error: HttpErrorResponse) => {
@@ -207,20 +192,6 @@ export class EventComponent implements OnInit, OnDestroy {
     this.showInput = !this.showInput;
   }
 
-  fileOverBase(e: any) {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  loadedImage(e: FileList) {
-    if (this.allowedTypes.includes(e[0].type)) {
-      this.uploader.clearQueue();
-      this.uploader.addToQueue([e[0]]);
-    } else {
-      this.errSwal.title = 'El tipo de archivo es inválido';
-      this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
-      this.errSwal.show();
-    }
-  }
   setEvent(event: Event) {
     this.event = Object.assign({}, this.event, event);
     this.createEventForm();
@@ -259,6 +230,7 @@ export class EventComponent implements OnInit, OnDestroy {
       longitude: [this.event.longitude],
     });
   }
+
   get research_group_id() { return this.eventForm.get('research_group_id'); }
   get name() { return this.eventForm.get('name'); }
   get topic() { return this.eventForm.get('topic'); }

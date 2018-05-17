@@ -57,7 +57,7 @@ export class AddEventComponent implements OnInit {
             this.swalOpts = { title: 'No se han podido obtener tus grupos de investigación', text: error.message, type: 'error' };
           }
         );
-      });
+      }).unsubscribe();
       this.eventUpdateID.subscribe((id: number) => {
         if (id) {
           this.eventService.get(id).subscribe(
@@ -70,7 +70,7 @@ export class AddEventComponent implements OnInit {
             }
           );
         }
-      });
+      }).unsubscribe();
     }
   }
 
