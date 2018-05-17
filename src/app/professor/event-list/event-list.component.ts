@@ -48,7 +48,7 @@ export class EventListComponent implements OnInit, AfterContentInit {
     });
   }
 
-  add(id: number) {
+  add() {
     this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'eventUpdate' });
     this.router.navigateByUrl('/events/add');
   }
