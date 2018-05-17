@@ -54,7 +54,7 @@ export class AddEventComponent implements OnInit {
             this.userGroups = response.user.research_groups;
           },
           (error: HttpErrorResponse) => {
-            this.swalOpts = { title: 'No se ha podido obtener tus grupos de investigación', text: error.message, type: 'error' };
+            this.swalOpts = { title: 'No se han podido obtener tus grupos de investigación', text: error.message, type: 'error' };
           }
         );
       });
@@ -69,9 +69,6 @@ export class AddEventComponent implements OnInit {
               this.swalOpts = { title: 'No se ha podido obtener el evento', text: error.message, type: 'error' };
             }
           );
-        } else {
-          // No id stored
-          this.router.navigateByUrl('');
         }
       });
     }

@@ -17,7 +17,7 @@ import { DepartmentService } from 'app/services/department.service';
 import { CareerService } from 'app/services/career.service';
 import { UserService } from 'app/services/user.service';
 import { User, Career, Department, Faculty } from 'app/classes/_models';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -42,7 +42,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
   imageEncoded: string;
   imageEncodedCropped: string;
-
+  userSubscription: any;
   /*
   * Charts
   */
@@ -58,6 +58,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     private permMan: PermissionManager,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
     private zone: NgZone) {
     this.publLastPeriodChart.options.chart = {
       type: 'lineChart',
@@ -95,22 +96,20 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       if (params.username) {
         this.requestUser(this.userService.getByUsername(params.username), true);
       } else {
-        this.userID.subscribe((id: number) => {
+        this.userSubscription = this.userID.subscribe((id: number) => {
           if (id) {
             this.requestUser(this.userService.get(id));
             this.requestStatistics(id);
           } else if (this.permMan.validateLogged()) {
             this.sessionID.subscribe((id) => {
-              this.requestUser(this.userService.get(id), true);
+              if (id) {
+                this.requestUser(this.userService.get(id), true);
+                this.setFaculties();
+              }
             });
           }
-        }).unsubscribe();
+        });
       }
-    });
-    this.userID.subscribe((userID: number) => {
-      this.sessionID.subscribe((id) => {
-        this.setFaculties();
-      });
     });
   }
 
@@ -122,7 +121,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   }
 
   ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'user' });
+    this.userSubscription.unsubscribe();
   }
 
   updateProfile() {
@@ -227,7 +226,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       }
     );
   }
-  
+
   setUser(u: User) {
     this.user = Object.assign({}, this.user, u);
     if (u.photo) {
@@ -306,6 +305,24 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   // Boolean displays edit form on true
   toggleShowForm() {
     this.showForm = !this.showForm;
+  }
+
+  viewResearchGroup(id: number) {
+    this.userSubscription.unsubscribe();
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { researchGroup: id } });
+    this.router.navigateByUrl('/rg');
+  }
+
+  viewPublication(id: number) {
+    this.userSubscription.unsubscribe();
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: id } });
+    this.router.navigateByUrl('/publication');
+  }
+
+  viewEvent(id: number) {
+    this.userSubscription.unsubscribe();
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { event: id } });
+    this.router.navigateByUrl('/event');
   }
 
   // Boolean displays followers: true, following: false

@@ -5,7 +5,7 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
-import { ADD_AUXILIAR } from 'app/redux/actions';
+import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 
 import { PermissionManager } from 'app/permission-manager';
 import { EventService } from 'app/services/event.service';
@@ -46,6 +46,11 @@ export class EventListComponent implements OnInit, AfterContentInit {
       });
       this.getEvents();
     });
+  }
+
+  add(id: number) {
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'eventUpdate' });
+    this.router.navigateByUrl('/events/add');
   }
 
   update(id: number) {

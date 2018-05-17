@@ -5,7 +5,7 @@
 
   <div class="panel-body" style="position:relative">
 
-    <button class="btn btn-primary btn-sm" routerLink="/events/add" role="button">Agregar</button>
+    <button class="btn btn-primary btn-sm" (click)="add()" role="button">Agregar</button>
     <button class="btn btn-primary btn-sm" routerLink="/" role="button">Volver</button>
 
     <app-crud [columns]="headers" [keys]="keys" [rows]="events" (onUpdate)="update($event)" (onDetails)="details($event)" (onDelete)="delete($event)"></app-crud>
