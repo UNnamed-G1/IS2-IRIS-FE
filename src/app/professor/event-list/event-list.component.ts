@@ -17,8 +17,6 @@ import { Event } from 'app/classes/_models';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit, AfterContentInit {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre', 'Tema', 'Descripción', 'Fecha', 'Lugar', 'Grupo de investigación'];
   keys: Array<string> = ['name', 'topic', 'description', 'date', 'address', 'research_group_name'];
