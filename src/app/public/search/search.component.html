@@ -1,5 +1,5 @@
 <main class="detalle">
-  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Lista de grupos de investigación</span></div>
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Búsqueda</span></div>
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1>Grupos de Investigación</h1>
@@ -7,17 +7,50 @@
 
       <div class="panel-body" style="position:relative">
         <div class="topnav">
+          <!-- Search -->
+          <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Escribe para buscar..." [(ngModel)]="searchStr" name="searchStr">
+          </div>
+          <!-- Buttons -->
           <button type="button" (click)="getResearchGroups()">Grupos de investigación</button>
-          <button type="button" (click)="getEvents()">Eventos</button>
+          <button type="button" (click)="getEvents(searchStr)">Eventos</button>
           <button type="button" (click)="getUsers()">Usuarios</button>
           <button type="button" (click)="getPublications()">Publicaciones</button>
           <div class="panel-body" style="position:relative">
             <br><br>
-            <app-crud [columns]="headers" [keys]="keys" [rows]="search" (onDetails)="details($event)"></app-crud>
-            <app-pagination [page]="page"></app-pagination>
-            <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-          </div>
+            <!-- Table -->
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr *ngIf="columns">
+                  <th *ngFor="let column of columns">{{ column }}</th>
+                  <th>Acciones</th>
+              </tr>
+              </thead>
+              <tbody *ngIf="rows">
+                <tr *ngFor="let row of rows | filter : keys[0] : searchStr">
+                  <td *ngFor="let value of keys">
+                    {{row[value]}}
+                  </td>
+                  <swal #deleteSwal
+                    title="¿Eliminar {{ row[keys[0]] }}?"
+                    text="Esta acción no se puede deshacer."
+                    type="warning"
+                    [showCancelButton]="true"
+                    (confirm)="delete(row.id)">
+                  </swal>
 
+                  <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" title="Detalles" (click)="details(row.id)">
+                    <span class="glyphicon glyphicon-search"></span></button>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <app-pagination [page]="page"></app-pagination>
+          <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+        </div>
         </div>
       </div>
     </div>

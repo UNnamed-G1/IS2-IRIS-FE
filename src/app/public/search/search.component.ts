@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -22,13 +22,16 @@ import { Publication } from 'app/classes/_models';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit, AfterContentInit {
+  @Input() columns: Array<string>;
+  @Input() keys = new Array<string>();
+  @Input() rows: {};
   headers: Array<string>;
-  keys: Array<string>;
   search:any;
   researchGroups: Array<ResearchGroup>;
   users: Array<User>;
   events: Array<Event>;
   publications: Array<Publication>;
+  searchStr: string;
   swalOpts: any;
   page: {
     actual: number,
@@ -87,9 +90,21 @@ export class SearchComponent implements OnInit, AfterContentInit {
   }
   getEvents() {
     this.search = this.events;
-    this.headers= ['Nombre', 'Tema', 'Descripción', 'Fecha', 'Lugar', 'Grupo de investigación'];
+    this.columns= ['Nombre', 'Tema', 'Descripción', 'Fecha', 'Lugar', 'Grupo de investigación'];
     this.keys= ['name', 'topic', 'description', 'date', 'address', 'research_group_name'];
-    this.eventService.getAll(this.page.actual).subscribe(
+    this.eventService.searchEventByName(this.searchStr,this.page.actual).subscribe(
+      (response: { events: Event[], total_pages: number }) => {
+        console.log("da fuq");
+        this.rows = response.events;
+        console.log(this.events)
+        //this.events.map(ev => Object.assign(ev, { research_group_name: ev.research_group.name }));
+        this.page.total = response.total_pages;
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se han podido obtener los eventos', text: error.message, type: 'error' };
+      }
+    );
+    /*this.eventService.getAll(this.page.actual).subscribe(
       (response: { events: Event[], total_pages: number }) => {
         this.events = response.events;
         this.events.map(ev => Object.assign(ev, { research_group_name: ev.research_group.name }));
@@ -98,7 +113,7 @@ export class SearchComponent implements OnInit, AfterContentInit {
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se han podido obtener los eventos', text: error.message, type: 'error' };
       }
-    );
+    );*/
   }
   getPublications(){
     this.search =this.publications;
