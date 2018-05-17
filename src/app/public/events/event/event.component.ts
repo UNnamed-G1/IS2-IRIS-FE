@@ -32,8 +32,8 @@ export class EventComponent implements OnInit, OnDestroy {
   showInput = false;
   isInvited: boolean;
   eventForm: FormGroup;
-  event_types: string[] = ['Publico', 'Privado'];
-  frequence_types: string[] = ['Unico', 'Repetitivo'];
+  event_types: string[] = ['Público', 'Privado'];
+  frequence_types: string[] = ['Único', 'Repetitivo'];
   state_types: string[] = ['Activo', 'Inactivo'];
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
@@ -94,6 +94,17 @@ export class EventComponent implements OnInit, OnDestroy {
           event[k] = this.eventForm.get(k).value;
           event.latitude = this.latP;
           event.longitude = this.lngP;
+        }
+        if (event.event_type) {
+          event.event_type = event.event_type.toLowerCase();
+          delete event.event_type;
+        }
+
+        if (event.frequence) {
+          event.frequence = event.frequence.toLowerCase();
+        }
+        if (event.state) {
+          event.state = event.state.toLowerCase();
         }
       }
     }

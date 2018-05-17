@@ -1,24 +1,28 @@
-<div class="panel panel-default" style="margin-top:10px;">
-  <div class="panel-heading">
-    <h1>Publicaciones</h1>
-  </div>
-
-  <div *ngIf=!pdfLoaded class="panel-body" style="position:relative">
-    <button class="btn btn-primary btn-sm" routerLink="/publications/add" role="button">Agregar</button>
-    <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-    <br><br>
-    <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
-    <app-pagination [page]="page"></app-pagination>
-    <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-  </div>
-</div>
-<div *ngIf=pdfLoaded class="jumbotron">
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Lista de grupos de investigación</span></div>
   <div class="panel panel-default" style="margin-top:10px;">
-    <br><br>
-    <button class="btn btn-primary btn-sm" (click)="showPub()">Volver a publicaciones</button>
-    <br><br>
-    <app-documents [url]="pdfSrc"></app-documents>
+    <div class="panel-heading">
+      <h1>Publicaciones</h1>
+    </div>
+
+    <div *ngIf=!pdfLoaded class="panel-body" style="position:relative">
+      <button class="btn btn-primary btn-sm" routerLink="/publications/add" role="button">Agregar</button>
+      <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+      <br><br>
+      <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
+      <app-pagination [page]="page"></app-pagination>
+      <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+    </div>
   </div>
-</div>
+  <div *ngIf=pdfLoaded class="jumbotron">
+    <div class="panel panel-default" style="margin-top:10px;">
+      <br><br>
+      <button class="btn btn-primary btn-sm" (click)="showPub()">Volver a publicaciones</button>
+      <br><br>
+      <app-documents [url]="pdfSrc"></app-documents>
+    </div>
+  </div>
+</main>
+
 <swal #errSwal title text type="error"></swal>
 <swal #sucSwal title type="success"></swal>
