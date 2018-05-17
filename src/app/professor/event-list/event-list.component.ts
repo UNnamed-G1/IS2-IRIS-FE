@@ -23,7 +23,7 @@ export class EventListComponent implements OnInit, AfterContentInit {
   headers: Array<string> = ['Nombre', 'Tema', 'Descripción', 'Fecha', 'Lugar', 'Grupo de investigación'];
   keys: Array<string> = ['name', 'topic', 'description', 'date', 'address', 'research_group_name'];
   events: Array<Event>;
-
+  swalOpts: any;
   page: {
     actual: number,
     total: number
@@ -65,14 +65,11 @@ export class EventListComponent implements OnInit, AfterContentInit {
   delete(id: number) {
     this.eventService.delete(id).subscribe(
       (response: { event: Event }) => {
-        this.sucSwal.title = 'El evento ha sido eliminado';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Evento ha sido eliminado', type: 'success'};
         this.getEvents();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Evento no eliminado';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Evento no ha sido eliminado', text: error.message, type: 'error' };
       }
     );
   }
@@ -85,9 +82,7 @@ export class EventListComponent implements OnInit, AfterContentInit {
         this.page.total = response.total_pages;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los eventos';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los eventos', text: error.message, type: 'error' };
       }
     );
   }
