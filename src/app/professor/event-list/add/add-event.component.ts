@@ -46,7 +46,7 @@ export class AddEventComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.createEventForm(new Event());
+
     if (this.permMan.validateSession(['Profesor'])) {
       this.userID.subscribe(id => {
         this.userService.get(id).subscribe(
@@ -58,6 +58,7 @@ export class AddEventComponent implements OnInit {
           }
         );
       });
+      this.createEventForm(new Event());
       this.eventUpdateID.subscribe((id: number) => {
         if (id) {
           this.eventService.get(id).subscribe(
@@ -124,18 +125,18 @@ export class AddEventComponent implements OnInit {
     this.end_date.setValue(new Date(this.date.value.getTime() + this.durationToMili()));
     this.end_date.markAsDirty();
   }
-  
+
   setDuration() {
     const time: Date = new Date(this.end_date.value.getTime() - this.date.value.getTime());
     this.duration.setValue(time.getHours() + ':' + time.getMinutes());
     this.duration.markAsDirty();
   }
-  
+
   durationToMili(): number {
     const [mins, secs] = this.duration.value.split(':').map((n) => parseInt(n));
     return (mins * 60 + secs) * 60 * 1000;
   }
-  
+
   setEvent(event: Event) {
     event.research_group_id = event.research_group.id;
     this.createEventForm(event);
