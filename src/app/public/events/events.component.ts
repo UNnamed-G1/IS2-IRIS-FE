@@ -71,7 +71,8 @@ export class EventsComponent implements OnInit {
       }
     );
   }
-  details(id: number) {
+
+  openEvent(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { event: id } });
     this.router.navigateByUrl('/event');
   }
