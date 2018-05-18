@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentChecked } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,7 +11,7 @@ import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { environment } from 'environments/environment';
-import { Publication, ResearchGroup, ResearchSubject } from 'app/classes/_models';
+import { Publication, ResearchGroup, ResearchSubject, User } from 'app/classes/_models';
 import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
@@ -19,10 +19,9 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   templateUrl: './rg.component.html',
   styleUrls: ['./rg.component.css']
 })
-export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
+export class RgComponent implements OnInit, AfterContentChecked {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
-  @Output() detailsEmitter = new EventEmitter<number>();
   @select(['session', 'username']) sessionUsername;
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'researchGroup']) researchGroupID;
@@ -33,7 +32,9 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
 
   researchGroup: ResearchGroup;
   showInput = false;
+  isRequester: boolean;
   isMember: boolean;
+  isOwner: boolean;
   rgForm: FormGroup;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
@@ -120,10 +121,6 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
       .filter((name: string) => name.endsWith('Chart'))
       .map((key: string) => this[key].data.length)
       .reduce((v1, v2) => v1 + v2);
-  }
-
-  ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'researchGroup' });
   }
 
   updateGroup() {
@@ -238,15 +235,81 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     if (rg.photo) {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
-    // if (rg.events) {
-    //   rg.events = rg.events.filter((event) => new Date(event.date) > new Date());
-    // }
     this.createRGForm();
-    if (rg.members) {
+    // this.researchGroup.events = this.researchGroup.events
+    // .filter((event) => new Date(event.date) > new Date());    // Eventos próximos
+    // this.researchGroup.members = this.researchGroup.members
+    // .filter((member) => member.state === 'Activo');
+    this.currentIsRequester();
+    this.currentIsMember();
+    this.currentIsOwner();
+  }
+
+  currentIsRequester() {
+    if (this.researchGroup.members.length) {
       this.sessionUsername.subscribe((username: string) => {
-        this.isMember = rg.members.map(u => u.user.username).includes(username);
-      });
+        this.isRequester = this.filterRequested().map(user => user.username).includes(username);
+      }).unsubscribe();
     }
+  }
+
+  currentIsMember() {
+    if (this.researchGroup.members.length) {
+      this.sessionUsername.subscribe((username: string) => {
+        this.isMember = this.filterMember().map(user => user.username).includes(username);
+      }).unsubscribe();
+    }
+  }
+
+  currentIsOwner() {
+    this.sessionType.subscribe((type: string) => {
+      this.isOwner = type === 'Administrador';
+    })
+    if (!this.isOwner) {
+      this.sessionUsername.subscribe((username: string) => {
+        this.isOwner = this.filterLider().map((user) => user.username).includes(username);
+      }).unsubscribe();
+    }
+  }
+
+  acceptJoinRequest(userId: number) {
+    this.researchGroupService.acceptJoinRequest(this.researchGroup.id, userId).subscribe(
+      (response) => {
+        this.requestRG(this.researchGroup.id);        
+      },
+      (error: HttpErrorResponse) => {
+        // this.swalOpts = {  }
+      }
+    )
+  }
+
+  rejectJoinRequest(userId: number) {
+    this.researchGroupService.rejectJoinRequest(this.researchGroup.id, userId).subscribe(
+      (response) => {
+        this.requestRG(this.researchGroup.id);        
+      },
+      (error: HttpErrorResponse) => {
+        // this.swalOpts = {  }
+      }
+    )
+  }
+
+  filterRequested(): Array<User> {
+    return this.researchGroup.members
+      .filter((member) => member.member_type === 'Solicitante')
+      .map((member) => member.user)
+  }
+
+  filterLider(): Array<User> {
+    return this.researchGroup.members
+      .filter((member) => member.member_type === 'Líder')
+      .map((member) => member.user)
+    }
+
+  filterMember(): Array<User> {
+    return this.researchGroup.members
+      .filter((member) => member.member_type === 'Miembro')
+      .map((member) => member.user)
   }
 
   toggleShowInput() {
@@ -284,14 +347,29 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   requestJoin() {
-    this.researchGroupService.requestJoinGroup({ id: this.researchGroup.id }).subscribe(
+    this.researchGroupService.requestJoin({ id: this.researchGroup.id }).subscribe(
       (response) => {
-        this.sucSwal.title = 'Te has unido a este grupo';
+        this.sucSwal.title = 'Se ha enviado tu solicitud de unión al grupo';
         this.sucSwal.show();
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
         this.errSwal.title = 'No te has podido unir al grupo';
+        this.errSwal.text = 'Mensaje de error: ' + error.message;
+        this.errSwal.show();
+      }
+    );
+  }
+
+  cancelJoinRequest() {
+    this.researchGroupService.cancelJoinRequest(this.researchGroup.id).subscribe(
+      (response) => {
+        this.sucSwal.title = 'Se ha cancelado la solicitud de unión';
+        this.sucSwal.show();
+        this.requestRG(this.researchGroup.id);
+      },
+      (error: HttpErrorResponse) => {
+        this.errSwal.title = 'No se ha podido cancelar la solicitud de unión unir al grupo';
         this.errSwal.text = 'Mensaje de error: ' + error.message;
         this.errSwal.show();
       }

@@ -34,34 +34,86 @@
           </div>
 
           <div class="col-sm-4 col-md-4">
-            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isMember" (click)="requestJoin()">Unirse</button>
-            <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isMember" (click)="leave()">Abandonar</button>-->
+            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !(isMember || isOwner || isRequester)" (click)="requestJoin()">Solicitar unirse</button>
+            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && isRequester" (click)="cancelJoinRequest()">Cancelar solicitud</button>
+            <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isMember" (click)="leave()">Abandonar grupo</button>-->
+            <div class="panel panel-default" *ngIf="isOwner && filterRequested().length">
+              <div class="panel-heading" style="background: #555;color: white;">
+                <div class="row">
+                  <div class="col-sm-1 col-md-1">
+                    <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
+                  </div>
+                  <div class="col-sm-10 col-md-10">
+                    <h3>Solicitudes de unión</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 200px; ">
+                <div *ngFor="let user of filterRequested()" class="field">
+                  <div class=" media">
+                    <div class="media-left media-middle">
+                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                    </div>
+                    <div class="media-body">
+                      <h4>{{user.full_name}}</h4>
+                      <a (click)="viewProfile(user.id)">Ver perfil</a>
+                      <span class="accept glyphicon glyphicon-ok" (click)="acceptJoinRequest(user.id)"></span>
+                      <span class="reject glyphicon glyphicon-remove" (click)="rejectJoinRequest(user.id)"></span>
+                    </div>
+                  </div>
+                  <hr style="border:1px dotted black;">
+                </div>
+              </div>
+            </div>
             <div class="panel panel-default">
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
                   <div class="col-sm-1 col-md-1">
                     <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
                   </div>
-                  <div class="col-sm-11 col-md-11">
-                    <h3>Usuarios</h3>
+                  <div class="col-sm-10 col-md-10">
+                    <h3>Líder(es)</h3>
                   </div>
                 </div>
               </div>
               <div class="panel-body" style="overflow-y: auto; height: 200px; ">
-                <div class="research-group">
-                  <div *ngFor="let member of researchGroup.members" class="field">
-                    <div class=" media">
-                      <div class="media-left media-middle">
-                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                      </div>
-
-                      <div class="media-body">
-                        <h4>{{member.user.full_name}}</h4>
-                        <a (click)="viewProfile(member.user.id)">Ver perfil</a>
-                      </div>
+                <div *ngFor="let user of filterLider()" class="field">
+                  <div class=" media">
+                    <div class="media-left media-middle">
+                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
                     </div>
-                    <hr style="border:1px dotted black;">
+                    <div class="media-body">
+                      <h4>{{user.full_name}}</h4>
+                      <a (click)="viewProfile(user.id)">Ver perfil</a>
+                    </div>
                   </div>
+                  <hr style="border:1px dotted black;">
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #555;color: white;">
+                <div class="row">
+                  <div class="col-sm-1 col-md-1">
+                    <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
+                  </div>
+                  <div class="col-sm-10 col-md-10">
+                    <h3>Miembros</h3>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body" style="overflow-y: auto; height: 200px; ">
+                <div *ngFor="let user of filterMember()" class="field">
+                  <div class=" media">
+                    <div class="media-left media-middle">
+                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                    </div>
+                    <div class="media-body">
+                      <h4>{{user.full_name}}</h4>
+                      <a (click)="viewProfile(user.id)">Ver perfil</a>
+                    </div>
+                  </div>
+                  <hr style="border:1px dotted black;">
                 </div>
               </div>
             </div>
@@ -198,7 +250,7 @@
           </div>
         </div>
       </div>
-      <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Administrador'" (click)="toggleShowInput()">Editar</button>
+      <button class="btn btn-primary" *ngIf="isOwner" (click)="toggleShowInput()">Editar</button>
       <button class="btn btn-primary" routerLink="/research-list" role="button">Volver</button>
     </div>
 
