@@ -1,4 +1,5 @@
 import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, ElementRef, NgZone } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UploadEvent, UploadFile, FileSystemFileEntry } from 'ngx-file-drop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -57,6 +58,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     private ngRedux: NgRedux<AppState>,
     private permMan: PermissionManager,
     private formBuilder: FormBuilder,
+    private router: Router,
     private route: ActivatedRoute,
     private router: Router,
     private zone: NgZone) {
@@ -300,6 +302,11 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       }
     );
     this.careers = new Array<Career>();
+  }
+
+  viewPublication(publicationId: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: publicationId } });
+    this.router.navigateByUrl('publication')
   }
 
   // Boolean displays edit form on true

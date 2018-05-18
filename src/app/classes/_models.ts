@@ -117,11 +117,11 @@ export class Publication {
   date: Date;
   abstract: string;
   brief_description: string;
-  document: File;
+  document: any;    // Received is string, Sent is File
   // Type
   publication_type: string;
   // Relations
-  members: Array<User>;
+  users: Array<User>;
   research_groups: Array<ResearchGroup>;
   // Timestamps
   created_at: Date;
