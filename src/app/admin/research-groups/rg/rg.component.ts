@@ -346,7 +346,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   }
 
   addUser(user: User) {
-    this.choosedUsers.push({ id: user.id, name: user.full_name, member_type: 'Miembro' });
+    this.choosedUsers.push({ id: user.id, name: user.full_name, username: user.username, member_type: 'Miembro' });
   }
 
   removeUser(idx: number) {

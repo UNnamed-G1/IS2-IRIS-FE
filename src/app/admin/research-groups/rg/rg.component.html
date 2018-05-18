@@ -328,10 +328,15 @@
         <div class="col-md-6">
           <div *ngFor="let user of usersToAdd">
             <div *ngIf="!choosed(user.id)">
-              <div class="col-xs-10">
-                {{ user.full_name }}
+              <div class="col-sm-4">
+                <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+                />
               </div>
-              <div class="col-xs-2">
+              <div class="col-sm-8">
+                <div class="field">
+                  <h4>{{ user.full_name }}</h4>
+                  <small>{{ user.username }}</small>
+                </div>
                 <button class="btn btn-xs btn-primary" (click)="addUser(user)">
                   <span class="glyphicon glyphicon-plus"></span>
                 </button>
@@ -341,15 +346,23 @@
         </div>
         <div class="col-md-6">
           <div *ngFor="let user of choosedUsers; let i = index">
-            <div class="col-xs-4">
-              {{ user.name }}
+            <div class="col-sm-4">
+              <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+              />
             </div>
-            <div class="col-xs-4">
-              <select class="form-control" [value]="user.member_type" (input)="user.member_type = $event.target.value">
-                <option *ngFor="let t of memberTypes" [ngValue]="t">{{ t }}</option>
-              </select>
-            </div>
-            <div class="col-xs-2">
+            <div class="col-sm-8">
+              <div class="field">
+                <h4>{{ user.name }}</h4>
+                <small>{{ user.username }}</small>
+              </div>
+              <div class="field">
+                <p>{{ user.professional_profile }}</p>
+              </div>
+              <div class="col-sm-9 member-type-dropdown">
+                <select class="form-control" [value]="user.member_type" (input)="user.member_type = $event.target.value">
+                  <option *ngFor="let t of memberTypes" [ngValue]="t">{{ t }}</option>
+                </select>
+              </div>
               <button class="btn btn-xs btn-danger" (click)="removeUser(i)">
                 <span class="glyphicon glyphicon-minus"></span>
               </button>

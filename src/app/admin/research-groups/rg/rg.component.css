@@ -30,3 +30,8 @@
 .accept {
     color: green;
 }
+
+.member-type-dropdown {
+    padding-left: 0%;
+    padding-right: 0%;
+}
