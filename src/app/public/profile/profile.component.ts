@@ -18,7 +18,6 @@ import { DepartmentService } from 'app/services/department.service';
 import { CareerService } from 'app/services/career.service';
 import { UserService } from 'app/services/user.service';
 import { User, Career, Department, Faculty } from 'app/classes/_models';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -60,7 +59,6 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private router: Router,
     private zone: NgZone) {
     this.publLastPeriodChart.options.chart = {
       type: 'lineChart',
@@ -302,11 +300,6 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       }
     );
     this.careers = new Array<Career>();
-  }
-
-  viewPublication(publicationId: number) {
-    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: publicationId } });
-    this.router.navigateByUrl('publication')
   }
 
   // Boolean displays edit form on true
