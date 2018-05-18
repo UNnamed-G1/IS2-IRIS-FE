@@ -10,6 +10,7 @@ import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
 import { User } from 'app/classes/_models';
 import { UserService } from 'app/services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-user',
@@ -18,11 +19,9 @@ import { UserService } from 'app/services/user.service';
 })
 
 export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   @select(['auxiliarID', 'userUpdate']) userID;
-
+  swalOpts: any;
   user: User = new User();
   userForm: FormGroup;
   type: string[] = ['Estudiante', 'Profesor', 'Administrador'];
@@ -30,6 +29,7 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
   constructor(private userService: UserService,
     private permMan: PermissionManager,
     private ngRedux: NgRedux<AppState>,
+    private router: Router,
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
@@ -45,9 +45,7 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
             this.createUserForm();
           },
           (error: HttpErrorResponse) => {
-            this.errSwal.title = 'No se ha podido obtener el usuario';
-            this.errSwal.text = 'Mensaje de error: ' + error.message;
-            this.errSwal.show();
+            this.swalOpts = { title: 'Evento no actualizado', text: error.message, type: 'error' };
           }
         );
       }
@@ -82,32 +80,31 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
     if (this.user.id) {
       this.userService.update(this.user.id, { user: u }).subscribe(
         (response: { user: User }) => {
-          this.sucSwal.title = 'El usuario ha sido actualizado';
-          this.sucSwal.show();
+          this.swalOpts = { title: 'El usuario ha sido actualizado', type: 'success', confirm: this.navList, confirmParams: [this] };
           Object.assign(this.user, response.user);
           this.createUserForm();
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Usuario no actualizado';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'Usuario no actualizado', text: error.message, type: 'error' };
         }
       );
     } else {
       this.userService.create({ user: u }).subscribe(
         (response: { user: User }) => {
-          this.sucSwal.title = 'El usuario ha sido añadido';
-          this.sucSwal.show();
-          this.userForm.reset();
+          this.swalOpts = { title: 'El usuario ha sido añadido', type: 'success', confirm: this.navList, confirmParams: [this] };
+
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Usuario no añadido';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        }
+          this.swalOpts = { title: 'Usuario no añadido', text: error.message, type: 'error' };
+
+          }
       );
     }
   }
+
+    navList(){
+      this.router.navigateByUrl('users');
+    }
 
   private createUserForm() {
     this.userForm = this.formBuilder.group({

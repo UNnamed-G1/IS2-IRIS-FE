@@ -20,8 +20,6 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   styleUrls: ['./rg.component.css']
 })
 export class RgComponent implements OnInit, AfterContentChecked {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['session', 'username']) sessionUsername;
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'researchGroup']) researchGroupID;
@@ -29,7 +27,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
 
   rgReportUrl = environment.api_url + 'reports/research_group/';
   PDF = false;
-
+  swalOpts: any;
   researchGroup: ResearchGroup;
   showInput = false;
   isRequester: boolean;
@@ -146,16 +144,14 @@ export class RgComponent implements OnInit, AfterContentChecked {
     }
     this.researchGroupService.update(this.researchGroup.id, fd).subscribe(
       (response: { research_group: ResearchGroup }) => {
-        this.sucSwal.title = 'El grupo ha sido actualizado';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success'};
         this.toggleShowInput();
         this.uploader.clearQueue();
         this.setRG(response.research_group);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'El grupo no ha podido ser actualizado';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'El grupo no ha podido ser actualizado', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -166,9 +162,8 @@ export class RgComponent implements OnInit, AfterContentChecked {
         this.setRG(response.research_group);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido obtener el grupo de investigación';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se ha podido obtener el grupo de investigación', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -189,9 +184,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
         }
         this.publOverallChart.data = [{ key: 'Usuarios', values: data }];
       }, error => {
-        this.errSwal.title = 'Estadísticas no disponibles';
-        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Estadísticas no disponibles', text: error.message, type: 'error' };
         this.publOverallChart.data = [];
       }
     );
@@ -205,9 +198,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
         }
         this.publLastPeriodChart.data = [{ key: 'Publicaciones', values: data }];
       }, error => {
-        this.errSwal.title = 'Estadísticas no disponibles';
-        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Estadísticas no disponibles', text: error.message, type: 'error' };
         this.publLastPeriodChart.data = [];
       }
     );
@@ -222,9 +213,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
         }
         this.publTypesChart.data = data;
       }, error => {
-        this.errSwal.title = 'Estadísticas no disponibles';
-        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Estadísticas no disponibles', text: error.message, type: 'error' };
         this.publTypesChart.data = [];
       }
     );
@@ -334,14 +323,12 @@ export class RgComponent implements OnInit, AfterContentChecked {
       this.researchGroupService.update(this.researchGroup.id, rg).subscribe(
         (response: { research_group: ResearchGroup }) => {
           this.setRG(response.research_group);
-          this.sucSwal.title = 'El grupo ha sido actualizado';
-          this.sucSwal.show();
+          this.swalOpts = { title: 'El grupo ha sido actualizado', type: 'success'};
           this.createRGForm();
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Grupo no actualizado';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'Grupo no actualizado', text: error.message, type: 'error' };
+
         });
     }
   }
@@ -349,14 +336,12 @@ export class RgComponent implements OnInit, AfterContentChecked {
   requestJoin() {
     this.researchGroupService.requestJoin({ id: this.researchGroup.id }).subscribe(
       (response) => {
-        this.sucSwal.title = 'Se ha enviado tu solicitud de unión al grupo';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Se ha enviado tu solicitud de unión al grupo', type: 'success'};
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No te has podido unir al grupo';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No te has podido unir al grupo', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -379,14 +364,12 @@ export class RgComponent implements OnInit, AfterContentChecked {
   leave() {
     this.researchGroupService.leaveGroup({ id: this.researchGroup.id }).subscribe(
       (response) => {
-        this.sucSwal.title = 'Has abandonado este grupo';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Has abandonado este grupo', type: 'success'};
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No has podido abandonar el grupo';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No has podido abandonar al grupo', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -400,9 +383,8 @@ export class RgComponent implements OnInit, AfterContentChecked {
       this.uploader.clearQueue();
       this.uploader.addToQueue([e[0]]);
     } else {
-      this.errSwal.title = 'El tipo de archivo es inválido';
-      this.errSwal.text = 'Sólo se permiten imágenes jpg, png o gif';
-      this.errSwal.show();
+      this.swalOpts = { title: 'El tipo de archivo es inválido', text: 'Sólo se permiten imágenes jpg, png o gif', type: 'error' };
+
     }
   }
 

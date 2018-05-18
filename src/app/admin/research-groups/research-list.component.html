@@ -16,10 +16,9 @@
       </div>
 
       <div *ngIf="PDF">
-          <app-documents [url]="historyReportURL"></app-documents>  
+          <app-documents [url]="historyReportURL"></app-documents>
       </div>
     </div>
 </main>
 
-<swal #errSwal title text type="error"></swal>
-<swal #sucSwal title type="success"></swal>
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

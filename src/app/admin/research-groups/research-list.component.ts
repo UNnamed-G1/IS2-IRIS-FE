@@ -17,9 +17,13 @@ import { ResearchGroup } from 'app/classes/_models';
   templateUrl: './research-list.component.html',
   styleUrls: ['./research-list.component.css']
 })
+<<<<<<< HEAD
 export class ResearchListComponent implements OnInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
+=======
+export class ResearchListComponent implements OnInit, AfterContentInit {
+>>>>>>> c9fa19ea31945c92ea4303aad2a852576c45e039
 
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
     'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
@@ -30,7 +34,7 @@ export class ResearchListComponent implements OnInit {
   researchGroups: Array<ResearchGroup>;
   historyReportURL = environment.api_url + 'reports/research_groups_history.pdf';
   PDF = false;
-
+  swalOpts: any;
   page: {
     actual: number,
     total: number
@@ -71,13 +75,12 @@ export class ResearchListComponent implements OnInit {
     this.researchGroupService.delete(id).subscribe(
       (response: { research_group: ResearchGroup }) => {
         this.getResearchGroups();
-        this.sucSwal.title = 'El grupo de investigación ha sido eliminado';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'El grupo de investigación ha sido eliminado', type: 'success'};
+
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Grupo de investigación no eliminado';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Grupo de investigación no eliminado', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -89,9 +92,8 @@ export class ResearchListComponent implements OnInit {
         this.page.total = response.total_pages;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los grupos de investigación';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los grupos de investigación', text: error.message, type: 'error' };
+
       }
     );
   }

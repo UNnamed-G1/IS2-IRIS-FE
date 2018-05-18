@@ -20,8 +20,14 @@ import { Publication } from 'app/classes/_models';
 })
 export class PublicationComponent implements OnInit, AfterContentInit {
   @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
+  swalOpts: any;
+  headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',    'Corta descripción', 'Tipo de Publicación', 'Fecha Creación'];
+  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
+  publications: Array<Publication>;
+  pub: Publication = new Publication();
+  pdfLoaded = false;
+  pdfSrc;
+  pdfName;
   PDFpage = 1;
   totalPages: number;
   isLoaded = true;
@@ -30,14 +36,6 @@ export class PublicationComponent implements OnInit, AfterContentInit {
   zoom = 1.0;
   originalSize = true;
   rotate = 0;
-  headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',
-    'Corta descripción', 'Tipo de Publicación', 'Fecha Creación'];
-  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
-  publications: Array<Publication>;
-  pub: Publication = new Publication();
-  pdfLoaded = false;
-  pdfSrc;
-  pdfName;
   page: {
     actual: number,
     total: number
@@ -69,8 +67,6 @@ export class PublicationComponent implements OnInit, AfterContentInit {
   }
 
   details(id: number) {
-    // this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: id } });
-    // this.router.navigateByUrl('/publication');
     this.publicationService.get(id).subscribe(
       (response: { publication: Publication }) => {
         this.pub = response.publication;
@@ -79,9 +75,8 @@ export class PublicationComponent implements OnInit, AfterContentInit {
         this.pdfLoaded = !this.pdfLoaded;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener la Publicación';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener la Publicación', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -90,13 +85,12 @@ export class PublicationComponent implements OnInit, AfterContentInit {
     this.publicationService.delete(id).subscribe(
       (response: { publication: Publication }) => {
         this.getPublications();
-        this.sucSwal.title = 'La publicación ha sido eliminado';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'La publicación ha sido eliminado', type: 'success'};
+
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Publicación no eliminada';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Publicación no eliminada', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -107,9 +101,8 @@ export class PublicationComponent implements OnInit, AfterContentInit {
         this.pub = response.publication;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido obtener la Publicación';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener la Publicación', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -121,9 +114,7 @@ export class PublicationComponent implements OnInit, AfterContentInit {
         this.page.total = response.total_pages;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener las publicaciones';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener las publicaciones', text: error.message, type: 'error' };
       }
     );
   }

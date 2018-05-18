@@ -6,7 +6,6 @@ import { MouseEvent } from '@agm/core';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
-
 import { PermissionManager } from 'app/permission-manager';
 import { Event, ResearchGroup } from 'app/classes/_models';
 import { EventService } from 'app/services/event.service';
@@ -46,7 +45,7 @@ export class AddEventComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.createEventForm(new Event());
+
     if (this.permMan.validateSession(['Profesor'])) {
       this.userID.subscribe(id => {
         this.userService.get(id).subscribe(
@@ -97,7 +96,7 @@ export class AddEventComponent implements OnInit {
     if (this.eventId) {
       this.eventService.update(this.eventId, { event: e }).subscribe(
         (response: { event: Event }) => {
-          this.swalOpts = { title: 'El evento ha sido actualizado', type: 'success' };
+          this.swalOpts = { title: 'El evento ha sido actualizado', type: 'success', confirm: this.navList, confirmParams: [this] };
           this.setEvent(response.event);
         },
         (error: HttpErrorResponse) => {
@@ -107,7 +106,7 @@ export class AddEventComponent implements OnInit {
     } else {
       this.eventService.create({ event: e }).subscribe(
         (response: { event: Event }) => {
-          this.swalOpts = { title: 'El evento ha sido añadido', type: 'success' };
+          this.swalOpts = { title: 'El evento ha sido añadido', type: 'success', confirm: this.navList, confirmParams: [this] };
           this.eventForm.reset();
         },
         (error: HttpErrorResponse) => {
@@ -117,22 +116,26 @@ export class AddEventComponent implements OnInit {
     }
   }
 
+  navList(){
+    this.router.navigateByUrl('event-list');
+  }
+
   setEndDate() {
     this.end_date.setValue(new Date(this.date.value.getTime() + this.durationToMili()));
     this.end_date.markAsDirty();
   }
-  
+
   setDuration() {
     const time: Date = new Date(this.end_date.value.getTime() - this.date.value.getTime());
     this.duration.setValue(time.getHours() + ':' + time.getMinutes());
     this.duration.markAsDirty();
   }
-  
+
   durationToMili(): number {
     const [mins, secs] = this.duration.value.split(':').map((n) => parseInt(n));
     return (mins * 60 + secs) * 60 * 1000;
   }
-  
+
   setEvent(event: Event) {
     event.research_group_id = event.research_group.id;
     this.createEventForm(event);
