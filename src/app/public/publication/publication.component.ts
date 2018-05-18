@@ -21,6 +21,13 @@ import { Publication } from 'app/classes/_models';
 export class PublicationComponent implements OnInit, AfterContentInit {
   @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
   swalOpts: any;
+  headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',    'Corta descripción', 'Tipo de Publicación', 'Fecha Creación'];
+  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
+  publications: Array<Publication>;
+  pub: Publication = new Publication();
+  pdfLoaded = false;
+  pdfSrc;
+  pdfName;
   PDFpage = 1;
   totalPages: number;
   isLoaded = true;
@@ -29,14 +36,6 @@ export class PublicationComponent implements OnInit, AfterContentInit {
   zoom = 1.0;
   originalSize = true;
   rotate = 0;
-  headers: Array<string> = ['Nombre', 'Fecha', 'Abstract',
-    'Corta descripción', 'Tipo de Publicación', 'Fecha Creación'];
-  keys: Array<string> = ['name', 'date', 'abstract', 'brief_description', 'type_pub', 'created_at'];
-  publications: Array<Publication>;
-  pub: Publication = new Publication();
-  pdfLoaded = false;
-  pdfSrc;
-  pdfName;
   page: {
     actual: number,
     total: number
@@ -68,8 +67,6 @@ export class PublicationComponent implements OnInit, AfterContentInit {
   }
 
   details(id: number) {
-    // this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: id } });
-    // this.router.navigateByUrl('/publication');
     this.publicationService.get(id).subscribe(
       (response: { publication: Publication }) => {
         this.pub = response.publication;

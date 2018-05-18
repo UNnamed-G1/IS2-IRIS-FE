@@ -290,7 +290,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
-        this.swalOpts = { title: 'No te has podido abandonar al grupo', text: error.message, type: 'error' };
+        this.swalOpts = { title: 'No has podido abandonar al grupo', text: error.message, type: 'error' };
 
       }
     );
