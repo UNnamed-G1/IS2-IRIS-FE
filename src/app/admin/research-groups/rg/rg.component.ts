@@ -144,7 +144,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
     }
     this.researchGroupService.update(this.researchGroup.id, fd).subscribe(
       (response: { research_group: ResearchGroup }) => {
-        this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success'};
+        this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success' };
         this.toggleShowInput();
         this.uploader.clearQueue();
         this.setRG(response.research_group);
@@ -267,7 +267,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
         this.requestRG(this.researchGroup.id);        
       },
       (error: HttpErrorResponse) => {
-        // this.swalOpts = {  }
+        this.swalOpts = { title: 'No se ha podido aceptar la solicitud', text: error.message, type: 'error' };
       }
     )
   }
@@ -278,7 +278,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
         this.requestRG(this.researchGroup.id);        
       },
       (error: HttpErrorResponse) => {
-        // this.swalOpts = {  }
+        this.swalOpts = { title: 'No se ha podido rechazar la solicitud', text: error.message, type: 'error' };
       }
     )
   }
@@ -323,7 +323,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
       this.researchGroupService.update(this.researchGroup.id, rg).subscribe(
         (response: { research_group: ResearchGroup }) => {
           this.setRG(response.research_group);
-          this.swalOpts = { title: 'El grupo ha sido actualizado', type: 'success'};
+          this.swalOpts = { title: 'El grupo ha sido actualizado', type: 'success' };
           this.createRGForm();
         },
         (error: HttpErrorResponse) => {
@@ -336,7 +336,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   requestJoin() {
     this.researchGroupService.requestJoin({ id: this.researchGroup.id }).subscribe(
       (response) => {
-        this.swalOpts = { title: 'Se ha enviado tu solicitud de unión al grupo', type: 'success'};
+        this.swalOpts = { title: 'Se ha enviado tu solicitud de unión al grupo', type: 'success' };
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
@@ -360,7 +360,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   leave() {
     this.researchGroupService.leaveGroup({ id: this.researchGroup.id }).subscribe(
       (response) => {
-        this.swalOpts = { title: 'Has abandonado este grupo', type: 'success'};
+        this.swalOpts = { title: 'Has abandonado este grupo', type: 'success' };
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {

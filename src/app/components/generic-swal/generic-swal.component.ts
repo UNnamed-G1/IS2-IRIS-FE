@@ -35,7 +35,9 @@ export class GenericSwalComponent implements OnChanges {
   }
 
   confirmButtonClicked() {
+    if (this.options.confirm) {
     this.options.confirm.apply(this.options.confirmParams[0]);
+  }
   }
 
 }
