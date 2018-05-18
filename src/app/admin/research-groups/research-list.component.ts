@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
@@ -17,7 +17,7 @@ import { ResearchGroup } from 'app/classes/_models';
   templateUrl: './research-list.component.html',
   styleUrls: ['./research-list.component.css']
 })
-export class ResearchListComponent implements OnInit, AfterContentInit {
+export class ResearchListComponent implements OnInit {
   @ViewChild('sucSwal') private sucSwal: SwalComponent;
   @ViewChild('errSwal') private errSwal: SwalComponent;
 
@@ -43,16 +43,14 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Administrador']);
-  }
-
-  ngAfterContentInit() {
-    this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({
-        actual: +params.page || 1
+    if (this.permMan.validateSession(['Administrador'])) {
+      this.route.queryParams.subscribe(params => {
+        this.page = Object.assign({
+          actual: +params.page || 1
+        });
+        this.getResearchGroups();
       });
-      this.getResearchGroups();
-    });
+    }
   }
 
   update(id: number) {
