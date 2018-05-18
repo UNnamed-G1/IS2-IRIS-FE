@@ -341,7 +341,6 @@ export class RgComponent implements OnInit, AfterContentChecked {
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No te has podido unir al grupo', text: error.message, type: 'error' };
-
       }
     );
   }
@@ -349,14 +348,11 @@ export class RgComponent implements OnInit, AfterContentChecked {
   cancelJoinRequest() {
     this.researchGroupService.cancelJoinRequest(this.researchGroup.id).subscribe(
       (response) => {
-        this.sucSwal.title = 'Se ha cancelado la solicitud de unión';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Se ha cancelado la solicitud de unión', type: 'success' };
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido cancelar la solicitud de unión unir al grupo';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se ha podido cancelar la solicitud de unión unir al grupo', text: error.message, type: 'error' };
       }
     );
   }

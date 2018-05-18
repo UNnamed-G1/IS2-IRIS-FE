@@ -17,14 +17,7 @@ import { ResearchGroup } from 'app/classes/_models';
   templateUrl: './research-list.component.html',
   styleUrls: ['./research-list.component.css']
 })
-<<<<<<< HEAD
 export class ResearchListComponent implements OnInit {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
-=======
-export class ResearchListComponent implements OnInit, AfterContentInit {
->>>>>>> c9fa19ea31945c92ea4303aad2a852576c45e039
-
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
     'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
     'Fecha de clasificación', 'URL'];
