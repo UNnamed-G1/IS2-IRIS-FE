@@ -14,21 +14,23 @@ export abstract class CommonService {
     const idValue: string = (id) ? id.toString() : '';
     return this.http.get(this.url + idValue);
   }
-
+  
   public getAll(page: number) {
     return this.http.get(this.url.substring(0, this.url.length - 1) + '?page=' + page);
   }
-
+  
   public create(body: any) {
     return this.http.post(this.url, body);
   }
-
+  
   public update(id: number, body: any) {
-    return this.http.put(this.url + id, body);
+    const idValue: string = (id) ? id.toString() : '';
+    return this.http.put(this.url + idValue, body);
   }
-
+  
   public delete(id: number) {
-    return this.http.delete(this.url + id);
+    const idValue: string = (id) ? id.toString() : '';
+    return this.http.delete(this.url + idValue);
   }
 
   public applyRequestPath(request, path, params?: any[]) {

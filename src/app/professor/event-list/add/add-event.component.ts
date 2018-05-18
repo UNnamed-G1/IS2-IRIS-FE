@@ -6,7 +6,6 @@ import { MouseEvent } from '@agm/core';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
-
 import { PermissionManager } from 'app/permission-manager';
 import { Event, ResearchGroup } from 'app/classes/_models';
 import { EventService } from 'app/services/event.service';
@@ -26,8 +25,8 @@ export class AddEventComponent implements OnInit {
   userGroups: Array<ResearchGroup>;
   eventForm: FormGroup;
   types: { [Key: string]: string[] } = {
-    event: ['Publico', 'Privado'],
-    frequence: ['Unico', 'Repetitivo'],
+    event: ['Público', 'Privado'],
+    frequence: ['Único', 'Repetitivo'],
     state: ['Activo', 'Inactivo']
   }
   minDate: Date = new Date(); // Actual date for event date
@@ -46,7 +45,7 @@ export class AddEventComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.createEventForm(new Event());
+
     if (this.permMan.validateSession(['Profesor'])) {
       this.userID.subscribe(id => {
         this.userService.get(id).subscribe(
@@ -54,10 +53,10 @@ export class AddEventComponent implements OnInit {
             this.userGroups = response.user.research_groups;
           },
           (error: HttpErrorResponse) => {
-            this.swalOpts = { title: 'No se ha podido obtener tus grupos de investigación', text: error.message, type: 'error' };
+            this.swalOpts = { title: 'No se han podido obtener tus grupos de investigación', text: error.message, type: 'error' };
           }
         );
-      });
+      }).unsubscribe();
       this.eventUpdateID.subscribe((id: number) => {
         if (id) {
           this.eventService.get(id).subscribe(
@@ -69,11 +68,8 @@ export class AddEventComponent implements OnInit {
               this.swalOpts = { title: 'No se ha podido obtener el evento', text: error.message, type: 'error' };
             }
           );
-        } else {
-          // No id stored
-          this.router.navigateByUrl('');
         }
-      });
+      }).unsubscribe();
     }
   }
 
@@ -95,19 +91,12 @@ export class AddEventComponent implements OnInit {
     for (const k in this.eventForm.controls) {
       if (this.eventForm.get(k).dirty && k != 'end_date') {
         e[k] = this.eventForm.get(k).value;
-        if (k === 'event_type' || k === 'frequence' || k === 'state') {
-          e[k] = e[k].toLowerCase();
-        }
       }
-    }
-    if (e.event_type) {
-      e.type_ev = e.event_type;
-      delete e.event_type;
     }
     if (this.eventId) {
       this.eventService.update(this.eventId, { event: e }).subscribe(
         (response: { event: Event }) => {
-          this.swalOpts = { title: 'El evento ha sido actualizado', type: 'success' };
+          this.swalOpts = { title: 'El evento ha sido actualizado', type: 'success', confirm: this.navList, confirmParams: [this] };
           this.setEvent(response.event);
         },
         (error: HttpErrorResponse) => {
@@ -117,7 +106,7 @@ export class AddEventComponent implements OnInit {
     } else {
       this.eventService.create({ event: e }).subscribe(
         (response: { event: Event }) => {
-          this.swalOpts = { title: 'El evento ha sido añadido', type: 'success' };
+          this.swalOpts = { title: 'El evento ha sido añadido', type: 'success', confirm: this.navList, confirmParams: [this] };
           this.eventForm.reset();
         },
         (error: HttpErrorResponse) => {
@@ -127,22 +116,26 @@ export class AddEventComponent implements OnInit {
     }
   }
 
+  navList(){
+    this.router.navigateByUrl('event-list');
+  }
+
   setEndDate() {
     this.end_date.setValue(new Date(this.date.value.getTime() + this.durationToMili()));
     this.end_date.markAsDirty();
   }
-  
+
   setDuration() {
     const time: Date = new Date(this.end_date.value.getTime() - this.date.value.getTime());
     this.duration.setValue(time.getHours() + ':' + time.getMinutes());
     this.duration.markAsDirty();
   }
-  
+
   durationToMili(): number {
     const [mins, secs] = this.duration.value.split(':').map((n) => parseInt(n));
     return (mins * 60 + secs) * 60 * 1000;
   }
-  
+
   setEvent(event: Event) {
     event.research_group_id = event.research_group.id;
     this.createEventForm(event);

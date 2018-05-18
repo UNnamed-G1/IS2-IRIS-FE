@@ -5,7 +5,7 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
-import { ADD_AUXILIAR } from 'app/redux/actions';
+import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 
 import { PermissionManager } from 'app/permission-manager';
 import { EventService } from 'app/services/event.service';
@@ -17,13 +17,11 @@ import { Event } from 'app/classes/_models';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit, AfterContentInit {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre', 'Tema', 'Descripción', 'Fecha', 'Lugar', 'Grupo de investigación'];
   keys: Array<string> = ['name', 'topic', 'description', 'date', 'address', 'research_group_name'];
   events: Array<Event>;
-
+  swalOpts: any;
   page: {
     actual: number,
     total: number
@@ -48,6 +46,11 @@ export class EventListComponent implements OnInit, AfterContentInit {
     });
   }
 
+  add() {
+    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'eventUpdate' });
+    this.router.navigateByUrl('/events/add');
+  }
+
   update(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { eventUpdate: id } });
     this.router.navigateByUrl('/events/add');
@@ -60,14 +63,11 @@ export class EventListComponent implements OnInit, AfterContentInit {
   delete(id: number) {
     this.eventService.delete(id).subscribe(
       (response: { event: Event }) => {
-        this.sucSwal.title = 'El evento ha sido eliminado';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Evento ha sido eliminado', type: 'success'};
         this.getEvents();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Evento no eliminado';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Evento no ha sido eliminado', text: error.message, type: 'error' };
       }
     );
   }
@@ -80,9 +80,7 @@ export class EventListComponent implements OnInit, AfterContentInit {
         this.page.total = response.total_pages;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los eventos';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los eventos', text: error.message, type: 'error' };
       }
     );
   }

@@ -1,3 +1,61 @@
-<p>
-  search works!
-</p>
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Búsqueda</span></div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1>Búsqueda</h1>
+      </div>
+
+      <div class="panel-body" style="position:relative">
+        <div class="topnav">
+          <br>
+          <!-- Buttons -->
+          <button class="btn btn-primary btn-sm" (click)="getResearchGroups()">Grupos de investigación</button>
+          <button class="btn btn-primary btn-sm" (click)="getEvents()">Eventos</button>
+          <button class="btn btn-primary btn-sm" (click)="getUsers()">Usuarios</button>
+          <button class="btn btn-primary btn-sm" (click)="getPublications()">Publicaciones</button>
+          <div class="panel-body" style="position:relative">
+          <br>
+          <!-- Search -->
+          <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Escribe para buscar..." [(ngModel)]="searchStr" name="searchStr">
+          </div>
+
+          <!-- Table -->
+          <div *ngIf=!pdfLoaded class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr *ngIf="columns">
+                  <th *ngFor="let column of columns">{{ column }}</th>
+                  <th>Acciones</th>
+              </tr>
+              </thead>
+              <tbody *ngIf="rows">
+                <tr *ngFor="let row of rows | filter : keys[0] : searchStr">
+                  <td *ngFor="let value of keys">
+                    {{row[value]}}
+                  </td>
+
+
+                  <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" title="Detalles" (click)="redirect(row.id)">
+                    <span class="glyphicon glyphicon-search"></span></button>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div *ngIf=pdfLoaded class="jumbotron">
+            <div class="panel panel-default" style="margin-top:10px;">
+              <br>
+              <button class="btn btn-primary btn-sm" (click)="showPub()">Volver</button>
+              <br><br>
+              <app-documents [url]="pdfSrc"></app-documents>
+            </div>
+          </div>
+          <app-pagination [page]="page"></app-pagination>
+          <button class="btn btn-primary btn-sm" routerLink="/home" role="button">Volver</button>
+        </div>
+        </div>
+      </div>
+    </div>
+</main>

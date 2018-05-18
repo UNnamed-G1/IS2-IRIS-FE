@@ -12,7 +12,9 @@ export class GenericSwalComponent implements OnChanges {
   @Input() options: {
     title: string,
     text: string,
-    type: SweetAlertType
+    type: SweetAlertType,
+    confirm: (() => void),
+    confirmParams: Array<any>
   };
 
   constructor() { }
@@ -24,10 +26,18 @@ export class GenericSwalComponent implements OnChanges {
     this.swal.title = this.options.title;
     this.swal.text = this.options.text;
     this.swal.type = this.options.type;
+    this.swal.showConfirmButton = true;
+
     if (this.options.type == 'error') {
       this.swal.text = 'Mensaje de error: ' + this.swal.text;
     }
     this.swal.show();
+  }
+
+  confirmButtonClicked() {
+    if (this.options.confirm) {
+      this.options.confirm.apply(this.options.confirmParams[0]);
+    }
   }
 
 }

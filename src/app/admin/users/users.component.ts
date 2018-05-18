@@ -18,13 +18,12 @@ import { environment } from 'environments/environment';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit, AfterContentInit {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
 
   headers: Array<string> = ['Nombre completo', 'Usuario', 'Perfil profesional',
     'Teléfono', 'Oficina', 'URL CvLAC', 'Tipo'];
   keys: Array<string> = ['full_name', 'username', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
   users: Array<User>;
+  swalOpts: any;
   usersReportUrl = environment.api_url + 'reports/user_history.pdf?send=false';
   PDF = false;
   page: {
@@ -39,7 +38,7 @@ export class UsersComponent implements OnInit, AfterContentInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Admin']);
+    this.permMan.validateSession(['Administrador']);
   }
 
   ngAfterContentInit() {
@@ -64,14 +63,12 @@ export class UsersComponent implements OnInit, AfterContentInit {
   delete(id: number) {
     this.userService.delete(id).subscribe(
       (response: { user: User }) => {
-        this.sucSwal.title = 'El usuario ha sido eliminado';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'El usuario ha sido eliminado', type: 'success'};
         this.getUsers();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Usuario no eliminado';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Usuario no eliminado', text: error.message, type: 'error' };
+
       }
     );
   }
@@ -87,9 +84,8 @@ export class UsersComponent implements OnInit, AfterContentInit {
         this.page.total = response.total_pages;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los usuarios';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los usuarios', text: error.message, type: 'error' };
+
       }
     );
   }

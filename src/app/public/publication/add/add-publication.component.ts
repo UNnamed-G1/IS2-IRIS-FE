@@ -36,7 +36,7 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
     private ngRedux: NgRedux<AppState>) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Admin']);
+    this.permMan.validateSession(['Administrador']);
     this.publicationID.subscribe((id: number) => {
       if (id) {
         this.publicationId = id;
@@ -74,9 +74,6 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
         if (k === 'document') {
           publication[k] = this.uploadedFile;
         }
-        if (k === 'type_pub') {
-          publication[k] = publication[k].toLowerCase();
-        }
       }
     }
     const fd = new FormData();
@@ -86,7 +83,7 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
     if (this.publicationId) {
       this.publicationService.update(this.publicationId, fd).subscribe(
         (response: { publication: Publication }) => {
-          this.swalOpts = { title: 'La publicación ha sido actualizada', type: 'success' };
+          this.swalOpts = { title: 'La publicación ha sido actualizada', type: 'success',confirm: this.navList, confirmParams: [this] };
           this.createRGForm(response.publication);
         },
         (error: HttpErrorResponse) => {
@@ -96,7 +93,7 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
     } else {
       this.publicationService.create(fd).subscribe(
         (response: { publication: Publication }) => {
-          this.swalOpts = { title: 'El grupo de investigación ha sido añadido', type: 'success' };
+          this.swalOpts = { title: 'El grupo de investigación ha sido añadido', type: 'success', confirm: this.navList, confirmParams: [this] };
           this.publicationForm.reset();
         },
         (error: HttpErrorResponse) => {
@@ -104,6 +101,10 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  navList(){
+    this.router.navigateByUrl('publication');
   }
 
   private createRGForm(publication: Publication) {

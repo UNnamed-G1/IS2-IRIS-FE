@@ -56,7 +56,6 @@ import { AboutComponent } from './public/about/about.component';
 import { EventsComponent } from './public/events/events.component';
 import { HomeComponent } from './public/home/home.component';
 import { NewsComponent } from './public/news/news.component';
-import { NotFoundComponent } from './public/not-found/not-found.component';
 import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
@@ -252,7 +251,6 @@ export const appRoutes: Routes = [
     ProfileComponent,
     TimeLineComponent,
     SearchComponent,
-    NotFoundComponent,
     ManageComponent,
     UsersComponent,
     ResearchListComponent,

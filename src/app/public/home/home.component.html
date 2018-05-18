@@ -7,11 +7,11 @@
 				<div class="col-md-10">
 					<p>Aqui podrás encontrar toda la informacion relacionada con los grupos de investigacion de la Universidad Nacional de Colombia</p>
 					<p>
-						<button class="btn btn-primary btn-lg" routerLink="/about" role="button">Mas información</button>
 						<button *ngIf="!(isLogged | async)" class="btn btn-primary btn-lg" routerLink="/login" role="button">Login</button>
-						<button *ngIf="(sessionType | async) === 'Admin'" class="btn btn-primary btn-lg" routerLink="/admin/manage" role="button">ADMINISTRAR</button>
-						<button *ngIf="(sessionType | async) === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">EVENTOS</button>
-						
+						<button class="btn btn-primary btn-lg" routerLink="/search" role="button">Buscar</button>
+						<button *ngIf="(sessionType | async) === 'Administrador'" class="btn btn-primary btn-lg" routerLink="/admin/manage" role="button">Administrar</button>
+						<button *ngIf="(sessionType | async) === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">Eventos</button>
+
 					</p>
 				</div>
 			</div>

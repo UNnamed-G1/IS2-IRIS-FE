@@ -22,3 +22,11 @@
 .statistics {
     background: white;
 }
+
+.reject {
+    color: red;
+}
+
+.accept {
+    color: green;
+}

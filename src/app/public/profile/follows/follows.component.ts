@@ -61,7 +61,6 @@ export class FollowsComponent implements OnInit, OnChanges {
 
   goToUser(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: id } });
-    this.router.navigateByUrl('/profile');
   }
 
   unfollow(id: number) {

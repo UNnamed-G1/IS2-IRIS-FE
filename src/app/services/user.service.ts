@@ -17,7 +17,9 @@ export class UserService extends CommonService {
   getCurrent() {
     return this.applyRequestPath(this.get, 'users/current/');
   }
-
+  searchUsersByName(name: string, page:number){
+    return this.applyRequestPath(this.get, 'search/users?keywords=' + name + '&'+ 'page=' + page);
+  }
   getCurrentResearchGroups() {
     return this.applyRequestPath(this.get, 'users/current/research_groups');
   }

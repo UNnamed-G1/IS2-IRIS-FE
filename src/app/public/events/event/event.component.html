@@ -30,11 +30,11 @@
             </div>
           </div>
           <!-- Maps -->
-          {{test}}
+
           <div class="gMaps-container">
             <agm-map class="gMaps-container"
-                [latitude]="lat"
-                [longitude]="lng"
+                [latitude]="event.latitude"
+                [longitude]="event.longitude"
                 [zoom]="zoom"
                 [disableDefaultUI]="false"
                 [zoomControl]="false"
@@ -82,8 +82,8 @@
         </div>
 
       <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Profesor'" (click)="toggleShowInput()">Editar</button>
-      <button class="btn btn-primary" routerLink="/event-list" role="button">Volver</button>
-
+      <button *ngIf="(sessionType | async) === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">Volver</button>
+      <button class="btn btn-primary" routerLink="/home" role="button">Inicio</button>
       </div>
         <hr style="border:1px dotted black;">
 
