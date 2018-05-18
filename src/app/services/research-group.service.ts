@@ -13,6 +13,14 @@ export class ResearchGroupService extends CommonService {
     return this.applyRequestPath(this.get, 'research_groups/news');
   }
 
+  addUsers(id: number, users: any): any {
+    return this.applyRequestPath(this.create, 'research_groups/' + id + '/add_users', [users])
+  }
+
+  availableUsers(id: number, keywords: string = ''): any {
+    return this.applyRequestPath(this.get, 'research_groups/' + id + '/available_users?keywords=' + keywords);
+  }
+
   acceptJoinRequest(id: number, user_id: number): any {
     return this.applyRequestPath(this.update, 'research_groups/' + id + '/accept_request?user_id=', [user_id]);
   }
@@ -32,8 +40,9 @@ export class ResearchGroupService extends CommonService {
   leaveGroup(id: any): any {
     return this.applyRequestPath(this.create, 'research_groups/leave', [id]);
   }
-  searchRGByName(name: string, page:number){
-    return this.applyRequestPath(this.get, 'search/research_groups?keywords=' + name + '&'+ 'page=' + page);
+  
+  searchRGByName(name: string, page: number) {
+    return this.applyRequestPath(this.get, 'search/research_groups?keywords=' + name + '&page=' + page);
   }
 
   /*

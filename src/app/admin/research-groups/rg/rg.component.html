@@ -37,6 +37,7 @@
             <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !(isMember || isOwner || isRequester)" (click)="requestJoin()">Solicitar unirse</button>
             <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && isRequester" (click)="cancelJoinRequest()">Cancelar solicitud</button>
             <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isMember" (click)="leave()">Abandonar grupo</button>-->
+            <span class="glyphicon glyphicon-plus" style="font-size: 1.8rem" *ngIf="isOwner" data-toggle="modal" data-target="#modal-add-users"></span>
             <div class="panel panel-default" *ngIf="isOwner && filterRequested().length">
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
@@ -311,3 +312,61 @@
 </main>
 
 <app-generic-swal [options]="swalOpts"></app-generic-swal>
+
+<div id="modal-add-users" class="modal fade hidden-print" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button #closeModal type="button" class="close" data-dismiss="modal">&times;</button>
+        <h2>Añadir usuarios</h2>
+      </div>
+      <div class="modal-body row">
+        <div class="input-group">
+          <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+          <input type="text" class="form-control" placeholder="Escribe para buscar..." (input)="setUsersToAdd($event.target.value)">
+        </div>
+        <div class="col-md-6">
+          <div *ngFor="let user of usersToAdd">
+            <div *ngIf="!choosed(user.id)">
+              <div class="col-xs-10">
+                {{ user.full_name }}
+              </div>
+              <div class="col-xs-2">
+                <button class="btn btn-xs btn-primary" (click)="addUser(user)">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+              </div> 
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div *ngFor="let user of choosedUsers; let i = index">
+            <div class="col-xs-4">
+              {{ user.name }}
+            </div>
+            <div class="col-xs-4">
+              <select class="form-control" [value]="user.member_type" (input)="user.member_type = $event.target.value">
+                <option *ngFor="let t of memberTypes" [ngValue]="t">{{ t }}</option>
+              </select>
+            </div>
+            <div class="col-xs-2">
+              <button class="btn btn-xs btn-danger" (click)="removeUser(i)">
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="row" style="text-align: center">
+          <div class="col-xs-6">
+            <button type="submit" class="btn btn-primary" (click)="addUsers()">Añadir usuarios</button>
+          </div>
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

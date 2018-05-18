@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, AfterContentChecked } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentChecked, ElementRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -20,6 +20,7 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   styleUrls: ['./rg.component.css']
 })
 export class RgComponent implements OnInit, AfterContentChecked {
+  @ViewChild('closeModal') private closeBtn: ElementRef;
   @select(['session', 'username']) sessionUsername;
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'researchGroup']) researchGroupID;
@@ -37,6 +38,10 @@ export class RgComponent implements OnInit, AfterContentChecked {
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
+  
+  memberTypes = ['Miembro', 'Líder'];
+  usersToAdd: Array<User>;
+  choosedUsers: Array<any> = new Array<any>();
 
   /*
    * Charts
@@ -232,6 +237,9 @@ export class RgComponent implements OnInit, AfterContentChecked {
     this.currentIsRequester();
     this.currentIsMember();
     this.currentIsOwner();
+    if (this.isOwner) {
+      this.setUsersToAdd();
+    }
   }
 
   currentIsRequester() {
@@ -264,7 +272,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   acceptJoinRequest(userId: number) {
     this.researchGroupService.acceptJoinRequest(this.researchGroup.id, userId).subscribe(
       (response) => {
-        this.requestRG(this.researchGroup.id);        
+        this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se ha podido aceptar la solicitud', text: error.message, type: 'error' };
@@ -275,7 +283,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   rejectJoinRequest(userId: number) {
     this.researchGroupService.rejectJoinRequest(this.researchGroup.id, userId).subscribe(
       (response) => {
-        this.requestRG(this.researchGroup.id);        
+        this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se ha podido rechazar la solicitud', text: error.message, type: 'error' };
@@ -293,7 +301,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
     return this.researchGroup.members
       .filter((member) => member.member_type === 'Líder')
       .map((member) => member.user)
-    }
+  }
 
   filterMember(): Array<User> {
     return this.researchGroup.members
@@ -328,9 +336,48 @@ export class RgComponent implements OnInit, AfterContentChecked {
         },
         (error: HttpErrorResponse) => {
           this.swalOpts = { title: 'Grupo no actualizado', text: error.message, type: 'error' };
-
-        });
+        }
+      );
     }
+  }
+
+  choosed(userId: number): boolean {
+    return this.choosedUsers.map((user) => user.id).includes(userId);
+  }
+
+  addUser(user: User) {
+    this.choosedUsers.push({ id: user.id, name: user.full_name, member_type: 'Miembro' });
+  }
+
+  removeUser(idx: number) {
+    this.choosedUsers.splice(idx, 1);
+  }
+
+  addUsers() {
+    const choosed = this.choosedUsers.map((user) => ({ id: user.id, member_type: user.member_type }));
+    this.researchGroupService.addUsers(this.researchGroup.id, { users: choosed }).subscribe(
+      (response) => {
+        this.swalOpts = { title: 'Los usuarios han sido añadidos satisfactoriamente', type: 'success' };
+        this.closeBtn.nativeElement.click();  
+        this.requestRG(this.researchGroup.id);
+        this.setUsersToAdd();
+        this.choosedUsers = new Array<any>();
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'Usuarios no añadidos', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  setUsersToAdd(keywords = '') {
+    this.researchGroupService.availableUsers(this.researchGroup.id, keywords).subscribe(
+      (response: { users: Array<User> }) => {
+        this.usersToAdd = response.users;
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se han podido obtener usuarios', text: error.message, type: 'error' };
+      }
+    )
   }
 
   requestJoin() {
