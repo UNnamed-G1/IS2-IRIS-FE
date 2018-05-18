@@ -32,6 +32,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   researchGroup: ResearchGroup;
   showInput = false;
   isMember: boolean;
+  isLeader: boolean;
   rgForm: FormGroup;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;

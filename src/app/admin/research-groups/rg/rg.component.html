@@ -39,11 +39,11 @@
             <div class="panel panel-default">
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
-                  <div class="col-sm-1 col-md-1">
-                    <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
+                  <div class="col-sm-2 col-md-2">
+                    <span class="fa fa-group" style="font-size: 1.8rem"></span>
                   </div>
-                  <div class="col-sm-11 col-md-11">
-                    <h3>Usuarios</h3>
+                  <div class="col-sm-10 col-md-10">
+                    <h3> Usuarios</h3>
                   </div>
                 </div>
               </div>
@@ -52,7 +52,7 @@
                   <div *ngFor="let member of researchGroup.members" class="field">
                     <div class=" media">
                       <div class="media-left media-middle">
-                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                        <img src="{{user?.photo ? user.photo : 'assets/images/user.png'}}" class="media-object" style="width:70px; height:70px;">
                       </div>
 
                       <div class="media-body">
@@ -60,6 +60,10 @@
                         <a (click)="viewProfile(member.user.id)">Ver perfil</a>
                       </div>
                     </div>
+                    <hr style="border:1px dotted black;">
+                  </div>
+                  <div class="media-middle">
+                    <span class="fa fa-user-plus" style="font-size: 3.5rem" title="Agregar usuario"></span>
                     <hr style="border:1px dotted black;">
                   </div>
                 </div>
@@ -76,7 +80,7 @@
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
                   <div class="col-sm-1 col-md-1">
-                    <span class="glyphicon glyphicon-calendar" style="font-size: 1.8rem"></span>
+                    <span class="fa fa-calendar" style="font-size: 1.8rem"></span>
                   </div>
                   <div class="col-sm-11 col-md-11">
                     <h3>Eventos</h3>
@@ -88,14 +92,18 @@
                   <div *ngFor="let event of researchGroup.events">
                     <div class=" media">
                       <div class="media-left media-middle">
-                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                        <img src="http://localhost:3000{{ event.photos[0].picture }}" class="media-object" style="width:70px; height:70px;">
                       </div>
-
-                      <div class="media-body">
+                      <div class="media-body media-middle">
                         <h4 class="media-heading">{{event.topic}}</h4>
                         <a href="#">Mas informacion</a>
                       </div>
                     </div>
+                    <hr style="border:1px dotted black;">
+                  </div>
+                  <div *ngIf="isMember" >
+                    <span class="fa fa-calendar-plus-o" style="font-size: 3.8rem" title="Agregar evento"
+                    routerLink="/event/add"></span>
                     <hr style="border:1px dotted black;">
                   </div>
                 </div>
@@ -108,7 +116,7 @@
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
                   <div class="col-sm-1 col-md-1">
-                    <span class="glyphicon glyphicon-tasks" style="font-size: 1.8rem"></span>
+                    <span class="fa fa-tasks" style="font-size: 1.8rem"></span>
                   </div>
                   <div class="col-sm-11 col-md-11">
                     <h3>Lineas de investigacion</h3>
@@ -119,10 +127,6 @@
                 <div class="research-group">
                   <div *ngFor="let subject of researchGroup.research_subjects">
                     <div class="media">
-                      <div class="media-left media-middle">
-                          <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                      </div>
-
                       <div class="media-body">
                         <h4 class="media-heading">{{subject.name}}</h4>
                         <a href="#">Mas informacion</a>
@@ -150,19 +154,16 @@
                 </div>
                 <div class="col-sm-1 col-md-1">
                   <a (click)="pdfMode()">
-                    <span class="glyphicon glyphicon-file" title="Ver PDF"></span>
+                    <span class="fa fa-file-pdf-o" title="Ver PDF"></span>
                   </a>
                 </div>
               </div>
             </div>
 
-            <div class="panel-body" style="overflow-y: auto; height: 300px; ">
+            <div *ngIf="!PDF" class="panel-body" style="overflow-y: auto; height: 300px; ">
               <div class="research-group">
                 <div *ngFor="let publication of researchGroup.publications">
                   <div class=" media">
-                    <div class="media-left media-middle">
-                      <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
-                    </div>
                     <div class="media-body">
                       <h4 class="media-heading">{{publication.name}}</h4>
                       <a href="#">Mas informacion</a>

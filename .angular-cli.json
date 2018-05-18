@@ -27,7 +27,9 @@
       "assets/css/small.css",
       "assets/css/tablet.css",
       "assets/css/unal.css",
-      "assets/css/styles.css"
+      "assets/css/styles.css",
+      "../node_modules/font-awesome/css/font-awesome.css",
+      "../node_modules/angular-calendar/css/angular-calendar.css"
     ],
     "scripts": [
       "assets/js/jquery.min.js",

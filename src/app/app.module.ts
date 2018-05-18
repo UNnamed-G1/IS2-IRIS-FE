@@ -19,6 +19,9 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { FileDropModule } from 'ngx-file-drop';
 import { ImageCropperModule } from 'ngx-image-cropper'
 import { AgmCoreModule } from '@agm/core';
+import { CalendarModule } from 'angular-calendar';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 // Redux imports
 import { AppState, rootReducer, INITIAL_STATE } from './redux/store';
@@ -67,6 +70,7 @@ import { PublicationComponent } from './public/publication/publication.component
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
 import { FollowsComponent } from './public/profile/follows/follows.component';
 import { EventComponent } from './public/events/event/event.component';
+import { SchedulerComponent } from './public/scheduler/scheduler.component';
 
 // Services
 import { CommonService } from './services/common.service';
@@ -200,7 +204,11 @@ export const appRoutes: Routes = [
   {
     path: 'publications',
     component: PublicationComponent
-  }/*,
+  },{
+    path: 'scheduler',
+    component: SchedulerComponent
+  }
+  /*,
   {
     path: '404',
     component: NotFoundComponent
@@ -212,6 +220,8 @@ export const appRoutes: Routes = [
 @NgModule({
   imports: [
     BrowserModule,
+    CalendarModule.forRoot(),
+    AngularFontAwesomeModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBJ5090JokhcDdoO-ycXZx8Ik2wUcIiPs0'
     }),
@@ -235,7 +245,8 @@ export const appRoutes: Routes = [
     FileUploadModule,
     FileDropModule,
     ImageCropperModule,
-    NvD3Module
+    NvD3Module,
+    NgbModalModule.forRoot()
   ],
   declarations: [
     AppComponent,
@@ -275,7 +286,8 @@ export const appRoutes: Routes = [
     MediaPreviewDirective,
     ImageCropperComponent,
     EventComponent,
-    GenericSwalComponent
+    GenericSwalComponent,
+    SchedulerComponent
   ],
   providers: [
     {
