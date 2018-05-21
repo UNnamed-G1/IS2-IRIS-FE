@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { select } from '@angular-redux/store';
 
 import { PermissionManager } from 'app/permission-manager';
+import { Swal } from 'app/classes/swal';
 import { CommentService } from 'app/services/comment.service';
 
 @Component({
@@ -13,9 +13,8 @@ import { CommentService } from 'app/services/comment.service';
   styleUrls: ['./leave-comments.component.css']
 })
 export class LeaveCommentsComponent implements OnInit {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['session', 'username']) username;
+  swalOpts: Swal;
   commentForm: FormGroup;
 
   constructor(private commentService: CommentService,
@@ -33,14 +32,11 @@ export class LeaveCommentsComponent implements OnInit {
       comments.comment.email = username + '@unal.edu.co';
       this.commentService.create(comments).subscribe(
         (response: any) => {
-          this.sucSwal.title = 'Se han enviado tus comentarios, ¡Gracias!';
-          this.sucSwal.show();
+          this.swalOpts = { title: 'Se han enviado tus comentarios, ¡Gracias!', type: 'success' };
           this.commentForm.reset();
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido enviar tus comentarios';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'No se han podido enviar tus comentarios', text: error.message, type: 'error' };
         }
       );
     });

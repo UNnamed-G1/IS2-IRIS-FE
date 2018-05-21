@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
-import { UserService } from 'app/services/user.service';
+import { Swal } from 'app/classes/swal';
 import { User } from 'app/classes/_models';
+import { UserService } from 'app/services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -13,9 +13,8 @@ import { User } from 'app/classes/_models';
 })
 export class RegisterComponent implements OnInit {
   @ViewChild('closeModal') private closeBtn: ElementRef;
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   registerForm: FormGroup;
+  swalOpts: Swal;
 
   constructor(private userService: UserService,
     private formBuilder: FormBuilder) { }
@@ -29,15 +28,12 @@ export class RegisterComponent implements OnInit {
     delete user.passwords;
     this.userService.create({ 'user': user }).subscribe(
       (response: { user: User }) => {
-        this.sucSwal.title = 'Te has registrado satisfactoriamente.';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Te has registrado satisfactoriamente', type: 'success' };
         this.registerForm.reset();
         this.closeBtn.nativeElement.click();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No ha podido realizar el registro';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No ha podido realizar el registro', text: error.message, type: 'error' };
       }
     );
   }

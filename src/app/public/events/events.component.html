@@ -144,10 +144,8 @@
   </div-->
 
   <app-pagination [page]="page"></app-pagination>
-
   <hr>
   <hr>
-
   <div class="row" align="center">
     <p>
       <a class="btn btn-primary btn-lg" routerLink="/home" role="button">Inicio</a>
@@ -155,4 +153,4 @@
   </div>
 </div>
 
-<swal #errSwal title text type="error"></swal>
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

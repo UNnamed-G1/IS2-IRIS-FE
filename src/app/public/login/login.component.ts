@@ -2,17 +2,19 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { AuthService, GoogleLoginProvider } from 'angular5-social-login';
-import { UserService } from 'app/services/user.service';
-import { LoginService } from 'app/services/login.service';
+
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ISession } from 'app/redux/session';
 import { ADD_SESSION, REMOVE_SESSION } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
+import { UserService } from 'app/services/user.service';
+import { LoginService } from 'app/services/login.service';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-login',
@@ -21,8 +23,7 @@ import { User } from 'app/classes/_models';
 })
 
 export class LoginComponent implements OnInit {
-  @ViewChild('errSwal') private errSwal: SwalComponent;
-
+  swalOpts: Swal;
   signInForm: FormGroup;
 
   constructor(private socialAuthService: AuthService,
@@ -45,9 +46,7 @@ export class LoginComponent implements OnInit {
     this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
       (userData) => this.fillSession({ access_token: userData.idToken }),
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Error de conexión con Google';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Error de conexión con Google', text: error.message, type: 'error' };
       }
     );
   }
@@ -74,9 +73,7 @@ export class LoginComponent implements OnInit {
             this.ngRedux.dispatch({ type: ADD_SESSION, session: session });
           },
           (error: HttpErrorResponse) => {
-            this.errSwal.title = 'Inicio de sesión fallido';
-            this.errSwal.text = 'Mensaje de error: Datos incorrectos';
-            this.errSwal.show();
+            this.swalOpts = { title: 'Inicio de sesión fallido', text: 'Datos incorrectos', type: 'error' };
             this.ngRedux.dispatch({ type: REMOVE_SESSION, session: session });
             this.createSignInForm();
           }
@@ -84,9 +81,7 @@ export class LoginComponent implements OnInit {
         this.permMan.validateNotLogged();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Inicio de sesión fallido';
-        this.errSwal.text = 'Mensaje de error: Datos incorrectos';
-        this.errSwal.show();
+        this.swalOpts = { title: 'Inicio de sesión fallido', text: 'Datos incorrectos', type: 'error' };
         this.createSignInForm();
       }
     );

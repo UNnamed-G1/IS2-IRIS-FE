@@ -2,7 +2,6 @@ import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, ElementRe
 import { ActivatedRoute, Router } from '@angular/router';
 import { UploadEvent, UploadFile, FileSystemFileEntry } from 'ngx-file-drop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as d3 from 'd3';
 
@@ -18,6 +17,7 @@ import { DepartmentService } from 'app/services/department.service';
 import { CareerService } from 'app/services/career.service';
 import { UserService } from 'app/services/user.service';
 import { User, Career, Department, Faculty } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-profile',
@@ -26,10 +26,10 @@ import { User, Career, Department, Faculty } from 'app/classes/_models';
 })
 export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy {
   @ViewChild('inputImage') private inputImg: ElementRef;
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['auxiliarID', 'user']) userID;
   @select(['session', 'id']) sessionID;
+  
+  swalOpts: Swal;
   user: User;
   faculties: Faculty[] = new Array<Faculty>();
   departments: Department[] = new Array<Department>();
@@ -155,16 +155,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     }
     this.userService.update(this.user.id, fd).subscribe(
       (response: { user: User }) => {
-        this.sucSwal.title = 'Tu perfil ha sido actualizado';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Tu perfil ha sido actualizado', type: 'success' };
         this.toggleShowForm();
         this.setUser(response.user);
         this.setSessionUser(response.user);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Tu perfil no ha podido ser actualizado';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Tu perfil no ha podido ser actualizado', text: error.message, type: 'error' };
       }
     );
   }
@@ -183,9 +180,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         this.setUser(response.user);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido obtener el perfil';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se ha podido obtener el perfil', text: error.message, type: 'error' };
       }
     );
   }
@@ -201,9 +196,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         }
         this.publLastPeriodChart.data = [{ key: 'Publicaciones', values: data }];
       }, (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Estadísticas no disponibles';
-        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Estadísticas no disponibles', text: error.message, type: 'error' };
         this.publLastPeriodChart.data = [];
       }
     );
@@ -219,14 +212,12 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
           });
         this.publTypesChart.data = data;
       }, (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Estadísticas no disponibles';
-        this.errSwal.text = 'Mensaje de error: ' + error.error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Estadísticas no disponibles', text: error.message, type: 'error' };
         this.publTypesChart.data = [];
       }
     );
   }
-
+  
   setUser(u: User) {
     this.user = Object.assign({}, this.user, u);
     if (u.photo) {
@@ -238,7 +229,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     }
     this.createProfileForm();
   }
-
+  
   // On edited sets session too
   setSessionUser(u: User) {
     this.ngRedux.dispatch({
@@ -252,7 +243,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       }
     });
   }
-
+  
   setFaculties() {
     this.facultyService.get().subscribe(
       (response: { faculties: Array<Faculty> }) => {
@@ -261,14 +252,12 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         }, this);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener las facultades';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener las facultades', text: error.message, type: 'error' };
       }
     );
     this.faculties = new Array<Faculty>();
   }
-
+  
   setDepartments(idFaculty: number) {
     this.facultyService.getDepartments(idFaculty).subscribe(
       (response: { departments: Array<Department> }) => {
@@ -277,15 +266,13 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         }, this);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los departamentos';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los departamentos', text: error.message, type: 'error' };
       }
     );
     this.departments = new Array<Department>();
     this.careers = new Array<Career>();
   }
-
+  
   setCareers(idDepartment: number) {
     this.departmentService.getCareers(idDepartment).subscribe(
       (response: { careers: Array<Career> }) => {
@@ -294,9 +281,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         }, this);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener las carreras';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener las carreras', text: error.message, type: 'error' };
       }
     );
     this.careers = new Array<Career>();
@@ -353,12 +338,10 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
         fileEntry.file((file: File) => this.checkFile(file));
       }
     } else {
-      this.errSwal.title = 'Estás subiendo múltiples archivos';
-      this.errSwal.text = 'Selecciona sólo la imagen que deseas subir y suéltala en el área de nuevo';
-      this.errSwal.show();
+      this.swalOpts = { title: 'Estás subiendo múltiples archivos', text: 'Selecciona sólo la imagen que deseas subir y suéltala en el área de nuevo', errorMsg: false, type: 'error' };
     }
   }
-
+  
   checkFile(file: File) {
     // Verify file loaded (Select file cancel will throw undefined file)
     if (file) {
@@ -374,18 +357,14 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
               // Open ImageCropper dialog setting imageEncoded
               _this.zone.run(() => _this.imageEncoded = img.src);
             } else {
-              _this.errSwal.title = 'La imagen es demasiado pequeña';
-              _this.errSwal.text = 'Asegurate de que el tamaño sea de al menos 20x20 pixeles';
-              _this.errSwal.show();
+              _this.swalOpts = { title: 'La imagen es demasiado pequeña', text: 'Asegurate de que el tamaño sea de al menos 20x20 pixeles', errorMsg: false, type: 'error' };
             }
           };
           img.src = reader.result;
         };
         reader.readAsDataURL(file);
       } else {
-        this.errSwal.title = 'El tipo de archivo es inválido';
-        this.errSwal.text = 'Sólo se permiten imágenes .jpg, .png o .gif';
-        this.errSwal.show();
+        this.swalOpts = { title: 'El tipo de archivo es inválido', text: 'Sólo se permiten imágenes .jpg, .png o .gif', errorMsg: false, type: 'error' };
       }
     }
   }

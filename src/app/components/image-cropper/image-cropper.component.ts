@@ -1,5 +1,5 @@
 import { Component, OnChanges, EventEmitter, Output, Input, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-image-cropper',
@@ -9,10 +9,10 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 export class ImageCropperComponent implements OnChanges {
   @ViewChild('openCropperModal') private openBtn: ElementRef;
   @ViewChild('closeCropperModal') private closeBtn: ElementRef;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   @Input() imageEncoded: string;
   @Output() croppedImage = new EventEmitter<string>();
   @Output() canceled = new EventEmitter();
+  swalOpts: Swal;
   imgToCrop = '';
   private imageCropped: string;
 
@@ -35,8 +35,7 @@ export class ImageCropperComponent implements OnChanges {
       this.closeModal();
     } else {
       // Cropped image area invalid
-      this.errSwal.title = 'Parece que no has seleccionado un área de recorte válida.';
-      this.errSwal.show();
+      this.swalOpts = { title: 'Parece que no has seleccionado un área de recorte válida.', type: 'error' };
     }
   }
 

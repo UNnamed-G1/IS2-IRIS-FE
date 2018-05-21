@@ -2,12 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { ResearchGroup } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
@@ -18,7 +19,7 @@ import { ResearchGroupService } from 'app/services/research-group.service';
 
 export class AddResearchGroupComponent implements OnInit {
   @select(['auxiliarID', 'researchGroupUpdate']) researchGroupID;
-  swalOpts: any;
+  swalOpts: Swal;
   researchGroup: ResearchGroup = new ResearchGroup();
   rgForm: FormGroup;
   classifications: string[] = ['A', 'B', 'C', 'D'];

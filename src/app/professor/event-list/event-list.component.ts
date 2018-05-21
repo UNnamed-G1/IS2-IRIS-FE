@@ -1,15 +1,15 @@
 import { Component, ViewChild, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
-
 import { PermissionManager } from 'app/permission-manager';
-import { EventService } from 'app/services/event.service';
+
 import { Event } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
+import { EventService } from 'app/services/event.service';
 
 @Component({
   selector: 'app-event-list',
@@ -17,11 +17,10 @@ import { Event } from 'app/classes/_models';
   styleUrls: ['./event-list.component.css']
 })
 export class EventListComponent implements OnInit, AfterContentInit {
-
   headers: Array<string> = ['Nombre', 'Tema', 'Descripción', 'Fecha', 'Lugar', 'Grupo de investigación'];
   keys: Array<string> = ['name', 'topic', 'description', 'date', 'address', 'research_group_name'];
   events: Array<Event>;
-  swalOpts: any;
+  swalOpts: Swal;
   page: {
     actual: number,
     total: number

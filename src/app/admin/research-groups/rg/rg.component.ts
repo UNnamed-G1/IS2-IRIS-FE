@@ -1,6 +1,5 @@
 import { Component, ViewChild, OnInit, AfterContentChecked, ElementRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,8 +9,10 @@ import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { environment } from 'environments/environment';
 import { Publication, ResearchGroup, ResearchSubject, User } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
@@ -26,9 +27,9 @@ export class RgComponent implements OnInit, AfterContentChecked {
   @select(['auxiliarID', 'researchGroup']) researchGroupID;
   @select() isLogged;
 
+  swalOpts: Swal;
   rgReportUrl = environment.api_url + 'reports/research_group/';
   PDF = false;
-  swalOpts: any;
   researchGroup: ResearchGroup;
   showInput = false;
   isRequester: boolean;
@@ -230,10 +231,10 @@ export class RgComponent implements OnInit, AfterContentChecked {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
     this.createRGForm();
-    // this.researchGroup.events = this.researchGroup.events
-    // .filter((event) => new Date(event.date) > new Date());    // Eventos próximos
-    // this.researchGroup.members = this.researchGroup.members
-    // .filter((member) => member.state === 'Activo');
+    this.researchGroup.events = this.researchGroup.events
+      .filter((event) => new Date(event.date) > new Date());    // Eventos próximos
+    this.researchGroup.members = this.researchGroup.members
+      .filter((member) => member.state === 'Activo');
     this.currentIsRequester();
     this.currentIsMember();
     this.currentIsOwner();

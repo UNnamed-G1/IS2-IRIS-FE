@@ -277,8 +277,6 @@
   </div>
 </main>
 
-<swal #sucSwal title type="success"></swal>
-<swal #errSwal title text type="error"></swal>
-
+<app-generic-swal [options]="swalOpts"></app-generic-swal>
 <app-follows [displayFollowers]="displayFollowers" (setFollowersCount)="setFollowersCount($event)" (setFollowingCount)="setFollowingCount($event)"></app-follows>
 <app-image-cropper [imageEncoded]="imageEncoded" (croppedImage)="croppedImage($event)" (canceled)="notCroppedImage()"></app-image-cropper>

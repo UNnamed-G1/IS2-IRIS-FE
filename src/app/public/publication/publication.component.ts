@@ -9,6 +9,7 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
 import { environment } from 'environments/environment';
 import { PublicationService } from 'app/services/publication.service';
 import { Publication, User } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-publication',
@@ -21,7 +22,7 @@ export class PublicationComponent implements OnInit {
   publication: Publication = new Publication();
   citesKeys: Array<String>;
   cites: any;
-  swalOpts: any;
+  swalOpts: Swal;
 
   constructor(private ngRedux: NgRedux<AppState>,
     private publicationService: PublicationService,
@@ -35,7 +36,7 @@ export class PublicationComponent implements OnInit {
             this.setPublication(response.publication);
           },
           (error: HttpErrorResponse) => {
-            this.swalOpts = { title: 'La publicación no ha podido ser obtenida', message: error.message, type: 'error' };
+            this.swalOpts = { title: 'La publicación no ha podido ser obtenida', text: error.message, type: 'error' };
           }
         )
       } else {
