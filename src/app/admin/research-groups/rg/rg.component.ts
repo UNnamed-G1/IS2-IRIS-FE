@@ -39,7 +39,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
-  
+
   memberTypes = ['Miembro', 'Líder'];
   usersToAdd: Array<User>;
   choosedUsers: Array<any> = new Array<any>();
@@ -231,10 +231,23 @@ export class RgComponent implements OnInit, AfterContentChecked {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
     this.createRGForm();
-    this.researchGroup.events = this.researchGroup.events
-      .filter((event) => new Date(event.date) > new Date());    // Eventos próximos
-    this.researchGroup.members = this.researchGroup.members
-      .filter((member) => member.state === 'Activo');
+    this.researchGroup.events = this.researchGroup.events.filter((event) => new Date(event.date) > new Date());   // Future events
+    this.researchGroup.members = this.researchGroup.members.filter((member) => member.state === 'Activo');        // Active members
+    this.researchGroup.members.map(member => {
+      Object.assign(member.user.photo, { picture: environment.api_url + member.user.photo.picture });
+    })
+    this.researchGroup.events.map(event => {
+      event.photos.map(photo => {
+        Object.assign(photo, { picture: environment.api_url + photo.picture })
+      })
+    })
+    this.researchGroup.members.sort((a, b) => {
+      if (a.member_type === b.member_type)
+        return 0;
+      if (b.member_type === 'Miembro' || a.member_type === 'Solicitante')
+        return -1;
+      return 1;
+    });
     this.currentIsRequester();
     this.currentIsMember();
     this.currentIsOwner();
@@ -359,7 +372,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
     this.researchGroupService.addUsers(this.researchGroup.id, { users: choosed }).subscribe(
       (response) => {
         this.swalOpts = { title: 'Los usuarios han sido añadidos satisfactoriamente', type: 'success' };
-        this.closeBtn.nativeElement.click();  
+        this.closeBtn.nativeElement.click();
         this.requestRG(this.researchGroup.id);
         this.setUsersToAdd();
         this.choosedUsers = new Array<any>();
