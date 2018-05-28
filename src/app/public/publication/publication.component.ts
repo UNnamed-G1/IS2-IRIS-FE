@@ -23,6 +23,8 @@ export class PublicationComponent implements OnInit {
   citesKeys: Array<String>;
   cites: any;
   swalOpts: Swal;
+  showDocument = false;
+  documentMessage = "Mostrar documento"
 
   constructor(private ngRedux: NgRedux<AppState>,
     private publicationService: PublicationService,
@@ -135,6 +137,11 @@ export class PublicationComponent implements OnInit {
     authors = ' and ' + names[names.length - 1];
     names.pop();
     return names.join(', ') + authors
+  }
+
+  public displayDocument(): void {
+    this.showDocument = !this.showDocument;
+    this.documentMessage = this.showDocument ? "Ocultar documento" : "Mostrar documento"
   }
   
 }
