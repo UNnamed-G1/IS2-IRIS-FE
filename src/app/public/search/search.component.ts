@@ -36,19 +36,6 @@ export class SearchComponent implements OnInit, AfterContentInit {
   events: Array<Event>;
   publications: Array<Publication>;
   searchStr: string;
-  //for pdf publications
-  pub: Publication = new Publication();
-  pdfLoaded = false;
-  pdfSrc;
-  pdfName;
-  PDFpage = 1;
-  totalPages: number;
-  isLoaded = true;
-  stickToPage = false;
-  showAll = false;
-  zoom = 1.0;
-  originalSize = true;
-  rotate = 0;
   //pagination
   page: {
     actual: number,
@@ -144,84 +131,26 @@ export class SearchComponent implements OnInit, AfterContentInit {
     var grade: string = this.details;
     switch (grade) {
       case "publications": {
-        this.publicationService.get(id).subscribe(
-          (response: { publication: Publication }) => {
-            this.pub = response.publication;
-            this.pdfSrc = environment.api_url + this.pub.document;
-            this.pdfName = this.pub.name + '.pdf';
-            this.pdfLoaded = !this.pdfLoaded;
-          },
-          (error: HttpErrorResponse) => {
-            this.swalOpts = { title: 'No se han podido obtener la Publicación', text: error.message, type: 'error' };
-          }
-        );
-        console.log("publications selected");
+        this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: id } });
+        this.router.navigateByUrl('/publication');
         break;
       }
       case "users": {
         this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: id } });
         this.router.navigateByUrl('/profile');
-        console.log("users selected");
         break;
       }
       case "events": {
         this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { event: id } });
         this.router.navigateByUrl('/event');
-        console.log("events selected");
-        console.log(id);
         break;
       }
       case "researchGroups": {
         this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { researchGroup: id } });
         this.router.navigateByUrl('/rg');
-        console.log("researchGroups selected");
-        break;
-      }
-      default: {
-        console.log("Invalid choice");
         break;
       }
     }
-  }
-  //pdf options
-
-  afterLoadComplete(pdfData: any) {
-    this.totalPages = pdfData.numPages;
-    this.isLoaded = true;
-  }
-
-  nextPage() {
-    this.PDFpage++;
-  }
-
-  prevPage() {
-    this.PDFpage--;
-  }
-  onAfterLoad(event: any) {
-  }
-
-  switchSticky() {
-    this.stickToPage = !this.stickToPage;
-  }
-
-  switchShowAll() {
-    this.showAll = !this.showAll;
-  }
-
-  setPage(num: number) {
-    this.PDFpage += num;
-  }
-  incrementZoom(amount: number) {
-    this.zoom += amount;
-  }
-  originalZoom() {
-    this.zoom = 1.0;
-  }
-  rotatePdf() {
-    this.rotate += 90;
-  }
-  showPub() {
-    this.pdfLoaded = !this.pdfLoaded;
   }
 
 }
