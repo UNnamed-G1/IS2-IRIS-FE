@@ -3,7 +3,7 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import { select } from '@angular-redux/store';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { saveAs } from 'file-saver';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-documents',
@@ -12,9 +12,10 @@ import { SwalComponent } from '@toverux/ngx-sweetalert2';
 })
 export class DocumentsComponent implements OnInit {
   @ViewChild(PdfViewerComponent) private pdfComponent: PdfViewerComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   @select() isLogged;
   @Input() url: string;
+  swalOpts: Swal;
+
   page = 1;
   totalPages: number;
   isLoaded = true;
@@ -72,12 +73,10 @@ export class DocumentsComponent implements OnInit {
     // This function must be moved to service
     this.http.get(this.url, { responseType: 'blob' }).subscribe(
       (response: Blob) => {
-        saveAs(response, 'file.pdf');
+        saveAs(response, 'File.pdf');
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Publicación no localizada';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se ha podido descargar la publicación', text: error.message, type: 'error' };
       }
     );
   }

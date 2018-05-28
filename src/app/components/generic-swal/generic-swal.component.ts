@@ -1,6 +1,6 @@
 import { Component, OnChanges, ViewChild, Input, SimpleChanges } from '@angular/core';
 import { SwalComponent } from '@toverux/ngx-sweetalert2';
-import { SweetAlertType } from 'sweetalert2';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-generic-swal',
@@ -9,13 +9,7 @@ import { SweetAlertType } from 'sweetalert2';
 })
 export class GenericSwalComponent implements OnChanges {
   @ViewChild('swal') private swal: SwalComponent;
-  @Input() options: {
-    title: string,
-    text: string,
-    type: SweetAlertType,
-    confirm: (() => void),
-    confirmParams: Array<any>
-  };
+  @Input() options: Swal;
 
   constructor() { }
 
@@ -27,15 +21,16 @@ export class GenericSwalComponent implements OnChanges {
     this.swal.text = this.options.text;
     this.swal.type = this.options.type;
     this.swal.showConfirmButton = true;
-
-    if (this.options.type == 'error') {
+    if (this.options.type == 'error' && !(this.options.errorMsg === false)) {
       this.swal.text = 'Mensaje de error: ' + this.swal.text;
     }
     this.swal.show();
   }
 
   confirmButtonClicked() {
-    this.options.confirm.apply(this.options.confirmParams[0]);
+    if (this.options.confirm) {
+      this.options.confirm.apply(this.options.confirmParams[0]);
+    }
   }
 
 }

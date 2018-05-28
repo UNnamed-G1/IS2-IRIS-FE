@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { Router } from '@angular/router';
 
 import { NgRedux, select } from '@angular-redux/store';
@@ -11,6 +10,7 @@ import { PermissionManager } from 'app/permission-manager';
 
 import { PublicationService } from 'app/services/publication.service';
 import { Publication } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-add-publication',
@@ -27,7 +27,7 @@ export class AddPublicationComponent implements OnInit, OnDestroy {
   type_pubs: string[] = ['Monografia', 'Patente', 'Libro', 'Articulo', 'Tesis', 'Software'];
   minDate = new Date(1900, 0);  // 1900/01/01
   maxDate = new Date();         // Actual date
-  swalOpts: any;
+  swalOpts: Swal;
 
   constructor(private publicationService: PublicationService,
     private router: Router,

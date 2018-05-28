@@ -1,7 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -9,6 +8,7 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
 
 import { environment } from 'environments/environment';
 import { Event } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { EventService } from 'app/services/event.service';
 
 @Component({
@@ -17,8 +17,7 @@ import { EventService } from 'app/services/event.service';
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
-  @ViewChild('errSwal') private errSwal: SwalComponent;
-
+  swalOpts: Swal;
   rows: Array<Event>;
   news: Array<Event>;
   item_active: Event;
@@ -49,9 +48,7 @@ export class EventsComponent implements OnInit {
           this.page.total = response.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se han podido obtener los eventos';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'No se han podido obtener los eventos', text: error.message, type: 'error' };
         }
       );
     });
@@ -65,9 +62,7 @@ export class EventsComponent implements OnInit {
         }
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener las noticias';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener las noticias', text: error.message, type: 'error' };
       }
     );
   }

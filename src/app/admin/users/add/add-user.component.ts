@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy, AfterContentInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { Router } from '@angular/router';
 
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
-
 import { PermissionManager } from 'app/permission-manager';
+
 import { User } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { UserService } from 'app/services/user.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-user',
@@ -19,9 +19,8 @@ import { Router } from '@angular/router';
 })
 
 export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
-
   @select(['auxiliarID', 'userUpdate']) userID;
-  swalOpts: any;
+  swalOpts: Swal;
   user: User = new User();
   userForm: FormGroup;
   type: string[] = ['Estudiante', 'Profesor', 'Administrador'];
@@ -96,15 +95,14 @@ export class AddUserComponent implements OnInit, AfterContentInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.swalOpts = { title: 'Usuario no añadido', text: error.message, type: 'error' };
-
-          }
+        }
       );
     }
   }
 
-    navList(){
-      this.router.navigateByUrl('users');
-    }
+  navList() {
+    this.router.navigateByUrl('users');
+  }
 
   private createUserForm() {
     this.userForm = this.formBuilder.group({

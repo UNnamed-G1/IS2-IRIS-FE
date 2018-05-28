@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ViewChild, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
@@ -9,6 +9,7 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
 import { UserService } from 'app/services/user.service';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-follows',
@@ -16,14 +17,14 @@ import { UserService } from 'app/services/user.service';
   styleUrls: ['./follows.component.css']
 })
 export class FollowsComponent implements OnInit, OnChanges {
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   @Input() displayFollowers: boolean;
   @Output() setFollowersCount = new EventEmitter<number>();
   @Output() setFollowingCount = new EventEmitter<number>();
   @select(['auxiliarID', 'user']) userID;
   @select(['session', 'username']) sessionUsername;
   @select() isLogged;
-
+  
+  swalOpts: Swal;
   currFollowing = new Array<string>();
   following: Array<User>;
   followers: Array<User>;
@@ -69,26 +70,22 @@ export class FollowsComponent implements OnInit, OnChanges {
         this.setCurrFollowing();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido dejar de seguir el usuario';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se ha podido dejar de seguir el usuario', text: error.message, type: 'error' };
       }
     );
   }
-
+  
   follow(id: number) {
     this.userService.follow(id).subscribe(
       (response) => {
         this.setCurrFollowing();
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido seguir el usuario';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se ha podido seguir el usuario', text: error.message, type: 'error' };
       }
     );
   }
-
+  
   // Users following profile user
   setFollowers(id: number) {
     this.userService.getFollowers(this.page.actual, id).subscribe(
@@ -107,13 +104,11 @@ export class FollowsComponent implements OnInit, OnChanges {
         this.setFollowersCount.emit(response.count);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los usuarios seguidos';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los usuarios seguidos', text: error.message, type: 'error' };
       }
     );
   }
-
+  
   // Users followed by profile user
   setFollowing(id: number) {
     this.userService.getFollowing(this.page.actual, id).subscribe(
@@ -132,13 +127,11 @@ export class FollowsComponent implements OnInit, OnChanges {
         this.setFollowingCount.emit(response.count);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los usuarios seguidos';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los usuarios seguidos', text: error.message, type: 'error' };
       }
     );
   }
-
+  
   // Users followed by logged user
   setCurrFollowing() {
     this.userService.getCurrFollowing().subscribe(
@@ -151,9 +144,7 @@ export class FollowsComponent implements OnInit, OnChanges {
         this.currFollowing = response.following.map(u => u.username);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los usuarios seguidos';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los usuarios que sigues', text: error.message, type: 'error' };
       }
     );
   }

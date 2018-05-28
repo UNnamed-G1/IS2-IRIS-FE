@@ -1,16 +1,16 @@
 import { Component, ViewChild, OnInit, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
-
 import { PermissionManager } from 'app/permission-manager';
-import { UserService } from 'app/services/user.service';
-import { User } from 'app/classes/_models';
+
 import { environment } from 'environments/environment';
+import { User } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
+import { UserService } from 'app/services/user.service';
 
 @Component({
   selector: 'app-users',
@@ -23,7 +23,7 @@ export class UsersComponent implements OnInit, AfterContentInit {
     'Teléfono', 'Oficina', 'URL CvLAC', 'Tipo'];
   keys: Array<string> = ['full_name', 'username', 'professional_profile', 'phone', 'office', 'cvlac_link', 'user_type'];
   users: Array<User>;
-  swalOpts: any;
+  swalOpts: Swal;
   usersReportUrl = environment.api_url + 'reports/user_history.pdf?send=false';
   PDF = false;
   page: {

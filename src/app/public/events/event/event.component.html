@@ -82,15 +82,15 @@
         </div>
 
       <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Profesor'" (click)="toggleShowInput()">Editar</button>
-      <button class="btn btn-primary" routerLink="/event-list" role="button">Volver</button>
-
+      <button *ngIf="(sessionType | async) === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">Volver</button>
+      <button class="btn btn-primary" routerLink="/home" role="button">Inicio</button>
       </div>
         <hr style="border:1px dotted black;">
 
 
       <div class="row" [hidden]="!showInput">
         <div class="col-md-6">
-            <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="eventForm" (ngSubmit)="updateEvent()">
 
               <!-- Name -->
               <div class="form-group">
@@ -213,7 +213,7 @@
               <br><br>
 
               <div>
-                <button type="submit" class="btn btn-primary" (click)="updateGroup()" [disabled]="eventForm.invalid">Guardar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Guardar</button>
                 <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
               </div>
 
@@ -224,5 +224,4 @@
   </div>
 </main>
 
-<swal #sucSwal title type="success"></swal>
-<swal #errSwal title text type="error"></swal>
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

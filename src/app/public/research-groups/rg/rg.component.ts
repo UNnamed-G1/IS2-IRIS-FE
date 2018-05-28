@@ -272,7 +272,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   }
 
   requestJoin() {
-    this.researchGroupService.requestJoinGroup(this.researchGroup.id).subscribe(
+    this.researchGroupService.requestJoin(this.researchGroup.id).subscribe(
       (response) => {
         this.swalOpts = { title: 'Te has unido a este grupo', type: 'success'};
         this.requestRG(this.researchGroup.id);

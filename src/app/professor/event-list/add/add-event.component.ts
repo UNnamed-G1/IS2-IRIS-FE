@@ -1,16 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
+import { Router } from '@angular/router';
 import { MouseEvent } from '@agm/core';
+
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { Event, ResearchGroup } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { EventService } from 'app/services/event.service';
 import { UserService } from 'app/services/user.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-event',
@@ -30,7 +32,7 @@ export class AddEventComponent implements OnInit {
     state: ['Activo', 'Inactivo']
   }
   minDate: Date = new Date(); // Actual date for event date
-  swalOpts: any;
+  swalOpts: Swal;
   // Initial map position
   lat: number = 4.63858;
   lng: number = -74.0841;

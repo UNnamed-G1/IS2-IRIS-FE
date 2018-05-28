@@ -1,7 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -10,6 +9,7 @@ import { ADD_AUXILIAR } from 'app/redux/actions';
 import { environment } from 'environments/environment';
 import { ResearchGroup } from 'app/classes/_models';
 import { ResearchGroupService } from 'app/services/research-group.service';
+import { Swal } from 'app/classes/swal';
 
 @Component({
   selector: 'app-research-groups',
@@ -17,8 +17,7 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   styleUrls: ['./research-groups.component.css']
 })
 export class ResearchGroupsComponent implements OnInit {
-  @ViewChild('errSwal') private errSwal: SwalComponent;
-
+  swalOpts: Swal;
   rows: Array<ResearchGroup>;
   news: Array<ResearchGroup>;
   items: Array<ResearchGroup>;
@@ -48,9 +47,7 @@ export class ResearchGroupsComponent implements OnInit {
           this.page.total = response.total_pages;
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'No se ha podido obtener los grupos de investigación';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
+          this.swalOpts = { title: 'No se han podido obtener los grupos de investigación', text: error.message, type: 'error' };
         }
       );
     });
@@ -64,9 +61,7 @@ export class ResearchGroupsComponent implements OnInit {
         }
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener las noticias';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener las noticias', text: error.message, type: 'error' };
       }
     );
   }

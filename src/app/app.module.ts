@@ -55,10 +55,8 @@ import { LeaveCommentsComponent } from './user/leave-comments/leave-comments.com
 // Public
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/login/register/register.component';
-import { AboutComponent } from './public/about/about.component';
 import { EventsComponent } from './public/events/events.component';
 import { HomeComponent } from './public/home/home.component';
-import { NewsComponent } from './public/news/news.component';
 import { NotFoundComponent } from './public/not-found/not-found.component';
 import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
@@ -84,8 +82,8 @@ import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { PublicationService } from './services/publication.service';
 
-import { RgComponent } from './admin/research-groups/rg/rg.component';
-import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
+import { RgComponent } from './public/research-groups/rg/rg.component';
+import { FilterPipe } from './public/research-groups/rg/filter.pipe';
 import { ResearchSubjectService } from './services/research-subject.service';
 
 import { PaginationComponent } from './components/pagination/pagination.component';
@@ -128,14 +126,6 @@ export const appRoutes: Routes = [
   {
     path: 'events',
     component: EventsComponent
-  },
-  {
-    path: 'news',
-    component: NewsComponent
-  },
-  {
-    path: 'about',
-    component: AboutComponent
   },
   {
     path: 'research-groups',
@@ -202,19 +192,16 @@ export const appRoutes: Routes = [
     component: DocumentsComponent
   },
   {
-    path: 'publications',
+    path: 'publication',
     component: PublicationComponent
   },{
     path: 'scheduler',
     component: SchedulerComponent
-  }
-  /*,
-  {
-    path: '404',
-    component: NotFoundComponent
   },
-  { path: '**',
-    redirectTo: 'NotFound' }*/
+  {
+    path: '**',
+    component: NotFoundComponent
+  }
 ];
 
 @NgModule({
@@ -256,10 +243,8 @@ export const appRoutes: Routes = [
     RegisterComponent,
     LoginComponent,
     HomeComponent,
-    NewsComponent,
     EventsComponent,
     ResearchGroupsComponent,
-    AboutComponent,
     ProfileComponent,
     TimeLineComponent,
     SearchComponent,

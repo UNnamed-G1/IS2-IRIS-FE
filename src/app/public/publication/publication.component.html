@@ -1,27 +1,56 @@
 <main class="detalle">
-  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Lista de grupos de investigación</span></div>
-  <div class="panel panel-default" style="margin-top:10px;">
-    <div class="panel-heading">
-      <h1>Publicaciones</h1>
-    </div>
-
-    <div *ngIf=!pdfLoaded class="panel-body" style="position:relative">
-      <button class="btn btn-primary btn-sm" routerLink="/publications/add" role="button">Agregar</button>
-      <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-      <br><br>
-      <app-crud [columns]="headers" [keys]="keys" [rows]="publications" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
-      <app-pagination [page]="page"></app-pagination>
-      <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
-    </div>
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <span>Publicaciones / {{ publication.name }}</span>
   </div>
-  <div *ngIf=pdfLoaded class="jumbotron">
-    <div class="panel panel-default" style="margin-top:10px;">
-      <br><br>
-      <button class="btn btn-primary btn-sm" (click)="showPub()">Volver a publicaciones</button>
-      <br><br>
-      <app-documents [url]="pdfSrc"></app-documents>
+  <div class="container-fluid main-container">
+    <div class="container-fluid">
+      <div class="row">
+        <h2>{{ publication.name }} -
+          <a data-toggle="modal" data-target="#modal-cites">Citar</a>
+        </h2>
+        <div>
+          Fecha de publicación: {{ publication.date | date: 'fullDate' }}
+        </div>
+        <div>
+          Tipo de publicacion: {{ publication.publication_type }}
+        </div>
+        <div>
+          Descripción: {{ publication.brief_description }}
+        </div>
+        <div>
+          Abstract: {{ publication.abstract }}
+        </div>
+        <div>
+          Autores:
+          <ul>
+            <li *ngFor="let author of publication.users">
+              <div class="author-element" (click)="viewAuthor(author.id)">
+                <img [src]="author.photo" onerror="this.src = 'assets/images/user.png';" class="rounded-image author-image img-responsive"
+                /> {{ author.full_name }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <app-documents [url]="publication.document"></app-documents>
+      </div>
     </div>
   </div>
 </main>
+
+<div id="modal-cites" class="modal fade hidden-print" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <h2>Citar</h2>
+      <div class="row" *ngFor="let cite of citesKeys">
+        <div class="col-md-2">
+          {{ cite }}
+        </div>
+        <div class="col-md-8" [innerHtml]="cites[cite]">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <app-generic-swal [options]="swalOpts"></app-generic-swal>

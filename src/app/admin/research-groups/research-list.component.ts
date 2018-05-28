@@ -1,24 +1,23 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 
 import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
+import { PermissionManager } from 'app/permission-manager';
 
 import { environment } from 'environments/environment';
-import { PermissionManager } from 'app/permission-manager';
-import { ResearchGroupService } from 'app/services/research-group.service';
 import { ResearchGroup } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
+import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
   selector: 'app-research-list',
   templateUrl: './research-list.component.html',
   styleUrls: ['./research-list.component.css']
 })
-export class ResearchListComponent implements OnInit, AfterContentInit {
-
+export class ResearchListComponent implements OnInit {
   headers: Array<string> = ['Nombre', 'Descripción', 'Enfoque estratégico',
     'Prioridades de investigación', 'Fecha de fundación', 'Clasificación',
     'Fecha de clasificación', 'URL'];
@@ -28,7 +27,7 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
   researchGroups: Array<ResearchGroup>;
   historyReportURL = environment.api_url + 'reports/research_groups_history.pdf';
   PDF = false;
-  swalOpts: any;
+  swalOpts: Swal;
   page: {
     actual: number,
     total: number
@@ -41,16 +40,14 @@ export class ResearchListComponent implements OnInit, AfterContentInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Administrador']);
-  }
-
-  ngAfterContentInit() {
-    this.route.queryParams.subscribe(params => {
-      this.page = Object.assign({
-        actual: +params.page || 1
+    if (this.permMan.validateSession(['Administrador'])) {
+      this.route.queryParams.subscribe(params => {
+        this.page = Object.assign({
+          actual: +params.page || 1
+        });
+        this.getResearchGroups();
       });
-      this.getResearchGroups();
-    });
+    }
   }
 
   update(id: number) {

@@ -1,17 +1,18 @@
 import { Component, ViewChild, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MouseEvent } from '@agm/core';
+
 import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
-import { REMOVE_AUXILIAR } from 'app/redux/actions';
+import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { environment } from 'environments/environment';
 import { Event, User, ResearchGroup } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { EventService } from 'app/services/event.service';
-import { ADD_AUXILIAR } from 'app/redux/actions';
-import { MouseEvent } from '@agm/core';
 
 @Component({
   selector: 'app-event',
@@ -19,11 +20,11 @@ import { MouseEvent } from '@agm/core';
   styleUrls: ['./event.component.css']
 })
 export class EventComponent implements OnInit, OnDestroy {
-  @ViewChild('sucSwal') private sucSwal: SwalComponent;
-  @ViewChild('errSwal') private errSwal: SwalComponent;
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'event']) eventID;
   @select() isLogged;
+  swalOpts: Swal;
+
   event: Event;
   user: User[] = new Array<User>();
   showInput = false;
@@ -52,7 +53,7 @@ export class EventComponent implements OnInit, OnDestroy {
       draggable: true
     }
   ];
-  
+
   constructor(private eventService: EventService,
     private ngRedux: NgRedux<AppState>,
     private acRoute: ActivatedRoute,
@@ -76,47 +77,7 @@ export class EventComponent implements OnInit, OnDestroy {
     this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'event' });
   }
 
-  updateGroup() {
-    if (this.eventForm.pristine 
-      // && this.files.length === 0
-    ) {
-      return;
-    }
-    const event = new Event();
-    if (this.eventForm.pristine) {
-      event.topic = this.event.topic;
-    } else {
-      for (const k in this.eventForm.controls) {
-        if (this.eventForm.get(k).dirty) {
-          event[k] = this.eventForm.get(k).value;
-          event.latitude = this.latP;
-          event.longitude = this.lngP;
-        }
-      }
-    }
-    const fd = new FormData();
-    for (const key of Object.keys(event)) {
-      fd.append('event[' + key + ']', event[key]);
-    }
-    // if (this.files) {
-    //   fd.append('picture', this.files);
-    // }
-    this.eventService.update(this.event.id, fd).subscribe(
-      (response: { event: Event }) => {
-        this.sucSwal.title = 'El grupo ha sido actualizado';
-        this.sucSwal.show();
-        this.toggleShowInput();
-        this.setEvent(response.event);
-      },
-      (error: HttpErrorResponse) => {
-        this.errSwal.title = 'El grupo no ha podido ser actualizado';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
-      }
-    );
-  }
-
-  onSubmit() {
+  updateEvent() {
     if (this.eventForm.pristine) {
       return;
     }
@@ -132,29 +93,23 @@ export class EventComponent implements OnInit, OnDestroy {
       this.eventService.update(this.event.id, event).subscribe(
         (response: { event: Event }) => {
           this.setEvent(response.event);
-          this.sucSwal.title = 'Evento actualizado';
-          this.sucSwal.show();
+          this.swalOpts = { title: 'Evento actualizado', type: 'success' };
           this.createEventForm();
         },
         (error: HttpErrorResponse) => {
-          this.errSwal.title = 'Evento no actualizado';
-          this.errSwal.text = 'Mensaje de error: ' + error.message;
-          this.errSwal.show();
-        });
+          this.swalOpts = { title: 'Evento no actualizado', text: error.message, type: 'error' };
+        }
+      );
     }
   }
 
   setInvitedU(id: number) {
     this.eventService.getInvitedUsers(id).subscribe(
       (response: { users: Array<User> }) => {
-        (this.invited = response.users);
-        //console.log(this.invited);
-        //console.log(response);
+        this.invited = response.users;
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se han podido obtener los invitados';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido obtener los invitados', text: error.message, type: 'error' };
       }
     );
     this.user = new Array<User>();
@@ -167,23 +122,18 @@ export class EventComponent implements OnInit, OnDestroy {
         //console.log(response);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No se ha podido obtener el evento';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se ha podido obtener el evento', text: error.message, type: 'error' };
       }
     );
   }
   sendInvitation(ids: Array<number>) {
     this.eventService.sendInvitation(this.event.id, ids).subscribe(
       (response) => {
-        this.sucSwal.title = 'Invitaciones enviadas';
-        this.sucSwal.show();
+        this.swalOpts = { title: 'Invitaciones enviadas', type: 'success' };
         this.requestEvent(this.event.id);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'No has podido enviar las invitaciones';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'No se han podido enviar las invitaciones', text: error.message, type: 'error' };
       }
     );
   }
@@ -196,21 +146,17 @@ export class EventComponent implements OnInit, OnDestroy {
     this.event = Object.assign({}, this.event, event);
     this.createEventForm();
   }
+
   /*leave() {
     this.eventService.leaveEvent({ id: this.event.id }).subscribe(
       (response) => {
-        this.sucSwal.title = 'Ya no estás inscrito a este evento';
-        this.sucSwal.show();
         this.requestEvent(this.event.id);
       },
       (error: HttpErrorResponse) => {
-        this.errSwal.title = 'Error al eliminar evento';
-        this.errSwal.text = 'Mensaje de error: ' + error.message;
-        this.errSwal.show();
+        this.swalOpts = { title: 'Error al abandonar el evento', text: error.message, type: 'error' };
       }
     );
   }*/
-
 
   private createEventForm() {
     this.eventForm = this.formBuilder.group({

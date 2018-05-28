@@ -1,13 +1,14 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { ResearchGroup } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
@@ -16,10 +17,9 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   styleUrls: ['./add-research-group.component.css']
 })
 
-export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDestroy {
-
+export class AddResearchGroupComponent implements OnInit {
   @select(['auxiliarID', 'researchGroupUpdate']) researchGroupID;
-  swalOpts: any;
+  swalOpts: Swal;
   researchGroup: ResearchGroup = new ResearchGroup();
   rgForm: FormGroup;
   classifications: string[] = ['A', 'B', 'C', 'D'];
@@ -33,28 +33,22 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.permMan.validateSession(['Administrador']);
-  }
-
-  ngAfterContentInit() {
-    this.researchGroupID.subscribe((id: number) => {
-      if (id) {
-        this.researchGroupService.get(id).subscribe(
-          (researchGroup: { research_group: ResearchGroup }) => {
-            this.researchGroup = researchGroup.research_group;
-            this.createRGForm();
-          },
-          (error: HttpErrorResponse) => {
-            this.swalOpts = { title: 'No se ha podido obtener el grupo de investigación', text: error.message, type: 'error' };
-          }
-        );
-      }
-    });
-    this.createRGForm();
-  }
-
-  ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'researchGroupUpdate' });
+    if (this.permMan.validateSession(['Administrador'])) {
+      this.researchGroupID.subscribe((id: number) => {
+        if (id) {
+          this.researchGroupService.get(id).subscribe(
+            (response: { research_group: ResearchGroup }) => {
+              this.researchGroup = response.research_group;
+              this.createRGForm();
+            },
+            (error: HttpErrorResponse) => {
+              this.swalOpts = { title: 'No se ha podido obtener el grupo de investigación', text: error.message, type: 'error' };
+            }
+          );
+        }
+      });
+      this.createRGForm();
+    }
   }
 
   onSubmit() {
@@ -80,11 +74,9 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
           }
         );
     } else {
-
       this.researchGroupService.create(rg).subscribe(
         (response: { research_group: ResearchGroup }) => {
           this.swalOpts = { title: 'El grupo de investigación ha sido añadido', type: 'success', confirm: this.navList, confirmParams: [this] };
-
         },
         (error: HttpErrorResponse) => {
           this.swalOpts = { title: 'Grupo de investigación no añadido', text: error.message, type: 'error' };
@@ -92,6 +84,7 @@ export class AddResearchGroupComponent implements OnInit, AfterContentInit, OnDe
       );
     }
   }
+  
   navList(){
     this.router.navigateByUrl('research-list');
   }

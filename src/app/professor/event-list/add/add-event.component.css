@@ -1,18 +1,15 @@
-.main-container {
-    padding: 20px;
-    background-color: #eee;
-  }
+body {
+  padding-top: 30px;
+}
 
-  body {
-    padding-top: 30px;
-  }
+select.form-control {
+  background-image: none !important;
+}
 
-  select.form-control {
-    background-image: none !important;
-  }
 .gMaps-container{
   height: 250px;
-  }
-  textarea.form-control {
-    resize: none;
-  }
+}
+
+textarea.form-control {
+  resize: none;
+}
