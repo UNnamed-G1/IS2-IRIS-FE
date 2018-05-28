@@ -52,10 +52,9 @@ import { LeaveCommentsComponent } from './user/leave-comments/leave-comments.com
 // Public
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/login/register/register.component';
-import { AboutComponent } from './public/about/about.component';
 import { EventsComponent } from './public/events/events.component';
 import { HomeComponent } from './public/home/home.component';
-import { NewsComponent } from './public/news/news.component';
+import { NotFoundComponent } from './public/not-found/not-found.component';
 import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
@@ -125,14 +124,6 @@ export const appRoutes: Routes = [
     component: EventsComponent
   },
   {
-    path: 'news',
-    component: NewsComponent
-  },
-  {
-    path: 'about',
-    component: AboutComponent
-  },
-  {
     path: 'research-groups',
     component: ResearchGroupsComponent,
     // children: [{path: 'add', component: AddResearchGroupComponent}]
@@ -199,13 +190,11 @@ export const appRoutes: Routes = [
   {
     path: 'publication',
     component: PublicationComponent
-  }/*,
-  {
-    path: '404',
-    component: NotFoundComponent
   },
-  { path: '**',
-    redirectTo: 'NotFound' }*/
+  {
+    path: '**',
+    component: NotFoundComponent
+  }
 ];
 
 @NgModule({
@@ -244,13 +233,12 @@ export const appRoutes: Routes = [
     RegisterComponent,
     LoginComponent,
     HomeComponent,
-    NewsComponent,
     EventsComponent,
     ResearchGroupsComponent,
-    AboutComponent,
     ProfileComponent,
     TimeLineComponent,
     SearchComponent,
+    NotFoundComponent,
     ManageComponent,
     UsersComponent,
     ResearchListComponent,
