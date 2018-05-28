@@ -1,9 +1,17 @@
-.glyphicon.glyphicon-file {
+.fa.fa-file-pdf-o {
     color: white;
-    font-size: 1.8rem;
+    font-size: 2.0rem;
 }
 
-.glyphicon.glyphicon-file:hover {
+.fa.fa-file-pdf-o:hover {
+    color: red;
+}
+
+.fa.fa-calendar-plus-o:hover {
+    color: red;
+}
+
+.fa.fa-user-plus:hover {
     color: red;
 }
 
@@ -21,17 +29,4 @@
 
 .statistics {
     background: white;
-}
-
-.reject {
-    color: red;
-}
-
-.accept {
-    color: green;
-}
-
-.member-type-dropdown {
-    padding-left: 0%;
-    padding-right: 0%;
 }

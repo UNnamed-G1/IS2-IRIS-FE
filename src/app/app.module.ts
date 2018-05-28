@@ -79,8 +79,8 @@ import { ResearchGroupService } from './services/research-group.service';
 import { UserService } from './services/user.service';
 import { PublicationService } from './services/publication.service';
 
-import { RgComponent } from './admin/research-groups/rg/rg.component';
-import { FilterPipe } from './admin/research-groups/rg/filter.pipe';
+import { RgComponent } from './public/research-groups/rg/rg.component';
+import { FilterPipe } from './public/research-groups/rg/filter.pipe';
 import { ResearchSubjectService } from './services/research-subject.service';
 
 import { PaginationComponent } from './components/pagination/pagination.component';
