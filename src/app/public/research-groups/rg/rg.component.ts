@@ -1,6 +1,5 @@
-import { Component, ViewChild, OnInit, AfterContentChecked, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, ViewChild, OnInit, AfterContentChecked, ElementRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SwalComponent } from '@toverux/ngx-sweetalert2';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileSelectDirective, FileDropDirective, FileUploader } from 'ng2-file-upload';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,8 +9,10 @@ import { select, NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR, REMOVE_AUXILIAR } from 'app/redux/actions';
 import { PermissionManager } from 'app/permission-manager';
+
 import { environment } from 'environments/environment';
-import { Publication, ResearchGroup, ResearchSubject } from 'app/classes/_models';
+import { Publication, ResearchGroup, ResearchSubject, User } from 'app/classes/_models';
+import { Swal } from 'app/classes/swal';
 import { ResearchGroupService } from 'app/services/research-group.service';
 
 @Component({
@@ -19,24 +20,29 @@ import { ResearchGroupService } from 'app/services/research-group.service';
   templateUrl: './rg.component.html',
   styleUrls: ['./rg.component.css']
 })
-export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
-  @Output() detailsEmitter = new EventEmitter<number>();
+export class RgComponent implements OnInit, AfterContentChecked {
+  @ViewChild('closeModal') private closeBtn: ElementRef;
   @select(['session', 'username']) sessionUsername;
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'researchGroup']) researchGroupID;
   @select() isLogged;
 
+  swalOpts: Swal;
   rgReportUrl = environment.api_url + 'reports/research_group/';
   PDF = false;
-  swalOpts: any;
   researchGroup: ResearchGroup;
   showInput = false;
+  isRequester: boolean;
   isMember: boolean;
-  isLeader: boolean;
+  isOwner: boolean;
   rgForm: FormGroup;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
+
+  memberTypes = ['Miembro', 'Líder'];
+  usersToAdd: Array<User>;
+  choosedUsers: Array<any> = new Array<any>();
 
   /*
    * Charts
@@ -121,10 +127,6 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
       .reduce((v1, v2) => v1 + v2);
   }
 
-  ngOnDestroy() {
-    this.ngRedux.dispatch({ type: REMOVE_AUXILIAR, remove: 'researchGroup' });
-  }
-
   updateGroup() {
     if (this.rgForm.pristine && this.uploader.queue.length === 0) {
       return;
@@ -148,7 +150,7 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     }
     this.researchGroupService.update(this.researchGroup.id, fd).subscribe(
       (response: { research_group: ResearchGroup }) => {
-        this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success'};
+        this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success' };
         this.toggleShowInput();
         this.uploader.clearQueue();
         this.setRG(response.research_group);
@@ -228,15 +230,97 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     if (rg.photo) {
       Object.assign(this.researchGroup, { photo: environment.api_url + rg.photo.picture });
     }
-    // if (rg.events) {
-    //   rg.events = rg.events.filter((event) => new Date(event.date) > new Date());
-    // }
     this.createRGForm();
-    if (rg.members) {
-      this.sessionUsername.subscribe((username: string) => {
-        this.isMember = rg.members.map(u => u.user.username).includes(username);
-      });
+    // this.researchGroup.events = this.researchGroup.events.filter((event) => new Date(event.date) > new Date());   // Future events
+    this.researchGroup.members = this.researchGroup.members.filter((member) => member.state === 'Activo');        // Active members
+    this.researchGroup.members.map(member => {
+      Object.assign(member.user.photo, { picture: environment.api_url + member.user.photo.picture });
+    })
+    this.researchGroup.events.map(event => {
+      event.photos.map(photo => {
+        Object.assign(photo, { picture: environment.api_url + photo.picture })
+      })
+    })
+    this.researchGroup.members.sort((a, b) => {
+      if (a.member_type === b.member_type)
+        return 0;
+      if (b.member_type === 'Miembro' || a.member_type === 'Solicitante')
+        return -1;
+      return 1;
+    });
+    this.currentIsRequester();
+    this.currentIsMember();
+    this.currentIsOwner();
+    if (this.isOwner) {
+      this.setUsersToAdd();
     }
+  }
+
+  currentIsRequester() {
+    if (this.researchGroup.members.length) {
+      this.sessionUsername.subscribe((username: string) => {
+        this.isRequester = this.filterRequested().map(user => user.username).includes(username);
+      }).unsubscribe();
+    }
+  }
+
+  currentIsMember() {
+    if (this.researchGroup.members.length) {
+      this.sessionUsername.subscribe((username: string) => {
+        this.isMember = this.filterMember().map(user => user.username).includes(username);
+      }).unsubscribe();
+    }
+  }
+
+  currentIsOwner() {
+    this.sessionType.subscribe((type: string) => {
+      this.isOwner = type === 'Administrador';
+    })
+    if (!this.isOwner) {
+      this.sessionUsername.subscribe((username: string) => {
+        this.isOwner = this.filterLider().map((user) => user.username).includes(username);
+      }).unsubscribe();
+    }
+  }
+
+  acceptJoinRequest(userId: number) {
+    this.researchGroupService.acceptJoinRequest(this.researchGroup.id, userId).subscribe(
+      (response) => {
+        this.requestRG(this.researchGroup.id);
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se ha podido aceptar la solicitud', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  rejectJoinRequest(userId: number) {
+    this.researchGroupService.rejectJoinRequest(this.researchGroup.id, userId).subscribe(
+      (response) => {
+        this.requestRG(this.researchGroup.id);
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se ha podido rechazar la solicitud', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  filterRequested(): Array<User> {
+    return this.researchGroup.members
+      .filter((member) => member.member_type === 'Solicitante')
+      .map((member) => member.user)
+  }
+
+  filterLider(): Array<User> {
+    return this.researchGroup.members
+      .filter((member) => member.member_type === 'Líder')
+      .map((member) => member.user)
+  }
+
+  filterMember(): Array<User> {
+    return this.researchGroup.members
+      .filter((member) => member.member_type === 'Miembro')
+      .map((member) => member.user)
   }
 
   toggleShowInput() {
@@ -261,25 +345,75 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
       this.researchGroupService.update(this.researchGroup.id, rg).subscribe(
         (response: { research_group: ResearchGroup }) => {
           this.setRG(response.research_group);
-          this.swalOpts = { title: 'El grupo ha sido actualizado', type: 'success'};
+          this.swalOpts = { title: 'El grupo ha sido actualizado', type: 'success' };
           this.createRGForm();
         },
         (error: HttpErrorResponse) => {
           this.swalOpts = { title: 'Grupo no actualizado', text: error.message, type: 'error' };
-
-        });
+        }
+      );
     }
   }
 
-  requestJoin() {
-    this.researchGroupService.requestJoin(this.researchGroup.id).subscribe(
+  choosed(userId: number): boolean {
+    return this.choosedUsers.map((user) => user.id).includes(userId);
+  }
+
+  addUser(user: User) {
+    this.choosedUsers.push({ id: user.id, name: user.full_name, username: user.username, member_type: 'Miembro' });
+  }
+
+  removeUser(idx: number) {
+    this.choosedUsers.splice(idx, 1);
+  }
+
+  addUsers() {
+    const choosed = this.choosedUsers.map((user) => ({ id: user.id, member_type: user.member_type }));
+    this.researchGroupService.addUsers(this.researchGroup.id, { users: choosed }).subscribe(
       (response) => {
-        this.swalOpts = { title: 'Te has unido a este grupo', type: 'success'};
+        this.swalOpts = { title: 'Los usuarios han sido añadidos satisfactoriamente', type: 'success' };
+        this.closeBtn.nativeElement.click();
+        this.requestRG(this.researchGroup.id);
+        this.setUsersToAdd();
+        this.choosedUsers = new Array<any>();
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'Usuarios no añadidos', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  setUsersToAdd(keywords = '') {
+    this.researchGroupService.availableUsers(this.researchGroup.id, keywords).subscribe(
+      (response: { users: Array<User> }) => {
+        this.usersToAdd = response.users;
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se han podido obtener usuarios', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  requestJoin() {
+    this.researchGroupService.requestJoin({ id: this.researchGroup.id }).subscribe(
+      (response) => {
+        this.swalOpts = { title: 'Se ha enviado tu solicitud de unión al grupo', type: 'success' };
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No te has podido unir al grupo', text: error.message, type: 'error' };
+      }
+    );
+  }
 
+  cancelJoinRequest() {
+    this.researchGroupService.cancelJoinRequest(this.researchGroup.id).subscribe(
+      (response) => {
+        this.swalOpts = { title: 'Se ha cancelado la solicitud de unión', type: 'success' };
+        this.requestRG(this.researchGroup.id);
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se ha podido cancelar la solicitud de unión unir al grupo', text: error.message, type: 'error' };
       }
     );
   }
@@ -287,11 +421,11 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
   leave() {
     this.researchGroupService.leaveGroup({ id: this.researchGroup.id }).subscribe(
       (response) => {
-        this.swalOpts = { title: 'Has abandonado este grupo', type: 'success'};
+        this.swalOpts = { title: 'Has abandonado este grupo', type: 'success' };
         this.requestRG(this.researchGroup.id);
       },
       (error: HttpErrorResponse) => {
-        this.swalOpts = { title: 'No te has podido abandonar al grupo', text: error.message, type: 'error' };
+        this.swalOpts = { title: 'No has podido abandonar al grupo', text: error.message, type: 'error' };
 
       }
     );
@@ -311,9 +445,19 @@ export class RgComponent implements OnInit, AfterContentChecked, OnDestroy {
     }
   }
 
+  viewEvent(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { event: id } });
+    this.router.navigateByUrl('/event');
+  }
+
   viewProfile(id: number) {
     this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { user: id } });
     this.router.navigateByUrl('/profile');
+  }
+
+  viewPublication(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { publication: id } });
+    this.router.navigateByUrl('/publication');
   }
 
   private createRGForm() {
