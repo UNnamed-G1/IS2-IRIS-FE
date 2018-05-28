@@ -61,8 +61,6 @@ import { NotFoundComponent } from './public/not-found/not-found.component';
 import { ProfileComponent } from './public/profile/profile.component';
 import { ResearchGroupsComponent } from './public/research-groups/research-groups.component';
 import { SearchComponent } from './public/search/search.component';
-import { TimeLineComponent } from './public/time-line/time-line.component';
-import { ResearchSubjectsComponent } from './public/research-subjects/research-subjects.component';
 import { ImageCropperComponent } from './components/image-cropper/image-cropper.component';
 import { PublicationComponent } from './public/publication/publication.component';
 import { AddPublicationComponent } from './public/publication/add/add-publication.component';
@@ -118,10 +116,6 @@ export const appRoutes: Routes = [
   {
     path: 'search',
     component: SearchComponent
-  },
-  {
-    path: 'time-line',
-    component: TimeLineComponent
   },
   {
     path: 'events',
@@ -184,10 +178,6 @@ export const appRoutes: Routes = [
     component: EventComponent
   },
   {
-    path: 'research-subjects',
-    component: ResearchSubjectsComponent
-  },
-  {
     path: 'documents',
     component: DocumentsComponent
   },
@@ -246,7 +236,6 @@ export const appRoutes: Routes = [
     EventsComponent,
     ResearchGroupsComponent,
     ProfileComponent,
-    TimeLineComponent,
     SearchComponent,
     NotFoundComponent,
     ManageComponent,
@@ -262,7 +251,6 @@ export const appRoutes: Routes = [
     PaginationComponent,
     CrudComponent,
     DocumentsComponent,
-    ResearchSubjectsComponent,
     PublicationComponent,
     AddPublicationComponent,
     FormControlErrorsComponent,
