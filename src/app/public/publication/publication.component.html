@@ -6,34 +6,82 @@
   <div class="container-fluid main-container">
     <div class="container-fluid">
       <div class="row">
-        <h2>{{ publication.name }} -
-          <a data-toggle="modal" data-target="#modal-cites">Citar</a>
-        </h2>
-        <div>
-          Fecha de publicación: {{ publication.date | date: 'fullDate' }}
-        </div>
-        <div>
-          Tipo de publicacion: {{ publication.publication_type }}
-        </div>
-        <div>
-          Descripción: {{ publication.brief_description }}
-        </div>
-        <div>
-          Abstract: {{ publication.abstract }}
-        </div>
-        <div>
-          Autores:
-          <ul>
-            <li *ngFor="let author of publication.users">
-              <div class="author-element" (click)="viewAuthor(author.id)">
-                <img [src]="author.photo" onerror="this.src = 'assets/images/user.png';" class="rounded-image author-image img-responsive"
-                /> {{ author.full_name }}
-              </div>
-            </li>
-          </ul>
-        </div>
-        <app-documents [url]="publication.document"></app-documents>
+        <h1 class="text-center">
+          {{ publication.name }}       
+        </h1>
       </div>
+      <hr>
+      <div class="row panel panel-info">
+        <div class="panel-heading">
+          Información de la publicación
+        </div>
+        <div class="panel-body">
+            <div class="panel panel-success">
+              <div class="panel-heading">
+                  Descripción corta
+              </div>
+              <div class="panel-body">                  
+                {{ publication.brief_description }}
+              </div>
+            </div>
+            <div class="panel panel-success">
+              <div class="panel-heading">
+                  Abstract
+              </div>
+              <div class="panel-body">                  
+                {{ publication.abstract }}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="panel panel-success">
+                  <div class="panel-heading">
+                      Fecha de publicación
+                  </div>
+                  <div class="panel-body">                  
+                    {{ publication.date | date: 'fullDate' }}
+                  </div>
+                </div>
+              </div>    
+              <div class="col-md-6">
+                  <div class="panel panel-success">
+                    <div class="panel-heading">
+                        Tipo de publicacion
+                    </div>
+                    <div class="panel-body">                  
+                      <b>{{ publication.publication_type }}</b>
+                    </div>
+                  </div>
+              </div>                   
+            </div> 
+          </div>
+        </div>        
+        <div class="row panel panel-info">
+            <div class="panel-heading">            
+              Autores
+            </div>
+            <ul class="list-group">
+              <li *ngFor="let author of publication.users" class="list-group-item">
+                <div class="author-element" (click)="viewAuthor(author.id)" role="button">
+                  <img [src]="author.photo" onerror="this.src = 'assets/images/user.png';" class="rounded-image author-image img-responsive"/> 
+                  {{ author.full_name + " - " + author.username}}
+                </div>
+              </li>
+            </ul>
+        </div>
+        <div class="row panel panel-info" *ngIf="publication.document">
+          <div class="panel-heading">            
+              Publicación
+          </div>
+          <div class="panel-body">
+            <a (click)="displayDocument()" role="button">{{documentMessage}}</a> - &nbsp;  
+            <a data-toggle="modal" data-target="#modal-cites" role="button">Citar Publicación</a>
+            <div class="row" *ngIf="showDocument">  
+                   
+              <app-documents [url]="publication.document"></app-documents>
+            </div>            
+          </div>
+        </div>
     </div>
   </div>
 </main>
