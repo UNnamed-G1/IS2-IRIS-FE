@@ -1,5 +1,11 @@
-<div class="jumbotron">
-  <div class="research-group">
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <span>Grupos de investigación</span>
+  </div>
+  <div class="main-container">
+    <div class="container-fluid">
+      <!-- <div class="research-group">
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
       <ul class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -45,50 +51,46 @@
         <span class="sr-only">Next</span>
       </a>
     </div>
-  </div>
-  <div class="row" id="research_groups_view">
-    <div class="research-group" *ngFor="let row of rows">
-      <div class="col-xs-6 col-md-3 col-lg-3">
-        <div class="panel panel-default">
-          <div class="panel panel-heading">
-            <h4 class="text-center">{{row.name}}</h4>
-          </div>
-          <div class="panel panel-body" [ngStyle]="{
-            'background-image': 'url(' + row.photo + ')',
-            'background-repeat': 'no-repeat',
-            'background-color': '#555',
-            'background-size': '100%'
-          }">
-            <div class="screen">
-              <div class="row">
-                <div class="col-sm-12 center-block">
-                  <div class="box">
-                    <p class="white-text ">{{row.description}}</p>
-                    <div class="glyphicon pull-right pull-down">
-                      <a (click)="openRG(row.id)">
-                        <span class="glyphicon glyphicon-eye-open"></span>
-                      </a>
+  </div> -->
+      <h1>Grupos de investigación</h1>
+      <div class="row" id="research_groups_view">
+        <div class="research-group" *ngFor="let row of rows">
+          <div class="col-xs-6 col-md-3 col-lg-3">
+            <div class="panel panel-default">
+              <div class="panel panel-heading">
+                <h4 class="text-center">{{row.name}}</h4>
+              </div>
+              <div class="panel panel-body" [ngStyle]="{
+                'background-image': 'url(' + row.photo + ')',
+                'background-repeat': 'no-repeat',
+                'background-color': '#555',
+                'background-size': '100%'
+              }">
+                <div class="screen">
+                  <div class="row">
+                    <div class="col-sm-12 center-block">
+                      <div class="box">
+                        <p class="white-text ">{{row.description}}</p>
+                        <div class="glyphicon pull-right pull-down">
+                          <a (click)="openRG(row.id)">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class="panel-footer">
+                <h5 class="text-right">{{row.foundation_date}}</h5>
+              </div>
             </div>
-          </div>
-          <div class="panel-footer">
-            <h5 class="text-right">{{row.foundation_date}}</h5>
           </div>
         </div>
       </div>
+      <app-pagination [page]="page"></app-pagination>
     </div>
   </div>
-  <app-pagination [page]="page"></app-pagination>
-  <hr>
-  <hr>
-  <div class="row" align="center">
-    <p>
-      <a class="btn btn-primary btn-lg" routerLink="/home" role="button">Inicio</a>
-    </p>
-  </div>
-</div>
+</main>
 
 <app-generic-swal [options]="swalOpts"></app-generic-swal>

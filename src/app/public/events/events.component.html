@@ -1,5 +1,12 @@
-<div class="jumbotron">
-  <div class="events">
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <span>Eventos</span>
+  </div>
+  <div class="main-container">
+    <div class="container-fluid">
+
+      <!-- <div class="events">
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
       <ul class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -68,89 +75,46 @@
         <span class="sr-only">Next</span>
       </a>
     </div>
-  </div>
-
-  <div class="row" id="events_view">
-    <div class="events" *ngFor="let row of rows">
-      <div class="col-xs-6 col-md-3 col-lg-3">
-        <div class="panel panel-default">
-          <div class="panel panel-heading">
-            <h5 class="text-center">{{row.topic}}</h5>
-          </div>
-          <div class="panel panel-body" [ngStyle]="{
+  </div> -->
+      <h1>Eventos</h1>
+      <div class="row" id="events_view">
+        <div class="events" *ngFor="let row of rows">
+          <div class="col-xs-6 col-md-3 col-lg-3">
+            <div class="panel panel-default">
+              <div class="panel panel-heading">
+                <h5 class="text-center">{{row.topic}}</h5>
+              </div>
+              <div class="panel panel-body" [ngStyle]="{
             'background-image': 'url(' + row.photo + ')',
             'background-repeat': 'no-repeat',
             'background-color': '#555',
             'background-size': '100%'
           }">
-            <div class="screen">
-              <div class="row">
-                <div class="col-sm-12 center-block">
-                  <div class="box">
-                    <p class="white-text ">{{row.description}}</p>
-                    <div class="glyphicon pull-right pull-down" align="bottom">
-                      <a (click)="openEvent(row.id)">
-                        <span class="glyphicon glyphicon-eye-open"></span>
-                      </a>
+                <div class="screen">
+                  <div class="row">
+                    <div class="col-sm-12 center-block">
+                      <div class="box">
+                        <p class="white-text ">{{row.description}}</p>
+                        <div class="glyphicon pull-right pull-down" align="bottom">
+                          <a (click)="openEvent(row.id)">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="panel-footer">
-              <h5 class="text-right">{{row.date}}</h5>
+              <div class="panel-footer">
+                <h5 class="text-right">{{row.date}}</h5>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <app-pagination [page]="page"></app-pagination>
     </div>
   </div>
-  <!--div class="container" id="research-groups">
-    <div class="media">
-      <div class="media-left media-middle">
-          <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:60px">
-        </div>
-
-        <div class="media-body">
-          <h4 class="media-heading">Grupo 01</h4>
-          <p>Descripcion del respectivo grupo de investicacion</p>
-        <a href="#">Mas informacion</a>
-        </div>
-    </div>
-    <hr>
-    <div class="media">
-      <div class="media-left media-middle">
-          <img src="https://image.freepik.com/vector-gratis/plantilla-abstracta-de-inteligencia-artificial_23-2147723488.jpg" class="media-object" style="width:60px">
-        </div>
-
-        <div class="media-body">
-          <h4 class="media-heading">Grupo 02</h4>
-          <p>Descripcion del respectivo grupo de investicacion</p>
-        <a href="#">Mas informacion</a>
-        </div>
-    </div>
-    <hr>
-    <div class="media">
-      <div class="media-left media-middle">
-          <img src="https://pic.pimg.tw/dynamics189/1485761650-3339166697.jpg" class="media-object" style="width:60px">
-        </div>
-
-        <div class="media-body">
-          <h4 class="media-heading">Grupo 03</h4>
-          <p>Descripcion del respectivo grupo de investicacion</p>
-        <a href="#">Mas informacion</a>
-        </div>
-    </div>
-  </div-->
-
-  <app-pagination [page]="page"></app-pagination>
-  <hr>
-  <hr>
-  <div class="row" align="center">
-    <p>
-      <a class="btn btn-primary btn-lg" routerLink="/home" role="button">Inicio</a>
-    </p>
-  </div>
-</div>
+</main>
 
 <app-generic-swal [options]="swalOpts"></app-generic-swal>

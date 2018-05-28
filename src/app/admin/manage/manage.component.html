@@ -1,19 +1,25 @@
 <main class="detalle">
-	<div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Administrar</span></div>
-	<div class="jumbotron">
-		<div class="container">
+	<div class="breadcrumb-class">Está en:
+		<a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+		<span>Administrar</span>
+	</div>
+	<div class="main-container">
+		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-10">
-					<p>Seleccione una opción para modificar: </p>
-					<div class= "container">
-						<button class="btn btn-primary btn-sm" routerLink="/users" role="button">Usuarios</button>
-            <button class="btn btn-primary btn-sm" routerLink="/research-list" role="button">Grupos de Investigación</button>
-						<button class="btn btn-primary btn-sm" routerLink="/publications" role="button">Publicaciones</button>
+
+					<h1>Administrar</h1>
+				</div>
+				<div class="col-md-10">
+					<p>Seleccione qué desea administrar: </p>
+					<div class="container">
+						<button class="btn btn-primary btn-lg" routerLink="/users" role="button">
+							<i class="fa fa-user"></i> Usuarios</button>
+						<button class="btn btn-primary btn-lg" routerLink="/research-list" role="button">
+							<i class="fa fa-users"></i> Grupos de Investigación</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
-	</div><br>
-
+	</div>
 </main>
