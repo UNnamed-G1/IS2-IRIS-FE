@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgRedux, select } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
@@ -12,16 +12,13 @@ import { Swal } from 'app/classes/swal';
   styleUrls: ['./app-header.component.css']
 })
 
-export class AppHeaderComponent implements OnInit {
+export class AppHeaderComponent {
   @select() session;
   @select() isLogged;
   swalOpts: Swal;
 
   constructor(private ngRedux: NgRedux<AppState>,
     private router: Router) { }
-
-  ngOnInit() {
-  }
 
   viewProfile() {
     this.session.subscribe(
