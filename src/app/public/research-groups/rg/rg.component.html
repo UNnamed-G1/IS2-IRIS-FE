@@ -1,8 +1,5 @@
 <main class="detalle">
-  <div class="breadcrumb-class">Está en:
-    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
-    <span>Grupos de Investigación</span>
-  </div>
+    <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/ <a routerLink="/research-groups" target="_self" title="Grupos de investigación">Grupos de investigación</a> /<span>{{ researchGroup.name }}</span></div>
   <div *ngIf="researchGroup" class="container-fluid main-container">
     <div class="container-fluid">
       <div class="row container-fluid" [hidden]="showInput">
