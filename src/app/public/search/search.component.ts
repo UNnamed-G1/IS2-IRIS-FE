@@ -6,11 +6,7 @@ import { NgRedux } from '@angular-redux/store';
 import { AppState } from 'app/redux/store';
 import { ADD_AUXILIAR } from 'app/redux/actions';
 
-import { PermissionManager } from 'app/permission-manager';
-import { Event, Publication, ResearchGroup, User } from 'app/classes/_models';
 import { Swal } from 'app/classes/swal';
-import { environment } from 'environments/environment';
-
 import { ResearchGroupService } from 'app/services/research-group.service';
 import { UserService } from 'app/services/user.service';
 import { EventService } from 'app/services/event.service';
@@ -24,7 +20,7 @@ import { PublicationService } from 'app/services/publication.service';
 export class SearchComponent implements OnInit {
   columns: Array<string>;
   keys: Array<string>;
-  rows: {};
+  rows: Array<any>;
   swalOpts: Swal;
   headers: Array<string>;
   searchType: string;

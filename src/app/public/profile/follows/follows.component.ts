@@ -149,7 +149,7 @@ export class FollowsComponent implements OnInit, OnChanges {
     );
   }
 
-  setPage(page: number) {
+  setPage() {
     this.userID.subscribe((id: number) => {
       if (this.displayFollowers) {
         this.setFollowers(id);
@@ -166,7 +166,7 @@ export class FollowsComponent implements OnInit, OnChanges {
       const tmp = this.totalPagesAux;
       this.totalPagesAux = this.page.total;
       this.page.total = tmp;
-      this.setPage(this.page.actual);
+      this.setPage();
     }
   }
 }
