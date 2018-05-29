@@ -9,7 +9,7 @@
           </div>
           <div class="col-md-4 text-right">
             <button type="submit" class="btn btn-success" *ngIf="(isLogged | async) && !(isMember || isOwner || isRequester)" (click)="requestJoin()"><i class="fa fa-plus"></i> Solicitar unirse</button>
-            <button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isRequester" (click)="cancelJoinRequest()"><i class="fa fa-cancel"></i> Cancelar solicitud</button>
+            <button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isRequester" (click)="cancelJoinRequest()"><i class="fa fa-times"></i> Cancelar solicitud</button>
           </div>
         </div>
         <hr>

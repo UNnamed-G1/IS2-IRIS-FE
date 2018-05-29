@@ -12,7 +12,7 @@ export class PublicationService extends CommonService {
     super(http);
     this.url += 'publications/';
   }
-  searchPublicationsByName(name: string, page:number){
+  searchByName(name: string, page:number){
     return this.applyRequestPath(this.get, 'search/publications?keywords=' + name + '&'+ 'page=' + page);
   }
 }

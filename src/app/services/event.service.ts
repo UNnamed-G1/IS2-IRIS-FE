@@ -13,7 +13,7 @@ export class EventService extends CommonService {
   getNews() {
     return this.applyRequestPath(this.get, 'events/news');
   }
-  searchEventByName(name: string, page:number){
+  searchByName(name: string, page:number){
     return this.applyRequestPath(this.get, 'search/events?keywords=' + name + '&'+ 'page=' + page);
   }
   getInvitedUsers(id: number) {
