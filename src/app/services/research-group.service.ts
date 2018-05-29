@@ -41,7 +41,7 @@ export class ResearchGroupService extends CommonService {
     return this.applyRequestPath(this.create, 'research_groups/leave', [id]);
   }
   
-  searchRGByName(name: string, page: number) {
+  searchByName(name: string, page: number) {
     return this.applyRequestPath(this.get, 'search/research_groups?keywords=' + name + '&page=' + page);
   }
 
