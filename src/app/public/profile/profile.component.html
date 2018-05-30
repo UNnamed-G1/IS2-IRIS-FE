@@ -3,100 +3,243 @@
     <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
     <span>Perfil</span>
   </div>
-  <div *ngIf="user" class="container-fluid main-container">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-8">
-          <h2 class="text-center">Perfil</h2>
-        </div>
-        <div class="col-md-2">
-            <h4>
-              <a class="btn btn-info" (click)="viewFollows(true)" data-toggle="modal" data-target="#modal-follows">
-                <span class="label label-danger">{{ followersCount }}</span> 
-                Seguidores
-              </a>
-            </h4>
-          </div>  
-          <div class="col-md-2">
-
-            <h4>
-              <a class="btn btn-info" (click)="viewFollows(false)" data-toggle="modal" data-target="#modal-follows">
-                <span class="label label-danger">{{ followingCount }}</span> 
-                Siguiendo
-              </a>
-            </h4>          
-          </div>          
-      </div>
-      <hr>
-      <div class="row" *ngIf="!showForm">
-        <div class="col-sm-2 col-md-2">
+  <div *ngIf="user" class="container-fluid main-container text-center">
+    <div class="row" *ngIf="!showForm">
+      <div class="col-sm-3 well">
+        <div class="well">
           <img src="{{user?.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="rounded-image img-responsive"
           />
+          <div *ngIf="( userID | async ) === ( sessionID | async )">
+            <button type="button" class="btn btn-primary" (click)="toggleShowForm()">Editar</button>
+          </div>
         </div>
-        <div class="col-md-10">
-          <div class="row">
-            <div class="col-sm-5 col-md-5">
-              <div class="field">
-                <h4>{{ user.full_name }}</h4>
-              </div>
-            </div>
-            <div class="col-sm-5 col-md-5">
-              <div *ngIf="user.phone" class="field">
-                  <b><label>Telefono:</label></b>
-                    {{ user.phone }}
-                </div>
-            </div>
+
+        <div class="well">
+          <div class="field">
+            <h2>{{ user.full_name }}</h2>
           </div>
-          <div class="row">
-              <div class="col-sm-5 col-md-5">
-                <div class="field">
-                  <b><label>Correo:</label></b>
-                  <u>{{ user.email }}</u>
-                </div>
-              </div>
-              <div class="col-sm-5 col-md-5">
-                  <div *ngIf="user.phone" class="field">
-                      <b><label>Oficina:</label></b>
-                      {{ user.office }}
-                  </div>
-              </div>
+          <div class="field">
+            <b><label>Carrera:</label></b>
+            {{ user.career.degree_type }} {{ user.career.name }}
           </div>
-          <div class="row">
-              <div class="col-sm-5 col-md-5">
-                <div class="field">
-                    <b><label>Prefil profesional:</label></b>
-                    {{ user.professional_profile }}
-                </div>
-              </div>
-              <div class="col-sm-5 col-md-5">
-                  <div *ngIf="user.phone" class="field">
-                      <b><label>url:</label></b>
-                      {{ user.cvlac_link }}
-                  </div>
-              </div>
+        </div>
+
+        <div class="text-left">
+          <div class="field">
+            <b><label>Prefil profesional:</label></b>
+            {{ user.professional_profile }}
           </div>
-          <div class="row">
-              <div class="col-sm-5 col-md-5">
-                <div class="field">
-                  <b><label>Carrera:</label></b> 
-                  {{ user.career.degree_type }} {{ user.career.name }}
-                </div>
-              </div>
-              <div class="col-sm-5 col-md-5">
-              </div>
+
+          <div *ngIf="user.phone" class="field">
+            <b><label>Oficina:</label></b>
+            {{ user.office }}
           </div>
-          <div class="row">
-              <div class="col-sm-5 col-md-5">
-                <div *ngIf="( userID | async ) === ( sessionID | async )">
-                    <button type="button" class="btn btn-primary" (click)="toggleShowForm()">Editar</button>
-                  </div>
-              </div>
-              <div class="col-sm-5 col-md-5">
-              </div>
+
+          <div *ngIf="user.phone" class="field">
+            <b><label>url:</label></b>
+            {{ user.cvlac_link }}
+          </div>
+
+          <div class="field">
+            <b><label>Correo:</label></b>
+            <u>{{ user.email }}</u>
+          </div>
+        
+          <div *ngIf="user.phone" class="field">
+            <b><label>Telefono:</label></b>
+            {{ user.phone }}
+          </div>
+        </div>
+
+        <div *ngIf="( userID | async ) === ( sessionID | async )">
+          <div class="alert alert-success fade in" *ngIf="!user.phone">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+            <p>
+              <strong>Actualiza informacion</strong>
+            </p>
+            Dale click en el boton de Editar, y manten actualizada tu informacion personal
           </div>
         </div>
       </div>
-      <div class="row" *ngIf="showForm">
+
+      <div class="col-sm-7 text-left">
+        <div class="row text-center">
+          <div class="col-sm-12">
+            <div class="panel panel-default text-left">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h2>Perfil</h2>
+                  </div>
+                  <div class="col-md-3">
+                    <h4>
+                      <a class="btn btn-info" (click)="viewFollows(true)" data-toggle="modal" data-target="#modal-follows">
+                        <span class="label label-danger">{{ followersCount }}</span>
+                        Seguidores
+                      </a>
+                    </h4>
+                  </div>
+                  <div class="col-md-3">
+
+                    <h4>
+                      <a class="btn btn-info" (click)="viewFollows(false)" data-toggle="modal" data-target="#modal-follows">
+                        <span class="label label-danger">{{ followingCount }}</span>
+                        Siguiendo
+                      </a>
+                    </h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div *ngIf="user.research_subjects" class="panel panel-success">
+              <div class="panel-heading">
+                <h2>
+                  <i class="fa fa-align-left "></i> Temas de interes</h2>
+              </div>
+              <div *ngIf="user.research_subjects.length" class="container-fluid main-container panel-body">
+                <div class="row items-row">
+                  <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
+                    <br>
+                    <div class="alert alert-info">
+                      <a (click)="delete(rs.id)" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                      <p>{{ rs.name }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div *ngIf="user.research_groups" class="panel panel-success">
+              <div class="panel-heading">
+                <h2>
+                  <i class="fa fa-flask "></i> Grupos de investigación</h2>
+              </div>
+              <div *ngIf="user.research_groups.length" class="container-fluid main-container panel-body">
+                <div class="row items-row">
+                  <div *ngFor="let group of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card" (click)="viewResearchGroup(group.id)">
+                      <div class="header-bg"></div>
+                      <div class="avatar">
+                        <img [src]="group.photo ? group.photo.link : 'assets/images/user.png'" onerror="this.src='assets/images/user.png';" class="rounded-image img-responsive"
+                        />
+                      </div>
+                      <div class="content">
+                        <p>
+                          <b>{{ group.name }}</b>
+                          <br> {{ group.description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div *ngIf="user.publications" class="panel panel-success">
+              <div class="panel-heading">
+                <h2>
+                  <i class="fa fa-book"></i> Publicaciones</h2>
+              </div>
+              <div *ngIf="user.publications.length" class="container-fluid main-container panel-body">
+                <div class="row items-row">
+                  <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="card" (click)="viewPublication(pub.id)">
+                      <div class="header">
+                        <b>{{ pub.name }}</b>
+                      </div>
+                      <div class="content">
+                        <p>{{ pub.brief_description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div *ngIf="user.events" class="panel panel-success">
+              <div class="panel-heading">
+                <h2>
+                  <i class="fa fa-globe"></i> Eventos</h2>
+              </div>
+              <div *ngIf="user.events.length" class="container-fluid main-container panel-body">
+                <div class="row items-row">
+                  <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-4">
+                    <div class="card" (click)="viewEvent(ev.id)">
+                      <div class="header">
+                        <b>{{ ev.topic }}</b>
+                      </div>
+                      <div class="content">
+                        <p>{{ ev.description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="panel panel-success">
+              <div class="panel-heading">
+                <h2>
+                  <i class="fa fa-area-chart"></i> Estadísticas </h2>
+              </div>
+              <div *ngIf="statistics" class="container-fluid main-container statistics panel-body">
+                <div class="row">
+                  <div *ngIf="publLastPeriodChart.data.length" class="col-md-6">
+                    <div class="panel panel-warning">
+                      <div class="panel-heading">
+                        <h4 class="chart-title">Publicaciones en los últimos meses</h4>
+                      </div>
+                      <div class="panel-body">
+                        <nvd3 [options]="publLastPeriodChart.options" [data]="publLastPeriodChart.data"></nvd3>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="publTypesChart.data.length" class="col-md-6">
+                    <div class="panel panel-warning">
+                      <div class="panel-heading">
+                        <h4 class="chart-title">Publicaciones por tipo</h4>
+                      </div>
+                      <div class="panel-body">
+                        <nvd3 [options]="publTypesChart.options" [data]="publTypesChart.data"></nvd3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-2 well">
+        <div class="thumbnail">
+          <p>Tengo ganas de poner algo aqui</p>
+          <p>
+            <strong>Pero no se que</strong>
+          </p>
+          <p>Se ve muy solo :v</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row" *ngIf="showForm">
         <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
           <div class="col-sm-2 col-md-2">
             <div>
@@ -229,114 +372,7 @@
           </div>
         </form>
       </div>
-    </div>
-    <br>
-    <div *ngIf="user.research_subjects" class="panel panel-success">
-      <div class="panel-heading">
-          <h2><i class="fa fa-align-left "></i>   Temas de interes</h2>
-      </div>
-      <div *ngIf="user.research_subjects.length" class="container-fluid main-container panel-body">
-        <div class="row items-row">
-          <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
-            <br>
-            <div class="alert alert-info">
-              <a (click)="delete(rs.id)" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-              <p>{{ rs.name }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="user.research_groups" class="panel panel-success">
-      <div class="panel-heading">
-        <h2><i class="fa fa-flask "></i>  Grupos de investigación</h2>
-      </div>
-      <div *ngIf="user.research_groups.length" class="container-fluid main-container panel-body">
-        <div class="row items-row">
-          <div *ngFor="let group of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card" (click)="viewResearchGroup(group.id)">
-              <div class="header-bg"></div>
-              <div class="avatar">
-                <img [src]="group.photo ? group.photo.link : 'assets/images/user.png'" onerror="this.src='assets/images/user.png';" class="rounded-image img-responsive"
-                />
-              </div>
-              <div class="content">
-                <p>
-                  <b>{{ group.name }}</b>
-                  <br> {{ group.description }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="user.publications" class="panel panel-success">
-      <div class="panel-heading">
-        <h2><i class="fa fa-book"></i>  Publicaciones</h2>
-      </div>
-      <div *ngIf="user.publications.length" class="container-fluid main-container panel-body">
-        <div class="row items-row">
-          <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card" (click)="viewPublication(pub.id)">
-              <div class="header">
-                <b>{{ pub.name }}</b>
-              </div>
-              <div class="content">
-                <p>{{ pub.brief_description }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="user.events" class="panel panel-success">
-      <div class="panel-heading">
-        <h2><i class="fa fa-globe"></i>  Eventos</h2>
-      </div>
-      <div *ngIf="user.events.length" class="container-fluid main-container panel-body">
-        <div class="row items-row">
-          <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-2">
-            <div class="card" (click)="viewEvent(ev.id)">
-              <div class="header">
-                <b>{{ ev.topic }}</b>
-              </div>
-              <div class="content">
-                <p>{{ ev.description }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-success">
-      <div class="panel-heading">
-        <h2> <i class="fa fa-area-chart"></i>   Estadísticas </h2>
-      </div>
-      <div *ngIf="statistics" class="container-fluid main-container statistics panel-body">
-        <div class="row">
-          <div *ngIf="publLastPeriodChart.data.length" class="col-md-6">
-            <div class="panel panel-warning">
-              <div class="panel-heading">
-                <h4 class="chart-title">Publicaciones en los últimos meses</h4>
-              </div>
-              <div class="panel-body">  
-                <nvd3 [options]="publLastPeriodChart.options" [data]="publLastPeriodChart.data"></nvd3>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="publTypesChart.data.length" class="col-md-6">
-            <div class="panel panel-warning">
-              <div class="panel-heading">
-                <h4 class="chart-title">Publicaciones por tipo</h4>
-              </div>
-              <div class="panel-body">
-                <nvd3 [options]="publTypesChart.options" [data]="publTypesChart.data"></nvd3>
-              </div>            
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
   </div>
 </main>
 
