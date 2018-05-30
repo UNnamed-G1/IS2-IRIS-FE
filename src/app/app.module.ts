@@ -95,6 +95,7 @@ import { MediaPreviewDirective } from './directives/media-preview.directive';
 
 import { environment } from 'environments/environment';
 import { User } from 'app/classes/_models';
+import { CreateResearchGroupComponent } from './professor/create-research-group/create-research-group.component';
 
 export const appRoutes: Routes = [
   {
@@ -184,9 +185,14 @@ export const appRoutes: Routes = [
   {
     path: 'publication',
     component: PublicationComponent
-  },{
+  }, 
+  {
     path: 'scheduler',
     component: SchedulerComponent
+  },
+  {
+    path: 'research-groups/create',
+    component: CreateResearchGroupComponent
   },
   {
     path: '**',
@@ -260,7 +266,8 @@ export const appRoutes: Routes = [
     ImageCropperComponent,
     EventComponent,
     GenericSwalComponent,
-    SchedulerComponent
+    SchedulerComponent,
+    CreateResearchGroupComponent
   ],
   providers: [
     {
