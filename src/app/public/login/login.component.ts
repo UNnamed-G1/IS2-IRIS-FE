@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit {
 
   private createSignInForm() {
     this.signInForm = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.pattern('[a-z]+')]],
+      username: ['', [Validators.required, Validators.pattern('[a-z0-9]+')]],
       password: ['', [Validators.required]]
     });
   }

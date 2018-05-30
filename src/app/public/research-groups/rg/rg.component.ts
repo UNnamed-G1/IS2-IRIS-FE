@@ -256,19 +256,15 @@ export class RgComponent implements OnInit, AfterContentChecked {
   }
 
   currentIsRequester() {
-    if (this.researchGroup.members.length) {
       this.sessionUsername.subscribe((username: string) => {
         this.isRequester = this.filterRequested().map(user => user.username).includes(username);
       }).unsubscribe();
     }
-  }
 
   currentIsMember() {
-    if (this.researchGroup.members.length) {
       this.sessionUsername.subscribe((username: string) => {
         this.isMember = this.filterMember().map(user => user.username).includes(username);
       }).unsubscribe();
-    }
   }
 
   currentIsOwner() {
