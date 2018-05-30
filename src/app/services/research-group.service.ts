@@ -4,13 +4,34 @@ import { CommonService } from './common.service';
 
 @Injectable()
 export class ResearchGroupService extends CommonService {
+
   constructor(protected http: HttpClient) {
     super(http);
     this.url += 'research_groups/';
   }
 
+  getRequested(page: number) {
+    return this.applyRequestPath(this.get, 'research_groups/requested?page=' + page);
+  }
+  
+  getAccepted(page: number) {
+    return this.applyRequestPath(this.get, 'research_groups/accepted?page=' + page);
+  }
+
   getNews() {
     return this.applyRequestPath(this.get, 'research_groups/news');
+  }
+
+  requestCreate(body: any): any {
+    return this.applyRequestPath(this.create, 'research_groups/request_create', [body]);
+  }
+
+  acceptCreationRequest(id: number): any {
+    return this.applyRequestPath(this.update, 'research_groups/' + id +'/accept_new_group');
+  }
+
+  rejectCreationRequest(id: number): any {
+    return this.applyRequestPath(this.update, 'research_groups/' + id +'/reject_new_group');
   }
 
   addUsers(id: number, users: any): any {

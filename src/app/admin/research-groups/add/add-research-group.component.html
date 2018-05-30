@@ -79,8 +79,10 @@
               <app-form-control-errors [control]="url"></app-form-control-errors>
             </div>
 
-            <div>
-              <button type="submit" class="btn btn-primary" [disabled]="rgForm.invalid">Submit</button>
+            <div class="btn-group">
+              <button *ngIf="researchGroup.state !== 'Solicitado'" type="submit" class="btn btn-primary" [disabled]="rgForm.invalid">Editar</button>
+              <button *ngIf="researchGroup.state === 'Solicitado'" type="submit" class="btn btn-primary" (click)="accept()" [disabled]="rgForm.invalid">Editar y aceptar</button>
+              <button *ngIf="researchGroup.state === 'Solicitado'" class="btn btn-primary" (click)="reject()">Rechazar solicitud</button>
               <button type="button" class="btn btn-danger" routerLink="/research-list">Volver</button>
             </div>
           </form>

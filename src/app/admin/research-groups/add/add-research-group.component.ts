@@ -62,17 +62,16 @@ export class AddResearchGroupComponent implements OnInit {
       }
     }
     if (this.researchGroup.id) {
-      this.researchGroupService
-        .update(this.researchGroup.id, rg).subscribe(
-          (response: { research_group: ResearchGroup }) => {
-            Object.assign(this.researchGroup, response.research_group);
-            this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success', confirm: this.navList, confirmParams: [this] };
-            this.createRGForm();
-          },
-          (error: HttpErrorResponse) => {
-            this.swalOpts = { title: 'Grupo de investigación no actualizado', text: error.message, type: 'error' };
-          }
-        );
+      this.researchGroupService.update(this.researchGroup.id, rg).subscribe(
+        (response: { research_group: ResearchGroup }) => {
+          Object.assign(this.researchGroup, response.research_group);
+          this.swalOpts = { title: 'El grupo de investigación ha sido actualizado', type: 'success', confirm: this.navList, confirmParams: [this] };
+          this.createRGForm();
+        },
+        (error: HttpErrorResponse) => {
+          this.swalOpts = { title: 'Grupo de investigación no actualizado', text: error.message, type: 'error' };
+        }
+      );
     } else {
       this.researchGroupService.create(rg).subscribe(
         (response: { research_group: ResearchGroup }) => {
@@ -84,8 +83,30 @@ export class AddResearchGroupComponent implements OnInit {
       );
     }
   }
-  
-  navList(){
+
+  accept() {
+    this.researchGroupService.acceptCreationRequest(this.researchGroup.id).subscribe(
+      (response: {message: string }) => {
+        this.swalOpts = { title: response.message, type: 'success', confirm: this.navList, confirmParams: [this] };
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se ha podido aceptar la solicitud', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  reject() {
+    this.researchGroupService.rejectCreationRequest(this.researchGroup.id).subscribe(
+      (response: {message: string }) => {
+        this.swalOpts = { title: response.message, type: 'success', confirm: this.navList, confirmParams: [this] };
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se ha podido rechazar la solicitud', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  navList() {
     this.router.navigateByUrl('research-list');
   }
 

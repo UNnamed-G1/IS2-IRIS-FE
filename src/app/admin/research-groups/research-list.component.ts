@@ -28,6 +28,7 @@ export class ResearchListComponent implements OnInit {
   historyReportURL = environment.api_url + 'reports/research_groups_history.pdf';
   PDF = false;
   swalOpts: Swal;
+  viewRequests: boolean = false;
   page: {
     actual: number,
     total: number
@@ -64,29 +65,37 @@ export class ResearchListComponent implements OnInit {
     this.PDF = !this.PDF;
   }
 
+  toggleView() {
+    this.viewRequests = !this.viewRequests;
+    this.getResearchGroups();
+  }
+
   delete(id: number) {
     this.researchGroupService.delete(id).subscribe(
       (response: { research_group: ResearchGroup }) => {
         this.getResearchGroups();
         this.swalOpts = { title: 'El grupo de investigación ha sido eliminado', type: 'success'};
-
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'Grupo de investigación no eliminado', text: error.message, type: 'error' };
-
       }
     );
   }
 
   getResearchGroups() {
-    this.researchGroupService.getAll(this.page.actual).subscribe(
+    let request;
+    if (this.viewRequests) {
+      request = this.researchGroupService.getRequested(this.page.actual);
+    } else {
+      request = this.researchGroupService.getAccepted(this.page.actual);
+    }
+    request.subscribe(
       (response: { research_groups: ResearchGroup[], total_pages: number }) => {
         this.researchGroups = response.research_groups;
         this.page.total = response.total_pages;
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se han podido obtener los grupos de investigación', text: error.message, type: 'error' };
-
       }
     );
   }
