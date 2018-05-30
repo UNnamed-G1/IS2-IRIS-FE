@@ -16,7 +16,7 @@ import { FacultyService } from 'app/services/faculty.service';
 import { DepartmentService } from 'app/services/department.service';
 import { CareerService } from 'app/services/career.service';
 import { UserService } from 'app/services/user.service';
-import { User, Career, Department, Faculty } from 'app/classes/_models';
+import { User, Career, Department, Faculty, ResearchGroup } from 'app/classes/_models';
 import { Swal } from 'app/classes/swal';
 
 @Component({
@@ -28,7 +28,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
   @ViewChild('inputImage') private inputImg: ElementRef;
   @select(['auxiliarID', 'user']) userID;
   @select(['session', 'id']) sessionID;
-  
+
   swalOpts: Swal;
   user: User;
   faculties: Faculty[] = new Array<Faculty>();
@@ -217,19 +217,20 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       }
     );
   }
-  
+
   setUser(u: User) {
     this.user = Object.assign({}, this.user, u);
     if (u.photo) {
       Object.assign(this.user, { photo: environment.api_url + this.user.photo.picture });
     }
+    u.research_groups.map((researchGroup: ResearchGroup) => Object.assign(researchGroup, { photo: environment.api_url + researchGroup.photo.picture }))
     if (u.career) {
       // this.setDepartments(this.user.career.id);
       // this.setCareers(this.user.career.id);
     }
     this.createProfileForm();
   }
-  
+
   // On edited sets session too
   setSessionUser(u: User) {
     this.ngRedux.dispatch({
@@ -243,7 +244,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       }
     });
   }
-  
+
   setFaculties() {
     this.facultyService.get().subscribe(
       (response: { faculties: Array<Faculty> }) => {
@@ -257,7 +258,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     );
     this.faculties = new Array<Faculty>();
   }
-  
+
   setDepartments(idFaculty: number) {
     this.facultyService.getDepartments(idFaculty).subscribe(
       (response: { departments: Array<Department> }) => {
@@ -272,7 +273,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
     this.departments = new Array<Department>();
     this.careers = new Array<Career>();
   }
-  
+
   setCareers(idDepartment: number) {
     this.departmentService.getCareers(idDepartment).subscribe(
       (response: { careers: Array<Career> }) => {
@@ -341,7 +342,7 @@ export class ProfileComponent implements OnInit, AfterContentChecked, OnDestroy 
       this.swalOpts = { title: 'Estás subiendo múltiples archivos', text: 'Selecciona sólo la imagen que deseas subir y suéltala en el área de nuevo', errorMsg: false, type: 'error' };
     }
   }
-  
+
   checkFile(file: File) {
     // Verify file loaded (Select file cancel will throw undefined file)
     if (file) {

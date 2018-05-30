@@ -231,11 +231,11 @@
       </div>
     </div>
     <br>
-    <div *ngIf="user.research_subjects" class="panel panel-success">
+    <div *ngIf="user.research_subjects.length" class="panel panel-success">
       <div class="panel-heading">
           <h2><i class="fa fa-align-left "></i>   Temas de interes</h2>
       </div>
-      <div *ngIf="user.research_subjects.length" class="container-fluid main-container panel-body">
+      <div class="container-fluid main-container panel-body">
         <div class="row items-row">
           <div *ngFor="let rs of user.research_subjects" class="col-sm-6 col-md-4 col-lg-3">
             <br>
@@ -247,17 +247,17 @@
         </div>
       </div>
     </div>
-    <div *ngIf="user.research_groups" class="panel panel-success">
+    <div *ngIf="user.research_groups.length" class="panel panel-success">
       <div class="panel-heading">
         <h2><i class="fa fa-flask "></i>  Grupos de investigación</h2>
       </div>
-      <div *ngIf="user.research_groups.length" class="container-fluid main-container panel-body">
+      <div class="container-fluid main-container panel-body">
         <div class="row items-row">
           <div *ngFor="let group of user.research_groups" class="col-sm-6 col-md-4 col-lg-3">
             <div class="card" (click)="viewResearchGroup(group.id)">
               <div class="header-bg"></div>
               <div class="avatar">
-                <img [src]="group.photo ? group.photo.link : 'assets/images/user.png'" onerror="this.src='assets/images/user.png';" class="rounded-image img-responsive"
+                <img [src]="group.photo ? group.photo : 'assets/images/user.png'" onerror="this.src='assets/images/user.png';" class="rounded-image img-responsive"
                 />
               </div>
               <div class="content">
@@ -270,11 +270,11 @@
         </div>
       </div>
     </div>
-    <div *ngIf="user.publications" class="panel panel-success">
+    <div *ngIf="user.publications.length" class="panel panel-success">
       <div class="panel-heading">
         <h2><i class="fa fa-book"></i>  Publicaciones</h2>
       </div>
-      <div *ngIf="user.publications.length" class="container-fluid main-container panel-body">
+      <div class="container-fluid main-container panel-body">
         <div class="row items-row">
           <div *ngFor="let pub of user.publications" class="col-sm-6 col-md-4 col-lg-3">
             <div class="card" (click)="viewPublication(pub.id)">
@@ -289,11 +289,11 @@
         </div>
       </div>
     </div>
-    <div *ngIf="user.events" class="panel panel-success">
+    <div *ngIf="user.events.length" class="panel panel-success">
       <div class="panel-heading">
         <h2><i class="fa fa-globe"></i>  Eventos</h2>
       </div>
-      <div *ngIf="user.events.length" class="container-fluid main-container panel-body">
+      <div class="container-fluid main-container panel-body">
         <div class="row items-row">
           <div *ngFor="let ev of user.events" class="col-sm-6 col-md-4 col-lg-2">
             <div class="card" (click)="viewEvent(ev.id)">
@@ -308,11 +308,11 @@
         </div>
       </div>
     </div>
-    <div class="panel panel-success">
+    <div *ngIf="statistics" class="panel panel-success">
       <div class="panel-heading">
         <h2> <i class="fa fa-area-chart"></i>   Estadísticas </h2>
       </div>
-      <div *ngIf="statistics" class="container-fluid main-container statistics panel-body">
+      <div class="container-fluid main-container statistics panel-body">
         <div class="row">
           <div *ngIf="publLastPeriodChart.data.length" class="col-md-6">
             <div class="panel panel-warning">
