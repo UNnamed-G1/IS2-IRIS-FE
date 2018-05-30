@@ -169,7 +169,6 @@ export class RgComponent implements OnInit, AfterContentChecked {
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se ha podido obtener el grupo de investigación', text: error.message, type: 'error' };
-
       }
     );
   }
@@ -360,7 +359,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   }
 
   addUser(user: User) {
-    this.choosedUsers.push({ id: user.id, name: user.full_name, username: user.username, member_type: 'Miembro' });
+    this.choosedUsers.push({ id: user.id, name: user.full_name, username: user.username, photo: user.photo, member_type: 'Miembro' });
   }
 
   removeUser(idx: number) {
@@ -386,7 +385,7 @@ export class RgComponent implements OnInit, AfterContentChecked {
   setUsersToAdd(keywords = '') {
     this.researchGroupService.availableUsers(this.researchGroup.id, keywords).subscribe(
       (response: { users: Array<User> }) => {
-        this.usersToAdd = response.users;
+        this.usersToAdd = response.users.map((u: User) => Object.assign(u, { photo: environment.api_url + u.photo.picture }));
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se han podido obtener usuarios', text: error.message, type: 'error' };

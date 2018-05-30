@@ -206,7 +206,7 @@ export class EventComponent implements OnInit, OnDestroy {
   }
 
   inviteUser(user: User) {
-    this.choosedUsers.push({ id: user.id, name: user.full_name, username: user.username });
+    this.choosedUsers.push({ id: user.id, name: user.full_name, username: user.username, photo: user.photo });
   }
 
   removeUser(idx: number) {
@@ -232,7 +232,7 @@ export class EventComponent implements OnInit, OnDestroy {
   setUsersToInvite(keywords = '') {
     this.eventService.availableUsers(this.event.id, keywords).subscribe(
       (response: { users: Array<User> }) => {
-        this.usersToInvite = response.users;
+        this.usersToInvite = response.users.map((u: User) => Object.assign(u, { photo: environment.api_url + u.photo.picture }));
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se han podido obtener usuarios', text: error.message, type: 'error' };

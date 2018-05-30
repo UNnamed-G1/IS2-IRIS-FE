@@ -77,6 +77,7 @@ export class ResearchGroup {
   date_classification: Date;
   url: string;
   // Types
+  state: string;
   classification: string;
   // Relations
   photo: Photo;
