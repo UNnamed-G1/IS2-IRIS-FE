@@ -82,7 +82,11 @@
                       </div>
                       <div class="media-body">
                         <h4 (click)="viewProfile(member.user.id)" role="button">{{member.user.full_name}}</h4>
-                        <span>{{member.member_type}}</span>
+                        
+                        <span *ngIf="member.member_type == 'Líder'" class="label label-success">{{member.member_type}}</span>
+                        <span *ngIf="member.member_type == 'Miembro'" class="label label-primary">{{member.member_type}}</span>
+                        <span *ngIf="member.member_type == 'Solicitante'" class="label label-warning">{{member.member_type}}</span>
+
                         <div *ngIf="member.member_type === 'Solicitante'">
                           <span class="accept glyphicon glyphicon-ok" (click)="acceptJoinRequest(member.user.id)"></span>
                           <span class="reject glyphicon glyphicon-remove" (click)="rejectJoinRequest(member.user.id)"></span>

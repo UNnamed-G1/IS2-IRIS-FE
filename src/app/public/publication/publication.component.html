@@ -13,12 +13,12 @@
       <hr>
       <div class="row panel panel-info">
         <div class="panel-heading">
-          Información de la publicación
+          <h3><b>Información de la publicación</b></h3>
         </div>
         <div class="panel-body">
             <div class="panel panel-success">
               <div class="panel-heading">
-                  Descripción corta
+                <b>Descripción corta</b>
               </div>
               <div class="panel-body">                  
                 {{ publication.brief_description }}
@@ -26,7 +26,7 @@
             </div>
             <div class="panel panel-success">
               <div class="panel-heading">
-                  Abstract
+                 <b> Abstract</b>
               </div>
               <div class="panel-body">                  
                 {{ publication.abstract }}
@@ -36,7 +36,7 @@
               <div class="col-md-6">
                 <div class="panel panel-success">
                   <div class="panel-heading">
-                      Fecha de publicación
+                    <b>Fecha de publicación</b>
                   </div>
                   <div class="panel-body">                  
                     {{ publication.date | date: 'fullDate' }}
@@ -46,7 +46,7 @@
               <div class="col-md-6">
                   <div class="panel panel-success">
                     <div class="panel-heading">
-                        Tipo de publicacion
+                      <b>Tipo de publicacion</b>
                     </div>
                     <div class="panel-body">                  
                       <b>{{ publication.publication_type }}</b>
@@ -58,24 +58,29 @@
         </div>        
         <div class="row panel panel-info">
             <div class="panel-heading">            
-              Autores
+              <h3><b>Autores</b></h3>
             </div>
             <ul class="list-group">
               <li *ngFor="let author of publication.users" class="list-group-item">
                 <div class="author-element" (click)="viewAuthor(author.id)" role="button">
-                  <img [src]="author.photo" onerror="this.src = 'assets/images/user.png';" class="rounded-image author-image img-responsive"/> 
-                  {{ author.full_name + " - " + author.username}}
-                </div>
+                  <img [src]="author.photo" onerror="this.src = 'assets/images/user.png';" class="rounded-image author-image img-responsive" style="width:70px; height:70px;"/> 
+                  <h4>{{ author.full_name}} </h4> &nbsp;
+                  <h4>                    
+                    <span *ngIf="author.user_type == 'Estudiante'" class="label label-primary">{{author.user_type}}</span>
+                    <span *ngIf="author.user_type == 'Profesor'" class="label label-warning">{{author.user_type}}</span>
+                  </h4>                  
+                </div>            
               </li>
             </ul>
         </div>
         <div class="row panel panel-info" *ngIf="publication.document">
           <div class="panel-heading">            
-              Publicación
+            <h3><b>Publicación</b></h3>
           </div>
           <div class="panel-body">
-            <a (click)="displayDocument()" role="button">{{documentMessage}}</a> - &nbsp;  
-            <a data-toggle="modal" data-target="#modal-cites" role="button">Citar Publicación</a>
+            <h3><a (click)="displayDocument()" role="button"><i class="fa fa-file-pdf-o"></i>     {{documentMessage}}</a> </h3>
+            <br>
+            <h3><a data-toggle="modal" data-target="#modal-cites" role="button"><i class="fa fa-book"></i>    Citar Publicación</a></h3>
             <div class="row" *ngIf="showDocument">  
                    
               <app-documents [url]="publication.document"></app-documents>
@@ -89,13 +94,18 @@
 <div id="modal-cites" class="modal fade hidden-print" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <h2>Citar</h2>
-      <div class="row" *ngFor="let cite of citesKeys">
-        <div class="col-md-2">
-          {{ cite }}
-        </div>
-        <div class="col-md-8" [innerHtml]="cites[cite]">
-        </div>
+      <h2 class="text-center">Citar</h2>  
+      <hr>
+      <div >
+
+        <ul class="list-group">
+            <li *ngFor="let cite of citesKeys" class="list-group-item row">
+                <div class="col-md-2">
+                    <b>{{ cite }}</b>
+                </div>
+                <div class="col-md-8" [innerHtml]="cites[cite]"></div>        
+            </li>
+        </ul>    
       </div>
     </div>
   </div>
