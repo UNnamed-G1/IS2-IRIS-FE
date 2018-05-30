@@ -13,9 +13,11 @@ export class EventService extends CommonService {
   getNews() {
     return this.applyRequestPath(this.get, 'events/news');
   }
-  searchByName(name: string, page:number){
-    return this.applyRequestPath(this.get, 'search/events?keywords=' + name + '&'+ 'page=' + page);
+
+  searchByName(name: string, page: number) {
+    return this.applyRequestPath(this.get, 'search/events?keywords=' + name + '&' + 'page=' + page);
   }
+
   getInvitedUsers(id: number) {
     return this.applyRequestPath(this.get, 'events/' + id + '/invited_users');
   }
@@ -28,8 +30,12 @@ export class EventService extends CommonService {
     return this.applyRequestPath(this.get, 'events/' + id + '/authors');
   }
 
-  sendInvitation(id: number, userIds: Array<number>) {
-    return this.applyRequestPath(this.create, 'events/' + id + '/invite_users', [{ users_id: userIds}]);
+  availableUsers(id: number, keywords: string = '') {
+    return this.applyRequestPath(this.get, 'events/' + id + '/available_users?keywords=' + keywords);
+  }
+
+  inviteUsers(id: number, users: any) {
+    return this.applyRequestPath(this.create, 'events/' + id + '/invite_users', [users])
   }
 
   removeInvitation(id: number, userId: number) {

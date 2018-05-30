@@ -1,6 +1,6 @@
 <main class="detalle">
-  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/ <a routerLink="/events" target="_self" title="Eventos">Eventos</a> /<span>{{event.name}}</span></div>
-  <div *ngIf="event" class="container main-container">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<a routerLink="/events" target="_self" title="Eventos">Eventos</a> /<span>{{event?.name}}</span></div>
+  <div *ngIf="event" class="main-container">
     <div class="container-fluid">
       <div class="row container-fluid" [hidden]="showInput">
         <br><h2>{{event.name}} </h2><br>
@@ -32,13 +32,8 @@
           <!-- Maps -->
 
           <div class="gMaps-container">
-            <agm-map class="gMaps-container"
-                [latitude]="event.latitude"
-                [longitude]="event.longitude"
-                [zoom]="zoom"
-                [disableDefaultUI]="false"
-                [zoomControl]="false"
-                (mapClick)="mapClicked($event)">
+            <agm-map class="gMaps-container" [latitude]="event.latitude" [longitude]="event.longitude" [zoom]="zoom" [disableDefaultUI]="false"
+              [zoomControl]="false" (mapClick)="mapClicked($event)">
 
                 <agm-marker [latitude]="event.latitude" [longitude]="event.longitude" [label]="event.address"> </agm-marker>
 
@@ -46,18 +41,19 @@
           </div>
           <br><br>
           <div class="col-sm-4 col-md-4">
-            <button type="submit" class="btn btn-primary" *ngIf="(isLogged | async) && !isInvited" (click)="sendInvitation()">Invitar</button>
-            <!--<button type="submit" class="btn btn-danger" *ngIf="(isLogged | async) && isJoined" (click)="leave()">Abandonar</button>-->
             <div class="panel panel-default">
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
                   <div class="col-sm-1 col-md-1">
                     <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
                   </div>
-                  <div class="col-sm-11 col-md-11">
+                  <div class="col-sm-9 col-md-9">
                     <h3>Invitados</h3>
                   </div>
+                  <div class="col-sm-1 col-md-1">
+                    <span *ngIf="(isLogged | async)" class="fa fa-user-plus" style="font-size: 1.8rem" data-toggle="modal" data-target="#modal-invite-users"></span>
                 </div>
+              </div>
               </div>
 
               <div class="panel-body" style="overflow-y: auto; height: 200px; ">
@@ -65,7 +61,7 @@
                   <div *ngFor="let user of invited" class="field">
                     <div class=" media">
                       <div class="media-left media-middle">
-                        <img src="https://pbs.twimg.com/media/C575StHVAAA1B9L.jpg" class="media-object" style="width:70px; height:70px;">
+                        <img [src]="user.photo" class="rounded-image media-object" style="width:70px; height:70px;">
                       </div>
 
                       <div class="media-body">
@@ -109,7 +105,7 @@
               <!-- Description -->
               <div class="form-group">
                 <label class="form-label">Descripción</label>
-                <textarea  type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
+              <textarea type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
                 <app-form-control-errors [control]="description"></app-form-control-errors>
               </div>
 
@@ -175,22 +171,11 @@
               <br><br>
               <!-- Maps -->
               <div class="gMaps-container">
-                <agm-map class="gMaps-container"
-                    [latitude]="lat"
-                    [longitude]="lng"
-                    [zoom]="zoom"
-                    [disableDefaultUI]="false"
-                    [zoomControl]="false"
+              <agm-map class="gMaps-container" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="false"
                     (mapClick)="mapClicked($event)">
 
-                    <agm-marker
-                        *ngFor="let m of markers; let i = index"
-                        (markerClick)="clickedMarker(m.label, i)"
-                        [latitude]="m.lat"
-                        [longitude]="m.lng"
-                        [label]="m.label"
-                        [markerDraggable]="m.draggable"
-                        (dragEnd)="markerDragEnd(m, $event)">
+                <agm-marker *ngFor="let m of markers; let i = index" (markerClick)="clickedMarker(m.label, i)" [latitude]="m.lat" [longitude]="m.lng"
+                  [label]="m.label" [markerDraggable]="m.draggable" (dragEnd)="markerDragEnd(m, $event)">
 
                     </agm-marker>
 
@@ -223,5 +208,73 @@
     </div>
   </div>
 </main>
+
+<div id="modal-invite-users" class="modal fade hidden-print" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button #closeModal type="button" class="close" data-dismiss="modal">&times;</button>
+        <h2>Invitar usuarios</h2>
+      </div>
+      <div class="modal-body row">
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="glyphicon glyphicon-search"></i>
+          </div>
+          <input type="text" class="form-control" placeholder="Escribe para buscar..." (input)="setUsersToInvite($event.target.value)">
+        </div>
+        <div class="col-md-6">
+          <div *ngFor="let user of usersToInvite">
+            <div *ngIf="!choosed(user.id)">
+              <div class="col-sm-4">
+                <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+                />
+              </div>
+              <div class="col-sm-8">
+                <div class="field">
+                  <h4>{{ user.full_name }}</h4>
+                  <small>{{ user.username }}</small>
+                </div>
+                <button class="btn btn-xs btn-primary" (click)="inviteUser(user)">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div *ngFor="let user of choosedUsers; let i = index">
+            <div class="col-sm-4">
+              <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+              />
+            </div>
+            <div class="col-sm-8">
+              <div class="field">
+                <h4>{{ user.name }}</h4>
+                <small>{{ user.username }}</small>
+              </div>
+              <div class="field">
+                <p>{{ user.professional_profile }}</p>
+              </div>
+              <button class="btn btn-xs btn-danger" (click)="removeUser(i)">
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="row" style="text-align: center">
+          <div class="col-xs-6">
+            <button type="submit" class="btn btn-primary" (click)="inviteUsers()">Invitar usuarios</button>
+          </div>
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <app-generic-swal [options]="swalOpts"></app-generic-swal>

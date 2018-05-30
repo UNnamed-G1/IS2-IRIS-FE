@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, EventEmitter, Output, ElementRef } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { EventService } from 'app/services/event.service';
   styleUrls: ['./event.component.css']
 })
 export class EventComponent implements OnInit, OnDestroy {
+  @ViewChild('closeModal') private closeBtn: ElementRef;
   @select(['session', 'type']) sessionType;
   @select(['auxiliarID', 'event']) eventID;
   @select() isLogged;
@@ -36,6 +37,9 @@ export class EventComponent implements OnInit, OnDestroy {
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
   invited: Array<User>;
   rgsUser: Array<ResearchGroup>;
+
+  usersToInvite: Array<User>;
+  choosedUsers: Array<any> = new Array<any>();
 
   zoom: number = 16;
   // initial center position for the map
@@ -64,7 +68,6 @@ export class EventComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.eventID.subscribe((id: number) => {
       if (id) {
-        this.setInvitedU(id);
         this.requestEvent(id);
       } else {
         this.router.navigateByUrl('/');
@@ -103,37 +106,21 @@ export class EventComponent implements OnInit, OnDestroy {
     }
   }
 
-  setInvitedU(id: number) {
-    this.eventService.getInvitedUsers(id).subscribe(
-      (response: { users: Array<User> }) => {
-        this.invited = response.users;
-      },
-      (error: HttpErrorResponse) => {
-        this.swalOpts = { title: 'No se han podido obtener los invitados', text: error.message, type: 'error' };
-      }
-    );
-    this.user = new Array<User>();
-  }
-
   requestEvent(id: number) {
     this.eventService.get(id).subscribe(
       (response: { event: Event }) => {
         this.setEvent(response.event);
-        //console.log(response);
       },
       (error: HttpErrorResponse) => {
         this.swalOpts = { title: 'No se ha podido obtener el evento', text: error.message, type: 'error' };
       }
     );
-  }
-  sendInvitation(ids: Array<number>) {
-    this.eventService.sendInvitation(this.event.id, ids).subscribe(
-      (response) => {
-        this.swalOpts = { title: 'Invitaciones enviadas', type: 'success' };
-        this.requestEvent(this.event.id);
+    this.eventService.getInvitedUsers(id).subscribe(
+      (response: { users: Array<User> }) => {
+        this.invited = response.users.map((u: User) => Object.assign(u, { photo: environment.api_url + u.photo.picture }));
       },
       (error: HttpErrorResponse) => {
-        this.swalOpts = { title: 'No se han podido enviar las invitaciones', text: error.message, type: 'error' };
+        this.swalOpts = { title: 'No se han podido obtener los invitados', text: error.message, type: 'error' };
       }
     );
   }
@@ -143,7 +130,7 @@ export class EventComponent implements OnInit, OnDestroy {
   }
 
   setEvent(event: Event) {
-    this.event = Object.assign({}, this.event, event);
+    this.event = Object.assign({}, event);
     this.createEventForm();
   }
 
@@ -210,6 +197,47 @@ export class EventComponent implements OnInit, OnDestroy {
       lng: $event.coords.lng,
       draggable: true
     });*/
+  }
+
+  // Invite users modal
+
+  choosed(userId: number): boolean {
+    return this.choosedUsers.map((user) => user.id).includes(userId);
+  }
+
+  inviteUser(user: User) {
+    this.choosedUsers.push({ id: user.id, name: user.full_name, username: user.username });
+  }
+
+  removeUser(idx: number) {
+    this.choosedUsers.splice(idx, 1);
+  }
+
+  inviteUsers() {
+    const choosed = this.choosedUsers.map((user) => user.id);
+    this.eventService.inviteUsers(this.event.id, { users_ids: choosed }).subscribe(
+      (response: { message: string }) => {
+        this.swalOpts = { title: response.message, type: 'success' };
+        this.closeBtn.nativeElement.click();
+        this.requestEvent(this.event.id);
+        this.setUsersToInvite();
+        this.choosedUsers = new Array<any>();
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'Usuarios no añadidos', text: error.message, type: 'error' };
+      }
+    )
+  }
+
+  setUsersToInvite(keywords = '') {
+    this.eventService.availableUsers(this.event.id, keywords).subscribe(
+      (response: { users: Array<User> }) => {
+        this.usersToInvite = response.users;
+      },
+      (error: HttpErrorResponse) => {
+        this.swalOpts = { title: 'No se han podido obtener usuarios', text: error.message, type: 'error' };
+      }
+    )
   }
 
 }
