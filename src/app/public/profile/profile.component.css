@@ -106,3 +106,7 @@ small {
 .statistics {
     background: white;
 }
+
+.affix {
+  z-index: 9999 !important;
+}
