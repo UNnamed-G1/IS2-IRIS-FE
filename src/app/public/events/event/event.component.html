@@ -10,7 +10,11 @@
         </div>
         <hr>
         <div class="container-fluid">
-          <div class="col-sm-8 col-md-8">
+          <div class="col-sm-6">
+            <div class="well">
+                <img src="{{event?.photos[0].picture ? event.photos[0].picture : 'assets/images/event.png'}}" onerror="this.src='assets/images/event.png'"
+                />
+            </div>
             <div class="media">
               <div class="media-body">
                 <h4><b>Tipo:</b></h4>
@@ -33,19 +37,19 @@
             <div class="field">
               <h4>{{ event.description }}</h4>
             </div>
+
           </div>
           <!-- Maps -->
+          <div class="col-sm-6 col-md-6">
+            <div class="gMaps-container">
+              <agm-map class="gMaps-container" [latitude]="event.latitude" [longitude]="event.longitude" [zoom]="zoom" [disableDefaultUI]="false"
+                [zoomControl]="false" (mapClick)="mapClicked($event)">
 
-          <div class="gMaps-container">
-            <agm-map class="gMaps-container" [latitude]="event.latitude" [longitude]="event.longitude" [zoom]="zoom" [disableDefaultUI]="false"
-              [zoomControl]="false" (mapClick)="mapClicked($event)">
+                  <agm-marker [latitude]="event.latitude" [longitude]="event.longitude" [label]="event.address"> </agm-marker>
 
-                <agm-marker [latitude]="event.latitude" [longitude]="event.longitude" [label]="event.address"> </agm-marker>
-
-              </agm-map>
-          </div>
-          <br><br>
-          <div class="col-sm-4 col-md-4">
+                </agm-map>
+            </div>
+            <br>
             <div class="panel panel-default">
               <div class="panel-heading" style="background: #555;color: white;">
                 <div class="row">
@@ -79,15 +83,42 @@
                 </div>
               </div>
             </div>
+            <div class="col-sm-6">
+              <div class="panel-heading">
+                <h2 data-toggle="collapse" data-parent="#accordion" href="#RG">
+                  <i class="fa fa-flask "></i> Grupo de investigación
+                </h2>
+              </div>
+              <div class="card" (click)="viewResearchGroup(event.research_group.id)">
+                <div class="header-bg"></div>
+                <div class="content">
+                  <p>
+                    <a (click)="viewResearchGroup(event.research_group.id)">{{ event.research_group.name }} </a>
+                    <br> {{ event.research_group.description }}</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
+
+          <!--div class="col-sm-12">
+            <div *ngIf="event.research_group" class="panel panel-success">
+              <div class="panel-heading">
+                <h2 data-toggle="collapse" data-parent="#accordion" href="#RG">
+                  <i class="fa fa-flask "></i> Grupos de investigación
+                </h2>
+              </div>
+              <div id="RG" *ngIf="event.research_group" class="col-sm-6 col-md-4 col-lg-3">
+
+                </div>
+              </div>
+            </div-->
+        </div>
+      </div>
+      <hr style="border:1px dotted black;">
       <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Profesor'" (click)="toggleShowInput()">Editar</button>
       <button *ngIf="(sessionType | async) === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">Volver</button>
       <button class="btn btn-primary" routerLink="/home" role="button">Inicio</button>
-      </div>
-        <hr style="border:1px dotted black;">
-
 
       <div class="row" [hidden]="!showInput">
         <div class="col-md-6">

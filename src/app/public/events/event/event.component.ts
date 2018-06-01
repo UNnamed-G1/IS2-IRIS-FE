@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, OnDestroy, EventEmitter, Output, ElementRef } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy, EventEmitter, Output, ElementRef, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,8 +36,9 @@ export class EventComponent implements OnInit, OnDestroy {
   state_types: string[] = ['Activo', 'Inactivo'];
   allowedTypes = ['image/png', 'image/gif', 'image/jpeg'];
   invited: Array<User>;
-  rgsUser: Array<ResearchGroup>;
-
+  eventSubscription:any;
+  imageEncoded: string;
+  imageEncodedCropped: string;
   usersToInvite: Array<User>;
   choosedUsers: Array<any> = new Array<any>();
 
@@ -62,7 +63,8 @@ export class EventComponent implements OnInit, OnDestroy {
     private ngRedux: NgRedux<AppState>,
     private acRoute: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private zone: NgZone) { }
 
 
   ngOnInit() {
@@ -131,20 +133,53 @@ export class EventComponent implements OnInit, OnDestroy {
 
   setEvent(event: Event) {
     this.event = Object.assign({}, event);
+    if (event.photos) {
+      Object.assign(this.event, { photo: environment.api_url + event.photos.find });
+    }
     this.createEventForm();
+
+  }
+  viewResearchGroup(id: number) {
+    this.ngRedux.dispatch({ type: ADD_AUXILIAR, auxiliarID: { researchGroup: id } });
+    this.router.navigateByUrl('/rg');
+  }
+  checkFile(file: File) {
+    // Verify file loaded (Select file cancel will throw undefined file)
+    if (file) {
+      // Verify type
+      if (this.allowedTypes.includes(file.type)) {
+        // Verify size
+        const reader = new FileReader();
+        const img = new Image;
+        const _this = this;
+        reader.onloadend = () => {
+          img.onload = () => {
+            if (img.width >= 20 && img.height >= 20) {
+              // Open ImageCropper dialog setting imageEncoded
+              _this.zone.run(() => _this.imageEncoded = img.src);
+            } else {
+              _this.swalOpts = { title: 'La imagen es demasiado pequeña', text: 'Asegurate de que el tamaño sea de al menos 20x20 pixeles', errorMsg: false, type: 'error' };
+            }
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.swalOpts = { title: 'El tipo de archivo es inválido', text: 'Sólo se permiten imágenes .jpg, .png o .gif', errorMsg: false, type: 'error' };
+      }
+    }
   }
 
-  /*leave() {
-    this.eventService.leaveEvent({ id: this.event.id }).subscribe(
-      (response) => {
-        this.requestEvent(this.event.id);
-      },
-      (error: HttpErrorResponse) => {
-        this.swalOpts = { title: 'Error al abandonar el evento', text: error.message, type: 'error' };
-      }
-    );
-  }*/
+  // Sets on image cropped event
+  croppedImage(image: string) {
+    this.imageEncodedCropped = image;
+    this.imageEncoded = '';
+  }
 
+  notCroppedImage() {
+    // Reset FileList of images of the input
+    this.imageEncoded = '';
+  }
   private createEventForm() {
     this.eventForm = this.formBuilder.group({
       name: [this.event.name, Validators.required],
@@ -192,11 +227,7 @@ export class EventComponent implements OnInit, OnDestroy {
     this.markers[0].lat = $event.coords.lat;
     this.markers[0].lng = $event.coords.lng;
 
-    /*this.markers.push({
-      lat: $event.coords.lat,
-      lng: $event.coords.lng,
-      draggable: true
-    });*/
+
   }
 
   // Invite users modal
@@ -238,6 +269,15 @@ export class EventComponent implements OnInit, OnDestroy {
         this.swalOpts = { title: 'No se han podido obtener usuarios', text: error.message, type: 'error' };
       }
     )
+  }
+  // Convert b64 to file
+  base64toFile(base64: string, filename: string): File {
+    const arr = base64.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    for (let i = n; i >= 0; i--) {
+      u8arr[i] = bstr.charCodeAt(i);
+    }
+    return new File([u8arr], filename + '.' + mime.split('/')[1], { type: mime });
   }
 
 }
