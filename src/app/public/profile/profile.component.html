@@ -14,7 +14,7 @@
               <button type="button" class="btn btn-primary" (click)="toggleShowForm()">Editar</button>
             </div>
           </div>
-        
+
           <div class="well">
             <div class="field">
               <h2>{{ user.full_name }}</h2>
@@ -26,7 +26,7 @@
               {{ user.career.degree_type }} {{ user.career.name }}
             </div>
           </div>
-        
+
           <div class="text-left">
             <div class="field">
               <b>
@@ -34,28 +34,28 @@
               </b>
               {{ user.professional_profile }}
             </div>
-        
+
             <div *ngIf="user.phone" class="field">
               <b>
                 <label>Oficina:</label>
               </b>
               {{ user.office }}
             </div>
-        
+
             <div *ngIf="user.phone" class="field">
               <b>
                 <label>url:</label>
               </b>
-              {{ user.cvlac_link }}
+              <a href="{{ user.cvlac_link }}">Link</a>
             </div>
-        
+
             <div class="field">
               <b>
                 <label>Correo:</label>
               </b>
               <u>{{ user.email }}</u>
             </div>
-        
+
             <div *ngIf="user.phone" class="field">
               <b>
                 <label>Telefono:</label>
@@ -63,7 +63,7 @@
               {{ user.phone }}
             </div>
           </div>
-        
+
           <div *ngIf="( userID | async ) === ( sessionID | async )">
             <div class="alert alert-success fade in" *ngIf="!user.phone">
               <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
@@ -214,7 +214,7 @@
             <div class="panel panel-success">
               <div class="panel-heading">
                 <h2 data-toggle="collapse" data-parent="#accordion" href="#Estadisticas">
-                  <i class="fa fa-area-chart"></i> Estadísticas 
+                  <i class="fa fa-area-chart"></i> Estadísticas
                 </h2>
               </div>
               <div id="Estadisticas" *ngIf="statistics" class="container-fluid main-container statistics panel-body collapse in">
