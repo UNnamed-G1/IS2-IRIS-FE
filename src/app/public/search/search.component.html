@@ -1,0 +1,65 @@
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <span>Búsqueda</span>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h1>Búsqueda</h1>
+    </div>
+
+    <div class="panel-body" style="position:relative">
+      <div class="topnav">
+        <br>
+        <!-- Buttons -->
+        <div class="btn-group">
+          <button class="btn btn-primary btn-sm" (click)="onSelect('researchGroup')">Grupos de investigación</button>
+          <button class="btn btn-primary btn-sm" (click)="onSelect('event')">Eventos</button>
+          <button class="btn btn-primary btn-sm" (click)="onSelect('user')">Usuarios</button>
+          <button class="btn btn-primary btn-sm" (click)="onSelect('publication')">Publicaciones</button>
+        </div>
+        <div class="panel-body" style="position:relative">
+          <br>
+
+          <!-- Search -->
+          <form (ngSubmit)="onSearch()" class="input-group">
+            <input type="text" class="form-control" placeholder="Escribe para buscar..." [(ngModel)]="searchStr" name="searchStr">
+            <div type="submit" class="input-group-addon" (click)="onSearch()">
+              <i class="glyphicon glyphicon-search"></i>
+            </div>
+          </form>
+
+          <!-- Table -->
+          <div *ngIf="rows?.length; else noResults" class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr *ngIf="columns">
+                  <th *ngFor="let column of columns">{{ column }}</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="rows">
+                <tr *ngFor="let row of rows">
+                  <td *ngFor="let value of keys">
+                    {{row[value]}}
+                  </td>
+                  <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" title="Detalles" (click)="redirect(row.id)">
+                    <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ng-template #noResults>
+            <h3> No se han encontrado resultados para "{{ searchStr }}" </h3>
+          </ng-template>
+
+          <app-pagination [page]="page" [routing]="false" (changePage)="onSearch()"></app-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

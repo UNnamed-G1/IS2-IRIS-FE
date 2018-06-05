@@ -1,0 +1,112 @@
+.glyphicon {
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+small {
+  display: block;
+  line-height: 1.428571429;
+  color: #999;
+}
+
+.field, .form-control {
+  margin-bottom: 10px;
+}
+
+#dependencies-dropdowns {
+  text-align: center;
+}
+
+.btn-group {
+  text-align: right;
+}
+
+.src-image {
+  display: none;
+}
+
+.items-row {
+  display: contents;
+}
+
+.close {
+  position: relative;
+  top: -15px;
+  right: -10px;
+  color: inherit;
+}
+
+.card {
+  height: 100%;
+  max-width: 200px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #CCC;
+  border-radius: 8px;
+  text-align: center;
+  padding: 5px;
+  background-color: #265a88;
+  color: #ddd;
+}
+
+.card:hover {
+  cursor: pointer;
+}
+
+.card .header {
+  position: relative;
+  display: block;
+  width: 100%;
+  border-bottom: 1px #aaa solid;
+  font-size: medium;
+}
+
+.card .header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px #aaa solid;
+  z-index: 1;
+}
+
+.card .avatar {
+  width: 75px;
+  height: 75px;
+  margin: auto;
+  border-radius: 50%;
+  background: #eee;
+  position: relative;
+  z-index: 100;
+}
+
+.card .avatar img {
+  width: 75px;
+  height: 75px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 0, 30, 0.8);
+}
+
+.my-drop-zone { 
+	border: dotted 3px lightgray; 
+}
+
+.nv-file-over { 
+	border: dotted 3px red; 
+}
+
+.file-loaded { 
+	border: dotted 3px lightgreen; 
+}
+
+.statistics {
+    background: white;
+}
+
+.affix {
+  z-index: 9999 !important;
+}

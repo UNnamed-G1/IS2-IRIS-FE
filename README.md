@@ -5,7 +5,7 @@ In this repository you will find the IRIS Frontend
 
 ## Execution
 
-In the project directory change to development branch, then you can run:
+In the project directory, you can run:
 
 `$ ng serve`
 

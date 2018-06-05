@@ -1,0 +1,44 @@
+<div id="modal-follows" class="modal fade hidden-print" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="row text-center">
+        <h3  (click)="toggleDisplay(true)" *ngIf="displayFollowers">Seguidores</h3>
+        <h3  (click)="toggleDisplay(false)" *ngIf="!displayFollowers">Siguiendo</h3>      
+      </div>
+      <hr>
+      <ul class="list-group">
+        <li *ngFor="let user of (displayFollowers) ? followers : following"  class="list-group-item">
+          <div class="row">
+            <div class="col-sm-2 col-md-2">
+              <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+              />
+            </div>
+            <div class="col-sm-6 col-md-6">
+              <div class="field">
+                <h4>{{ user.full_name }}</h4>
+                <small>{{ user.username }}</small>
+              </div>
+              <div class="field">
+                <p>{{ user.professional_profile }}</p>
+              </div>
+            </div>
+            <div class="col-sm-4 col-md-4" *ngIf="(sessionUsername | async) != user.username">
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" (click)="goToUser(user.id)" data-toggle="modal" data-target="#modal-follows">Perfil</button>
+                <div *ngIf="(isLogged | async)">
+                  <button type="button" class="btn btn-danger" (click)="unfollow(user.id)" *ngIf="currFollowing.includes(user.username); else followBtn">Dejar de seguir</button>
+                  <ng-template #followBtn>
+                    <button type="button" class="btn btn-primary" (click)="follow(user.id)">Seguir</button>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <app-pagination [page]="page" [routing]="false" (changePage)="setPage()"></app-pagination>
+    </div>
+  </div>
+</div>
+
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

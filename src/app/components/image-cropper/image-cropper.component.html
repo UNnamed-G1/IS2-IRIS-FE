@@ -1,0 +1,30 @@
+<div #cropperModal id="image-cropper-modal" class="modal fade hidden-print" role="dialog" (click)="backdropClicked($event)">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button #closeCropperModal type="button" class="close" data-dismiss="modal" (click)="onCancel()">&times;</button>
+        <h2>Recorte de imagen</h2>
+      </div>
+
+      <div class="modal-body">
+        <image-cropper [imageBase64]="imgToCrop" [resizeToWidth]="512" [onlyScaleDown]="true" (imageCropped)="onImageCrop($event)"></image-cropper>
+      </div>
+
+      <div class="modal-footer">
+        <div class="row" style="text-align: center">
+          <div class="col-xs-6">
+            <button class="btn btn-primary" type="submit" (click)="onCropped()">Terminar recorte</button>
+          </div>
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="onCancel()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<button #openCropperModal type="button" class="hidden" data-toggle="modal" data-target="#image-cropper-modal"></button>
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

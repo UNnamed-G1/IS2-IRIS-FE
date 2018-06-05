@@ -1,0 +1,7 @@
+body {
+  padding-top: 30px;
+}
+
+select.form-control {
+  background-image: none !important;
+}

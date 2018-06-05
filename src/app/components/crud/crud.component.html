@@ -1,0 +1,38 @@
+<!-- Search -->
+<div class="input-group">
+  <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+  <input type="text" class="form-control" placeholder="Escribe para buscar..." [(ngModel)]="searchStr" name="searchStr">
+</div>
+<!-- Table -->
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr *ngIf="columns">
+        <th *ngFor="let column of columns">{{ column }}</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="rows">
+      <tr *ngFor="let row of rows | filter : keys[0] : searchStr">
+        <td *ngFor="let value of keys">
+          {{row[value]}}
+        </td>
+        <swal #deleteSwal
+          title="¿Eliminar {{ row[keys[0]] }}?"
+          text="Esta acción no se puede deshacer."
+          type="warning"
+          [showCancelButton]="true"
+          (confirm)="delete(row.id)">
+        </swal>
+        
+        <button type="button" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-primary btn-xs" [swal]="deleteSwal">
+          <span class="glyphicon glyphicon-trash"></span></button>
+        <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" title="Editar" (click)="update(row.id)">
+          <span class="glyphicon glyphicon-edit"></span></button>
+        <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" title="Detalles" (click)="details(row.id)">
+          <span class="glyphicon glyphicon-search"></span></button>
+
+      </tr>
+    </tbody>
+  </table>
+</div>

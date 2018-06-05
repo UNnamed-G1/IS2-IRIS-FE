@@ -1,0 +1,95 @@
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <a routerLink="/research-list" target="_self" title="Inicio">Lista de grupos de investigación</a>/
+    <span>{{ (researchGroupID | async) ? 'Editar grupo de investigación' : 'Añadir grupo de investigación' }}</span>
+  </div>
+  <div class="container-fluid">
+    <div class="container-fluid main-container">
+      <div class="row">
+        <div class="col-md-6">
+          <form [formGroup]="rgForm" (ngSubmit)="onSubmit()">
+            <!-- Name -->
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+              <app-form-control-errors [control]="name"></app-form-control-errors>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label">Descripción</label>
+              <input type="text" class="form-control" formControlName="description" placeholder="Descripción">
+              <app-form-control-errors [control]="description"></app-form-control-errors>
+            </div>
+
+            <!-- Strategic Focus -->
+            <div class="form-group">
+              <label class="form-label">Enfoque estratégico</label>
+              <input type="text" class="form-control" formControlName="strategic_focus" placeholder="Enfoque estratégico">
+              <app-form-control-errors [control]="strategic_focus"></app-form-control-errors>
+            </div>
+
+            <!-- Research priorities -->
+            <div class="form-group">
+              <label class="form-label">Prioridades de investigación</label>
+              <input type="text" class="form-control" formControlName="research_priorities" placeholder="Prioridades de investigación">
+              <app-form-control-errors [control]="research_priorities"></app-form-control-errors>
+            </div>
+
+            <!-- Foundation date -->
+            <div class="form-group has-feedback">
+              <label class="form-label">Fecha de fundación</label>
+              <input [owlDateTime]="foundationDatepicker" [min]="minDate" [max]="maxDate" class="form-control control-datetime" formControlName="foundation_date"
+                placeholder="Fecha de fundación">
+              <span [owlDateTimeTrigger]="foundationDatepicker" class="datetime-trigger">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </span>
+              <owl-date-time #foundationDatepicker [pickerType]="'calendar'"></owl-date-time>
+              <app-form-control-errors [control]="foundation_date" [owlDateTimeMin]="'La fecha debe ser después de '+ ( minDate | date: 'fullDate') + '.'"
+                [owlDateTimeMax]="'La fecha debe ser antes de '+ (maxDate | date: 'fullDate') + '.'"></app-form-control-errors>
+            </div>
+
+            <!-- Classification -->
+            <div class="form-group">
+              <label class="form-label">Clasificación</label>
+              <select class="form-control" formControlName="classification">
+                <option *ngFor="let c of classifications" [ngValue]="c">{{ c }}</option>
+              </select>
+              <app-form-control-errors [control]="classification"></app-form-control-errors>
+            </div>
+
+            <!-- Classification date -->
+            <div class="form-group has-feedback">
+              <label class="form-label">Fecha de clasificación</label>
+              <input [owlDateTime]="classificationDatepicker" [min]="minDate" [max]="maxDate" class="form-control control-datetime" formControlName="date_classification"
+                placeholder="Fecha de clasificación">
+              <span [owlDateTimeTrigger]="classificationDatepicker" class="datetime-trigger">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </span>
+              <owl-date-time #classificationDatepicker [pickerType]="'calendar'"></owl-date-time>
+              <app-form-control-errors [control]="date_classification" [owlDateTimeMin]="'La fecha debe ser después de '+ ( minDate | date: 'fullDate') + '.'"
+                [owlDateTimeMax]="'La fecha debe ser antes de '+ (maxDate | date: 'fullDate') + '.'"></app-form-control-errors>
+            </div>
+
+            <!-- URL -->
+            <div class="form-group">
+              <label class="form-label">URL</label>
+              <input type="text" class="form-control" formControlName="url" placeholder="URL">
+              <app-form-control-errors [control]="url"></app-form-control-errors>
+            </div>
+
+            <div class="btn-group">
+              <button *ngIf="researchGroup.state !== 'Solicitado'" type="submit" class="btn btn-primary" [disabled]="rgForm.invalid">Editar</button>
+              <button *ngIf="researchGroup.state === 'Solicitado'" type="submit" class="btn btn-primary" (click)="accept()" [disabled]="rgForm.invalid">Editar y aceptar</button>
+              <button *ngIf="researchGroup.state === 'Solicitado'" class="btn btn-primary" (click)="reject()">Rechazar solicitud</button>
+              <button type="button" class="btn btn-danger" routerLink="/research-list">Volver</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

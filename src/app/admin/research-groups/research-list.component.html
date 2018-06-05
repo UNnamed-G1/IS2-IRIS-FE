@@ -1,0 +1,26 @@
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<span>Lista de grupos de investigación</span></div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1>Grupos de Investigación</h1>
+      </div>
+
+      <div class="panel-body" style="position:relative">
+        <button class="btn btn-primary btn-sm" routerLink="/research-groups/add" role="button">Agregar</button>
+        <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+        <button class="btn btn-primary btn-sm" (click)="pdfMode()" role="button">Generar reporte</button>
+        <button *ngIf="viewRequests" class="btn btn-primary btn-sm" (click)="toggleView()" role="button">Ver aceptados</button>
+        <button *ngIf="!viewRequests" class="btn btn-primary btn-sm" (click)="toggleView()" role="button">Ver solicitudes</button>
+        <br><br>
+        <app-crud [columns]="headers" [keys]="keys" [rows]="researchGroups" (onUpdate)="update($event)" (onDelete)="delete($event)" (onDetails)="details($event)"></app-crud>
+        <app-pagination [page]="page"></app-pagination>
+        <button class="btn btn-primary btn-sm" routerLink="/admin/manage" role="button">Volver</button>
+      </div>
+
+      <div *ngIf="PDF">
+          <app-documents [url]="historyReportURL"></app-documents>
+      </div>
+    </div>
+</main>
+
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

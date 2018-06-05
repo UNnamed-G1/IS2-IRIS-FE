@@ -1,0 +1,45 @@
+.fa.fa-file-pdf-o {
+    color: white;
+    font-size: 2.0rem;
+}
+
+.fa.fa-file-pdf-o:hover {
+    color: red;
+}
+
+.fa.fa-calendar-plus-o:hover {
+    color: red;
+}
+
+.fa.fa-user-plus:hover {
+    color: red;
+}
+
+.my-drop-zone {
+    border: dotted 3px lightgray;
+}
+
+.nv-file-over {
+    border: dotted 3px red;
+}
+
+.file-loaded {
+    border: dotted 3px lightgreen;
+}
+
+.statistics {
+    background: white;
+}
+
+.reject {
+    color: red;
+}
+
+.accept {
+    color: green;
+}
+
+.member-type-dropdown {
+    padding-left: 0%;
+    padding-right: 0%;
+}

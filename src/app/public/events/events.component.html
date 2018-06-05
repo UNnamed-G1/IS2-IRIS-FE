@@ -1,0 +1,49 @@
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <span>Eventos</span>
+  </div>
+  <div class="main-container">
+    <div class="container-fluid">
+      <h1>Eventos</h1>
+      <div class="row" id="events_view">
+        <div class="events" *ngFor="let row of rows">
+          <div class="col-xs-6 col-md-3 col-lg-3">
+            <div class="panel panel-default">
+              <div class="panel panel-heading">
+                <h5 class="text-center">{{row.topic}}</h5>
+              </div>
+              <div class="panel panel-body" [ngStyle]="{
+            'background-image': 'url(' + row.photo + ')',
+            'background-repeat': 'no-repeat',
+            'background-color': '#555',
+            'background-size': '100%'
+          }">
+                <div class="screen">
+                  <div class="row">
+                    <div class="col-sm-12 center-block">
+                      <div class="box">
+                        <p class="white-text ">{{row.description}}</p>
+                        <div class="glyphicon pull-right pull-down" align="bottom">
+                          <a (click)="openEvent(row.id)">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <h5 class="text-right">{{row.date}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-pagination [page]="page"></app-pagination>
+    </div>
+  </div>
+</main>
+
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

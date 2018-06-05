@@ -1,0 +1,129 @@
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:
+    <a routerLink="/" target="_self" title="Inicio">Inicio</a>/
+    <a routerLink="/event-list" target="_self" title="Inicio">Lista de eventos</a>/
+    <span>{{ (eventUpdateID | async) ? 'Editar evento' : 'Añadir evento' }}</span>
+  </div>
+  <div class="container-fluid">
+    <div class="container-fluid main-container">
+      <div class="row">
+        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+          <div class="col-md-6">
+
+            <!-- Name -->
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+              <app-form-control-errors [control]="name"></app-form-control-errors>
+            </div>
+
+            <!-- Topic -->
+            <div class="form-group">
+              <label class="form-label">Tema</label>
+              <textarea type="text" class="form-control" formControlName="topic" placeholder="Tema" rows="3"></textarea>
+              <app-form-control-errors [control]="topic"></app-form-control-errors>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+              <label class="form-label">Descripción</label>
+              <textarea type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
+              <app-form-control-errors [control]="description"></app-form-control-errors>
+            </div>
+
+            <!-- Event type -->
+            <div class="form-group">
+              <label class="form-label">Tipo de evento</label>
+              <select class="form-control" formControlName="event_type">
+                <option *ngFor="let et of types.event" [ngValue]="et">{{ et }}</option>
+              </select>
+              <app-form-control-errors [control]="event_type"></app-form-control-errors>
+            </div>
+
+            <!-- Date -->
+            <div class="form-group has-feedback">
+              <label class="form-label">Fecha del evento</label>
+              <input [owlDateTime]="eventDatepicker" [min]="minDate" (change)="setEndDate()" class="form-control control-datetime" formControlName="date"
+                placeholder="Fecha del evento">
+              <span [owlDateTimeTrigger]="eventDatepicker" class="datetime-trigger">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </span>
+              <owl-date-time #eventDatepicker></owl-date-time>
+              <app-form-control-errors [control]="date" [owlDateTimeMin]="'La fecha debe ser posterior a la actual.'"></app-form-control-errors>
+            </div>
+
+            <!-- End date -->
+            <div class="form-group has-feedback">
+              <label class="form-label">Fecha de finalización del evento</label>
+              <input [owlDateTime]="eventEndDatepicker" [min]="date.value" (change)="setDuration()" class="form-control control-datetime"
+                formControlName="end_date" placeholder="Fecha de finalización del evento">
+              <span [owlDateTimeTrigger]="eventEndDatepicker" class="datetime-trigger">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </span>
+              <owl-date-time #eventEndDatepicker></owl-date-time>
+              <app-form-control-errors [control]="end_date" [owlDateTimeMin]="'La fecha debe ser posterior a la de inicio del evento.'"></app-form-control-errors>
+            </div>
+
+            <!-- Duration -->
+            <div class="form-group">
+              <label class="form-label">Duración</label>
+              <input type="text" class="form-control" formControlName="duration" placeholder="Duración" (change)="setEndDate()">
+              <app-form-control-errors [control]="duration"></app-form-control-errors>
+            </div>
+
+            <!-- Frequence -->
+            <div class="form-group">
+              <label class="form-label">Frecuencia</label>
+              <select class="form-control" formControlName="frequence">
+                <option *ngFor="let ft of types.frequence" [ngValue]="ft">{{ ft }}</option>
+              </select>
+              <app-form-control-errors [control]="frequence"></app-form-control-errors>
+            </div>
+
+            <!-- State -->
+            <div class="form-group">
+              <label class="form-label">Estado</label>
+              <select class="form-control" formControlName="state">
+                <option *ngFor="let st of types.state" [ngValue]="st">{{ st }}</option>
+              </select>
+              <app-form-control-errors [control]="state"></app-form-control-errors>
+            </div>
+
+          </div>
+          <div class="col-md-6">
+
+            <!-- ResearchGroup -->
+            <div class="form-group">
+              <label class="form-label">Grupos de investigación</label>
+              <select class="form-control" formControlName="research_group_id">
+                <option *ngFor="let rg of userGroups" [ngValue]="rg.id">{{ rg.name }}</option>
+              </select>
+            </div>
+
+            <!-- address-->
+            <div class="form-group">
+              <label class="form-label">Lugar</label>
+              <input type="text" class="form-control" formControlName="address" placeholder="Coloca el nombre del lugar">
+            </div>
+
+            <!-- Maps -->
+            <div class="gMaps-container">
+              <label class="form-label">Mueve el marcador hasta el lugar del evento</label>
+              <agm-map class="gMaps-container" [latitude]="lat" [longitude]="lng" [zoom]="16" (mapClick)="setCoords($event)">
+                <agm-marker [latitude]="latitude.value" [longitude]="longitude.value" [label]="address.value" [markerDraggable]="true" (dragEnd)="setCoords($event)"></agm-marker>
+              </agm-map>
+            </div>
+            <br>
+            <br>
+            <div>
+              <button type="submit" class="btn btn-primary" [ngClass]="{ disabled: eventForm.invalid || eventForm.pristine }">Editar</button>
+              <button type="button" class="btn btn-danger" routerLink="/event-list">Volver</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

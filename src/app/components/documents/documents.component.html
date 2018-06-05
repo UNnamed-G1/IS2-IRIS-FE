@@ -1,0 +1,36 @@
+<div class="jumbotron">
+  <div class="panel panel-default" style="margin-top:10px;">
+    <br>
+    <br>
+    <div class="form-group">
+      <div *ngIf="isLoaded" style="text-align: center;">
+        <button (click)="prevPage()" data-toggle="tooltip" title="Página anterior" [disabled]="page === 1">
+          <span class="glyphicon glyphicon-arrow-left"></span>
+        </button>
+        <span class="{{ totalPages }}"></span>
+        <input type="number" placeholder="page" [(ngModel)]="page">
+        <button (click)="nextPage()" data-toggle="tooltip" title="Página siguiente" [disabled]="page === totalPages">
+          <span class="glyphicon glyphicon-arrow-right"></span>
+        </button>
+        <a *ngIf="(isLogged | async)" (click)="downloadPdf()" class="button" title="Descargar" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-download-alt"></span>
+        </a>
+        <button (click)="incrementZoom(-0.1)" data-toggle="tooltip" title="Alejar" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-zoom-out"></span>
+        </button>
+        <button (click)="incrementZoom(+0.1)" data-toggle="tooltip" title="Acercar" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-zoom-in"></span>
+        </button>
+        <button (click)="originalZoom()" data-toggle="tooltip" title="Tamaño automático" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-screenshot"></span>
+        </button>
+        <button (click)="rotatePdf()" data-toggle="tooltip" title="Girar 90°" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+    </div>
+    <pdf-viewer [src]="url" [original-size]="true" [show-all]="showAll" [stick-to-page]="stickToPage" [render-text]="false" [page]="page"
+      [zoom]="zoom" [rotation]="rotate" (after-load-complete)="afterLoadComplete($event)" style="display: block;"></pdf-viewer>
+  </div>
+</div>
+<app-generic-swal [options]="swalOpts"></app-generic-swal>

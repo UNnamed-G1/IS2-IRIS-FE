@@ -1,0 +1,316 @@
+<main class="detalle">
+  <div class="breadcrumb-class">Está en:<a routerLink="/" target="_self" title="Inicio">Inicio</a>/<a routerLink="/events" target="_self" title="Eventos">Eventos</a> /<span>{{event?.name}}</span></div>
+  <div *ngIf="event" class="container-fluid main-container">
+    <div class="container-fluid">
+      <div class="row container-fluid" [hidden]="showInput">
+        <div class="row">
+          <div class="col-md-8 text-center">
+            <h2>{{event.name}} </h2>
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid">
+          <div class="col-sm-6">
+            <div class="well">
+                <img src="{{event?.photos[0].picture ? event.photos[0].picture : 'assets/images/event.png'}}" onerror="this.src='assets/images/event.png'"
+                />
+            </div>
+            <div class="media">
+              <div class="media-body">
+                <h4><b>Tipo:</b></h4>
+                {{ event.event_type }}
+                <h4><b>Duración:</b></h4>
+                {{ event.duration }}
+                <h4><b>Fecha:</b></h4>
+                {{ event.date }}
+                <h4><b>Frecuencia:</b></h4>
+                {{ event.frequence }}
+                <h4><b>Estado:</b></h4>
+                {{ event.state }}
+              </div>
+            </div><br>
+            <h3><b>Tema</b></h3>
+            <div class="field">
+              <h4>{{ event.topic }}</h4>
+            </div>
+            <h3><b>Descripción</b></h3>
+            <div class="field">
+              <h4>{{ event.description }}</h4>
+            </div>
+
+          </div>
+          <!-- Maps -->
+          <div class="col-sm-6 col-md-6">
+            <div class="gMaps-container">
+              <agm-map class="gMaps-container" [latitude]="event.latitude" [longitude]="event.longitude" [zoom]="zoom" [disableDefaultUI]="false"
+                [zoomControl]="false" (mapClick)="mapClicked($event)">
+
+                  <agm-marker [latitude]="event.latitude" [longitude]="event.longitude" [label]="event.address"> </agm-marker>
+
+                </agm-map>
+            </div>
+            <br>
+            <div class="panel panel-default">
+              <div class="panel-heading" style="background: #555;color: white;">
+                <div class="row">
+                  <div class="col-sm-1 col-md-1">
+                    <span class="glyphicon glyphicon-user" style="font-size: 1.8rem"></span>
+                  </div>
+                  <div class="col-sm-9 col-md-9">
+                    <h3>Invitados</h3>
+                  </div>
+                  <div class="col-sm-1 col-md-1">
+                    <span *ngIf="(isLogged | async)" class="fa fa-user-plus" style="font-size: 1.8rem" data-toggle="modal" data-target="#modal-invite-users"></span>
+                </div>
+              </div>
+              </div>
+
+              <div class="panel-body" style="overflow-y: auto; height: 200px; ">
+                <div class="users">
+                  <div *ngFor="let user of invited" class="field">
+                    <div class=" media">
+                      <div class="media-left media-middle">
+                        <img [src]="user.photo" class="rounded-image media-object" style="width:70px; height:70px;">
+                      </div>
+
+                      <div class="media-body">
+                        <h4>{{user.full_name}}</h4>
+                        <a href="#">Ver perfil</a>
+                      </div>
+                    </div>
+                    <hr style="border:1px dotted black;">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="panel-heading">
+                <h2 data-toggle="collapse" data-parent="#accordion" href="#RG">
+                  <i class="fa fa-flask "></i> Grupo de investigación
+                </h2>
+              </div>
+              <div class="card" (click)="viewResearchGroup(event.research_group.id)">
+                <div class="header-bg"></div>
+                <div class="content">
+                  <p>
+                    <a (click)="viewResearchGroup(event.research_group.id)">{{ event.research_group.name }} </a>
+                    <br> {{ event.research_group.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!--div class="col-sm-12">
+            <div *ngIf="event.research_group" class="panel panel-success">
+              <div class="panel-heading">
+                <h2 data-toggle="collapse" data-parent="#accordion" href="#RG">
+                  <i class="fa fa-flask "></i> Grupos de investigación
+                </h2>
+              </div>
+              <div id="RG" *ngIf="event.research_group" class="col-sm-6 col-md-4 col-lg-3">
+
+                </div>
+              </div>
+            </div-->
+        </div>
+      </div>
+      <hr style="border:1px dotted black;">
+      <button class="btn btn-primary" *ngIf="(sessionType | async) === 'Profesor'" (click)="toggleShowInput()">Editar</button>
+      <button *ngIf="(sessionType | async) === 'Profesor'" class="btn btn-primary btn-lg" routerLink="/event-list" role="button">Volver</button>
+      <button class="btn btn-primary" routerLink="/home" role="button">Inicio</button>
+
+      <div class="row" [hidden]="!showInput">
+        <div class="col-md-6">
+            <form [formGroup]="eventForm" (ngSubmit)="updateEvent()">
+
+              <!-- Name -->
+              <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+                <app-form-control-errors [control]="name"></app-form-control-errors>
+              </div>
+
+              <!-- Topic -->
+              <div class="form-group">
+                <label class="form-label">Tema</label>
+                <textarea type="text" class="form-control" formControlName="topic" placeholder="Tema" rows="3"></textarea>
+                <app-form-control-errors [control]="topic"></app-form-control-errors>
+              </div>
+
+              <!-- Description -->
+              <div class="form-group">
+                <label class="form-label">Descripción</label>
+              <textarea type="text" class="form-control" formControlName="description" placeholder="Descripción" rows="3"></textarea>
+                <app-form-control-errors [control]="description"></app-form-control-errors>
+              </div>
+
+              <!-- Event type -->
+              <div class="form-group">
+                <label class="form-label">Tipo de evento</label>
+                <select class="form-control" formControlName="event_type">
+                  <option *ngFor="let et of event_types" [ngValue]="et">{{ et }}</option>
+                </select>
+                <app-form-control-errors [control]="event_type"></app-form-control-errors>
+              </div>
+
+              <!-- Date -->
+              <div class="form-group has-feedback">
+                <label class="form-label">Fecha del evento</label>
+                <input [owlDateTime]="eventDatepicker" [min]="minDate" class="form-control control-datetime" formControlName="date" placeholder="Fecha del evento">
+                <span [owlDateTimeTrigger]="eventDatepicker" class="datetime-trigger">
+                  <i class="glyphicon glyphicon-calendar"></i>
+                </span>
+                <owl-date-time #eventDatepicker></owl-date-time>
+                <app-form-control-errors [control]="date" [owlDateTimeMin]="'La fecha debe ser posterior a la actual.'"></app-form-control-errors>
+              </div>
+
+              <!-- Frequence -->
+              <div class="form-group">
+                <label class="form-label">Frecuencia</label>
+                <select class="form-control" formControlName="frequence">
+                  <option *ngFor="let ft of frequence_types" [ngValue]="ft">{{ ft }}</option>
+                </select>
+                <app-form-control-errors [control]="frequence"></app-form-control-errors>
+              </div>
+
+              <!-- Duration -->
+              <div class="form-group">
+                <label class="form-label">Duración</label>
+                <input type="text" class="form-control" formControlName="duration" placeholder="Duración">
+                <app-form-control-errors [control]="duration"></app-form-control-errors>
+              </div>
+
+              <!-- State -->
+              <div class="form-group">
+                <label class="form-label">Estado</label>
+                <select class="form-control" formControlName="state">
+                  <option *ngFor="let st of state_types" [ngValue]="st">{{ st }}</option>
+                </select>
+                <app-form-control-errors [control]="state"></app-form-control-errors>
+              </div>
+
+
+            </form>
+          </div>
+        <div class="col-md-6">
+            <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+
+
+              <!-- address-->
+              <div class="form-group">
+                <label class="form-label">Lugar</label>
+                <input type="text" class="form-control" formControlName="address" placeholder="Coloca el nombre del lugar">
+              </div>
+
+              <strong>Mueve el marcador hasta el lugar del evento</strong>
+              <br><br>
+              <!-- Maps -->
+              <div class="gMaps-container">
+              <agm-map class="gMaps-container" [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="false"
+                    (mapClick)="mapClicked($event)">
+
+                <agm-marker *ngFor="let m of markers; let i = index" (markerClick)="clickedMarker(m.label, i)" [latitude]="m.lat" [longitude]="m.lng"
+                  [label]="m.label" [markerDraggable]="m.draggable" (dragEnd)="markerDragEnd(m, $event)">
+
+                    </agm-marker>
+
+                  </agm-map>
+              </div>
+              <br><br>
+
+              <div class="form-group row">
+                <!-- latitude -->
+                 <div class="col-xs-3" hidden>
+                   <label class="form-label">Latitud</label>
+                   <input type="text" class="form-control" formControlName="latitude" value={{latP}} dirty>
+                 </div>
+                 <!-- longitude -->
+                 <div class="col-xs-3" hidden>
+                   <label class="form-label">Longitud</label>
+                   <input type="text" class="form-control" formControlName="longitude" value={{lngP}} dirty>
+                 </div>
+              </div>
+              <br><br>
+
+              <div>
+                <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid">Guardar</button>
+                <button type="button" class="btn btn-danger" (click)="toggleShowInput()">Cancelar</button>
+              </div>
+
+            </form>
+          </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="modal-invite-users" class="modal fade hidden-print" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button #closeModal type="button" class="close" data-dismiss="modal">&times;</button>
+        <h2>Invitar usuarios</h2>
+      </div>
+      <div class="modal-body row">
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="glyphicon glyphicon-search"></i>
+          </div>
+          <input type="text" class="form-control" placeholder="Escribe para buscar..." (input)="setUsersToInvite($event.target.value)">
+        </div>
+        <div class="col-md-6">
+          <div *ngFor="let user of usersToInvite">
+            <div *ngIf="!choosed(user.id)">
+              <div class="col-sm-4">
+                <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+                />
+              </div>
+              <div class="col-sm-8">
+                <div class="field">
+                  <h4>{{ user.full_name }}</h4>
+                  <small>{{ user.username }}</small>
+                </div>
+                <button class="btn btn-xs btn-primary" (click)="inviteUser(user)">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div *ngFor="let user of choosedUsers; let i = index">
+            <div class="col-sm-4">
+              <img src="{{user.photo ? user.photo : 'assets/images/user.png'}}" onerror="this.src='assets/images/user.png';" class="img-rounded img-responsive profile-image"
+              />
+            </div>
+            <div class="col-sm-8">
+              <div class="field">
+                <h4>{{ user.name }}</h4>
+                <small>{{ user.username }}</small>
+              </div>
+              <div class="field">
+                <p>{{ user.professional_profile }}</p>
+              </div>
+              <button class="btn btn-xs btn-danger" (click)="removeUser(i)">
+                <span class="glyphicon glyphicon-minus"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="row" style="text-align: center">
+          <div class="col-xs-6">
+            <button type="submit" class="btn btn-primary" (click)="inviteUsers()">Invitar usuarios</button>
+          </div>
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-generic-swal [options]="swalOpts"></app-generic-swal>
